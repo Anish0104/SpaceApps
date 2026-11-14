@@ -27,7 +27,7 @@ docs/CONTRACTS.md  the three contracts everyone builds against
 # JavaScript (Node 20+, pnpm 9+)
 pnpm install
 pnpm test            # engine unit tests
-pnpm dev:web         # frontend on http://localhost:5173 (uses data/fixtures.json)
+pnpm dev:web         # frontend on http://localhost:5173 (uses data/dataset-v1.0.json)
 pnpm dev:worker      # worker on http://localhost:8787
 
 # Python (3.11+)

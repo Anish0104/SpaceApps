@@ -1,0 +1,4 @@
+{
+  "_note": "Validated investigation summaries, written by `pnpm summaries` and committed so investigation pages never call Gemini. Keyed by <psiId>@<data version>; an entry for another data version is not shown. Every sentence passed the citation validator against records of its own investigation. Do not hand-edit.",
+  "summaries": {}
+}

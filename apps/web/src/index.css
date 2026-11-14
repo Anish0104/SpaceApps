@@ -1,20 +1,338 @@
 @import "tailwindcss";
 
-/* Design tokens: lab-notebook look */
-@theme {
-  --color-ink: #14161f;
-  --color-paper: #fbfaf7;
-  --color-line: #e4e1da;
-  --color-measured: #1f4fd8;  /* cobalt */
-  --color-computed: #6d3fd1;  /* violet */
-  --color-assumed: #c98a0b;   /* saffron */
-  --color-gap: #e85d4a;       /* flame coral */
-  --color-match: #1f9d55;     /* green */
-  --font-display: "Unbounded", system-ui, sans-serif;
-  --font-sans: "Manrope", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+/*
+ * Design system: "Flame in freefall".
+ *
+ * Colour carries one meaning each:
+ *   gravity regime   orbit = ch-blue, Moon = regolith, Mars = warm regolith, Earth = soot
+ *   verdict lights   green / amber / red (evidence strength, never safety). Amber is not soot: soot means Earth / 1 g
+ * Missing or undocumented evidence is the diagonal hatch, never a fill colour.
+ * Evidence type is a line style: MEASURED solid fill, COMPUTED solid outline, ASSUMED dashed
+ * outline, INFERRED dotted outline, UNKNOWN hatch. A text label always goes with it.
+ */
+:root {
+  --module: #edf1f5; /* page background: cool station-module white */
+  --panel: #ffffff; /* raised surfaces */
+  --ink: #16233b; /* text: deep navy */
+  --ch-blue: #3d57f2; /* microgravity / orbit; links and focus. 5.5:1 on white */
+  --soot: #e3a21a; /* Earth / 1 g. 2.2:1 on white: never text on white; ink on soot is 7:1 */
+  --regolith: #8b929b; /* lunar gravity; neutral structure lines. Non-text only */
+  --mars: #9c8b7e; /* regolith with a warm tint */
+  --verdict-green: #1e8a5a;
+  --verdict-yellow: #d98e04; /* amber light, its own colour: soot is reserved for Earth / 1 g */
+  --verdict-yellow-edge: #8a5a00; /* darker amber outline, 5.9:1 on white, so the light's edge meets 3:1 */
+  --verdict-red: #c8402f;
+  --rule: color-mix(in srgb, var(--regolith) 30%, transparent);
+  --hatch: repeating-linear-gradient(45deg, color-mix(in srgb, var(--regolith) 60%, transparent) 0 1px, transparent 1px 6px);
 }
 
-body {
-  @apply bg-paper text-ink font-sans antialiased;
+@theme {
+  --color-*: initial;
+  --font-*: initial;
+  --text-*: initial;
+}
+
+@theme inline {
+  --color-white: #fff;
+  --color-module: var(--module);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-ch-blue: var(--ch-blue);
+  --color-soot: var(--soot);
+  --color-regolith: var(--regolith);
+  --color-mars: var(--mars);
+  --color-verdict-green: var(--verdict-green);
+  --color-verdict-red: var(--verdict-red);
+  --color-rule: var(--rule);
+
+  --font-sans: "Archivo", system-ui, sans-serif;
+
+  /* Type scale, ratio 1.25: 13 / 16 / 20 / 25 / 31 / 39 / 49 px */
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.45;
+  --text-base: 1rem;
+  --text-base--line-height: 1.55;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.35;
+  --text-xl: 1.5625rem;
+  --text-xl--line-height: 1.25;
+  --text-2xl: 1.9375rem;
+  --text-2xl--line-height: 1.2;
+  --text-3xl: 2.4375rem;
+  --text-3xl--line-height: 1.12;
+  --text-4xl: 3.0625rem;
+  --text-4xl--line-height: 1.08;
+}
+
+@layer base {
+  html {
+    font-size: 16px;
+  }
+  body {
+    background: var(--module);
+    color: var(--ink);
+    font-family: "Archivo", system-ui, sans-serif;
+    font-stretch: 100%;
+    font-size: 1rem;
+    line-height: 1.55;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ch-blue);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Type */
+  .display {
+    font-stretch: 125%;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .dense {
+    font-stretch: 75%;
+  }
+  .measure {
+    max-width: 70ch;
+  }
+  .link {
+    color: var(--ch-blue);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .link:hover {
+    color: var(--ink);
+  }
+
+  /* Surfaces */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+  }
+  .hatch {
+    background-image: var(--hatch);
+  }
+
+  /* Buttons: the label says the action */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0 1rem;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: var(--ch-blue);
+    color: #fff;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--ch-blue) 85%, var(--ink));
+  }
+  .btn-secondary {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  .btn-secondary:hover:not(:disabled),
+  .btn-secondary[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+  .btn-secondary[aria-pressed="true"] {
+    box-shadow: inset 0 0 0 1px var(--ink);
+  }
+  .btn-sm {
+    min-height: 2rem;
+    padding: 0 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  /* Text inputs and selects */
+  .field {
+    min-height: 2.5rem;
+    padding: 0 0.75rem;
+    background: var(--panel);
+    border: 1px solid var(--regolith);
+    border-radius: 6px;
+    color: var(--ink);
+  }
+  .field-sm {
+    min-height: 2rem;
+    padding: 0 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  /* Chips. The line style is the evidence type. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    font-size: 0.8125rem;
+    font-stretch: 75%;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  .chip-quiet {
+    border-color: var(--regolith);
+  }
+  .chip-solid {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+  }
+  .chip-outline {
+    border-color: var(--ink);
+  }
+  .chip-dashed {
+    border: 1px dashed var(--ink);
+  }
+  .chip-dotted {
+    border: 1px dotted var(--ink);
+  }
+  .chip-link {
+    border-color: var(--ch-blue);
+    color: var(--ch-blue);
+  }
+  a:hover > .chip-link {
+    background: color-mix(in srgb, var(--ch-blue) 10%, transparent);
+  }
+  .chip-hatch {
+    padding: 2px 8px;
+    background-image: var(--hatch);
+    border-color: var(--regolith);
+  }
+  .chip-hatch > span {
+    padding: 0 4px;
+    background: var(--panel);
+  }
+
+  /* Scenario and other standalone values: same line styles at body size */
+  .value {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+  .value-assumed {
+    border: 1px dashed var(--ink);
+  }
+  .value-computed {
+    border: 1px solid var(--ink);
+  }
+
+  /* Verdict lights: evidence strength, never safety. Always shown with words. */
+  .light {
+    display: inline-block;
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+  }
+  .light-green {
+    background: var(--verdict-green);
+  }
+  .light-yellow {
+    background: var(--verdict-yellow);
+    box-shadow: inset 0 0 0 1.5px var(--verdict-yellow-edge);
+  }
+  .light-red {
+    background: var(--verdict-red);
+  }
+  .light-hatch {
+    background-image: var(--hatch);
+    border: 1px solid var(--regolith);
+  }
+  .light-none {
+    border: 1px solid var(--regolith);
+  }
+
+  /* Table rows outlined as a whole (Referee): set --mark on the row */
+  .row-mark > * {
+    box-shadow: inset 0 2px 0 var(--mark), inset 0 -2px 0 var(--mark);
+  }
+  .row-mark > :first-child {
+    box-shadow: inset 2px 0 0 var(--mark), inset 0 2px 0 var(--mark), inset 0 -2px 0 var(--mark);
+  }
+  .row-mark > :last-child {
+    box-shadow: inset -2px 0 0 var(--mark), inset 0 2px 0 var(--mark), inset 0 -2px 0 var(--mark);
+  }
+  /* Below sm the Referee hides its last column, so the cell before it closes the outline */
+  @media (width < 40rem) {
+    .row-mark > :nth-last-child(2) {
+      box-shadow: inset -2px 0 0 var(--mark), inset 0 2px 0 var(--mark), inset 0 -2px 0 var(--mark);
+    }
+  }
+
+  /* Gravity slider (home flame instrument) */
+  .gravity-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    height: 24px;
+    background: transparent;
+    cursor: pointer;
+  }
+  .gravity-slider::-webkit-slider-runnable-track {
+    height: 2px;
+    background: var(--regolith);
+  }
+  .gravity-slider::-moz-range-track {
+    height: 2px;
+    background: var(--regolith);
+  }
+  .gravity-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    margin-top: -9px;
+    border: 2px solid var(--panel);
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow: 0 0 0 1px var(--ink);
+  }
+  .gravity-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--panel);
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow: 0 0 0 1px var(--ink);
+  }
+
+  /* Earth flame only. Shape changes are driven from the slider in FlameInstrument.tsx. */
+  .flame-flicker {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: flame-flicker 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes flame-flicker {
+  0%, 100% { transform: scale(1, 1) skewX(0deg); }
+  25% { transform: scale(0.97, 1.03) skewX(-1.5deg); }
+  50% { transform: scale(1.02, 0.98) skewX(1deg); }
+  75% { transform: scale(0.98, 1.02) skewX(-0.5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flame-flicker {
+    animation: none;
+  }
+  *, *::before, *::after {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }

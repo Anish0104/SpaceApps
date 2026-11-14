@@ -6,13 +6,16 @@ Everyone builds against these. Change them only together, in one PR, and tell th
 
 - TypeScript (source of truth): `packages/engine/src/schema.ts` (Zod)
 - Python mirror: `ingest/schema.py` (Pydantic)
-- Example: `data/fixtures.json` (FAKE values, `"fixture": true`; never cite)
+- Release: `data/dataset-v1.0.json` (what the worker and the web app load)
+- Example: `data/fixtures.json` (FAKE values, `"fixture": true`; never cite; unit tests only)
 
 Key rules:
 
 - Every numeric field is a `Value`: `{ value, unit, type, sourceId, page via source, missingReason? }`
 - `type` is one of `MEASURED | COMPUTED | ASSUMED | INFERRED | UNKNOWN`. Never show `ASSUMED` as evidence.
 - Missing = `value: null` + `missingReason: "not_documented" | "not_applicable"`. Never 0.
+- Optional fields are left out when empty. The one exception Zod accepts is `Source.ntrsId: null`
+  (Pydantic writes `None` as `null`); it is read as absent.
 - `o2PartialKPa` is always `COMPUTED` with its formula.
 - `collectedBy` and `verifiedBy` must be different people. `status: "verified"` only after the cross-check.
 
@@ -59,6 +62,13 @@ Response (`AskResponse`), the six beats:
 
 - `verdict` = evidence strength (green / yellow / red), never safety.
 - Every number in `sentences[].text` must match a stored value on a cited record, or the validator drops the sentence.
+- `recordIds` holds run / investigation / source ids. It may also include `"SCENARIO:<id>"` (only the
+  request's own scenario): that marks ASSUMED scenario inputs (O2 as percent or fraction, pressure in
+  kPa / psi / atm, gravity, and the COMPUTED O2 partial pressure), never evidence. The UI must not style
+  it as a measured source.
+- Numbers in `limit`, `differs[]` and `next.target` must match a value on a record sent to the LLM or an
+  ASSUMED value of the request's scenario. Otherwise `limit` becomes "Among tracked conditions only.",
+  the `differs` item is dropped, and `next.target` is dropped (`next.kind` is kept).
 - `source` tells the UI whether the answer came from the LLM, the template fallback, or the cache.
 
 ## Scenario ids

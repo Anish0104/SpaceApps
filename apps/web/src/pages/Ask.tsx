@@ -1,57 +1,96 @@
-import { useState } from "react";
-import type { AskResponse } from "@flameatlas/engine";
-import { api } from "../lib/api";
+import { useState, type FormEvent } from "react";
+import type { AskResponse, Scenario } from "@flameatlas/engine";
+import questionsJson from "../../../../data/eval/questions.json";
+import { MOCK_ASK, api } from "../lib/api";
+import { scenarios } from "../lib/data";
 import { useScenario } from "../lib/scenario";
-import { Tag } from "../components/Badge";
+import { AnswerCard } from "../components/AnswerCard";
+import { ScenarioStrip } from "../components/ScenarioStrip";
 
-const LIGHT = { green: "bg-match", yellow: "bg-assumed", red: "bg-gap" } as const;
+/** One-click demo questions (text from data/eval/questions.json), each with the scenario it is asked against. */
+const DEMO_BUTTONS = [
+  { id: "q2", label: "Nearest tested condition?", scenarioId: "moon-challenge" },
+  { id: "q3", label: "Is it just scale?", scenarioId: "moon-fm2" },
+  { id: "q4", label: "Biggest lunar gap?", scenarioId: "moon-fm2" },
+] as const;
+
+const DEMOS = DEMO_BUTTONS.flatMap((b) => {
+  const question = questionsJson.questions.find((q) => q.id === b.id)?.question;
+  const scenario = scenarios.find((s) => s.id === b.scenarioId);
+  return question && scenario ? [{ ...b, question, scenario }] : [];
+});
 
 export default function Ask() {
-  const { scenario } = useScenario();
+  const { scenario, setScenarioId } = useScenario();
   const [q, setQ] = useState("Where is the biggest evidence gap for a lunar habitat?");
-  const [a, setA] = useState<AskResponse | null>(null);
+  // The scenario is kept with its answer so the strip always describes what was actually asked.
+  const [result, setResult] = useState<{ answer: AskResponse; scenario: Scenario } | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  async function submit() {
-    setBusy(true); setErr(null);
-    try { setA(await api.ask(q, scenario.id)); } catch (e) { setErr(String(e)); } finally { setBusy(false); }
+  async function submit(question: string, sc: Scenario) {
+    if (busy || !question.trim()) return;
+    setBusy(true); setErr(null); setResult(null);
+    try { setResult({ answer: await api.ask(question, sc.id), scenario: sc }); } catch (e) { setErr(String(e)); } finally { setBusy(false); }
+  }
+
+  function askDemo(demo: (typeof DEMOS)[number]) {
+    setQ(demo.question);
+    setScenarioId(demo.scenario.id);
+    void submit(demo.question, demo.scenario); // the scenario is passed explicitly: the context updates on the next render
+  }
+
+  function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    void submit(q, scenario);
   }
 
   return (
-    <div className="space-y-4">
-      <h1 className="font-display text-2xl font-bold">Ask the archive</h1>
-      <div className="flex gap-2">
-        <input value={q} onChange={(e) => setQ(e.target.value)} className="flex-1 rounded border border-line bg-white px-3 py-2 text-sm" />
-        <button onClick={submit} disabled={busy} className="rounded bg-ink px-4 py-2 text-sm font-semibold text-white">{busy ? "…" : "Ask"}</button>
+    <div className="space-y-6">
+      <div>
+        <h1 className="display text-2xl sm:text-3xl">Ask the archive</h1>
+        <p className="measure mt-2">Every sentence in an answer is checked against the records it cites. The light rates evidence strength, not safety.</p>
       </div>
-      {err && <p className="text-sm text-gap">{err} (is the worker running? pnpm dev:worker)</p>}
 
-      {a && (
-        <div className="space-y-3 rounded border border-line bg-white p-4">
-          {/* Beat 1: verdict (evidence strength, never safety) */}
-          <div className="flex items-center gap-2">
-            <span className={`h-3 w-3 rounded-full ${LIGHT[a.verdict]}`} />
-            <b>{a.status === "cannot_confirm" ? "Cannot confirm" : "Answer"}</b>
-            <span className="text-xs text-ink/60">evidence strength, not a safety rating</span>
-            <Tag>{a.source}</Tag>
-          </div>
-          {/* Beat 2: receipts */}
-          <ul className="list-disc pl-5 text-sm">
-            {a.sentences.map((s, i) => (
-              <li key={i}>{s.text} {s.recordIds.map((id) => <Tag key={id} tone="measured">{id}</Tag>)}</li>
-            ))}
-          </ul>
-          {/* Beat 3: what differs / missing */}
-          {a.differs.length > 0 && <p className="text-sm"><b>Differs or missing:</b> {a.differs.join("; ")}</p>}
-          {/* Beat 4: honest limit */}
-          <p className="text-sm"><b>Limit:</b> {a.limit}</p>
-          {/* Beat 5: bridge to action */}
-          {a.next.kind !== "none" && <p className="text-sm text-measured">→ {a.next.kind === "missing_experiment" ? "The Missing Experiment" : "What the evidence supports now"}{a.next.target ? `: ${a.next.target}` : ""}</p>}
-          {/* Beat 6: scope */}
-          <p className="text-xs text-ink/60">{a.scope} · data {a.dataVersion}</p>
-        </div>
+      {MOCK_ASK && (
+        <p role="note" className="measure rounded-[6px] border border-dashed border-ink px-4 py-2 text-sm font-semibold">
+          Mock mode: canned answers for UI development. The worker is not called; nothing below is a real result.
+        </p>
       )}
+
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Demo questions">
+          <span className="text-sm text-ink/70">Try a demo question:</span>
+          {DEMOS.map((d) => (
+            <button key={d.id} type="button" onClick={() => askDemo(d)} disabled={busy} title={`${d.question} (scenario: ${d.scenario.name})`}
+              className="btn btn-secondary btn-sm">
+              {d.label}
+              <span className="sr-only">: {d.question} Asked for scenario {d.scenario.name}.</span>
+            </button>
+          ))}
+        </div>
+
+        <form onSubmit={onSubmit} className="flex flex-wrap gap-2">
+          <label htmlFor="ask-question" className="sr-only">Your question</label>
+          <input id="ask-question" value={q} onChange={(e) => setQ(e.target.value)} className="field min-w-0 flex-1 basis-64" />
+          <button type="submit" disabled={busy || !q.trim()} className="btn btn-primary">
+            {busy ? "Asking…" : "Ask"}
+          </button>
+        </form>
+      </div>
+
+      <ScenarioStrip scenario={result?.scenario ?? scenario} />
+
+      <div aria-live="polite">
+        {busy && <p className="text-ink/70">Checking NASA records… this can take up to a minute.</p>}
+      </div>
+      {err && (
+        <p role="alert" className="measure rounded-[6px] border border-ink px-4 py-3">
+          <b className="font-semibold">The answer service did not respond.</b> Start the worker with pnpm dev:worker, then ask again. Details: {err}
+        </p>
+      )}
+
+      {result && <AnswerCard a={result.answer} />}
     </div>
   );
 }

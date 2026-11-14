@@ -1,0 +1,4 @@
+{
+  "_note": "Validated LLM answers for the demo questions, written by `pnpm warm-cache` and committed so the demo works offline. Keyed by sha-256 of question + scenario id + data version. Do not edit by hand: /api/ask re-validates each entry and ignores any that fail. Entries with dataVersion fixture-* come from FAKE fixture data and must never be presented as NASA data.",
+  "answers": {}
+}

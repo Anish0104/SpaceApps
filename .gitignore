@@ -15,6 +15,10 @@ ingest/.venv/
 # Large / regenerable data
 data/raw/
 data/staging/
-data/cache/
+data/cache/*
+# committed on purpose: validated demo answers so the demo works offline (pnpm warm-cache)
+!data/cache/demo-answers.json
+# committed on purpose: validated investigation summaries (pnpm summaries), so pages never call Gemini
+!data/cache/summaries.json
 *.pdf
 .venv/

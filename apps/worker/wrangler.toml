@@ -2,8 +2,16 @@ name = "flameatlas-api"
 main = "src/index.ts"
 compatibility_date = "2024-11-06"
 
+[dev]
+port = 8787
+
 [vars]
-DATA_VERSION = "fixture-0.1"
+DATA_VERSION = "1.0.0-seed"
+# The deployed web app's origin, e.g. "https://flameatlas.pages.dev" (no trailing slash; comma-separate
+# several). http://localhost:5173 is always allowed. Empty = only local dev may call the API from a browser.
+ALLOWED_ORIGIN = ""
+# Tried in order: one request per model, next one only on 404/429/503 or timeout.
+GEMINI_MODELS = "gemini-3.8-flash,gemini-3.5-flash,gemini-3.1-flash-lite"
 
 # Workers AI: query embeddings with @cf/baai/bge-small-en-v1.5
 [ai]
@@ -16,4 +24,4 @@ binding = "AI"
 # binding = "ANSWERS"
 # id = "<paste id>"
 
-# LLM key: npx wrangler secret put LLM_API_KEY   (local dev: put it in .dev.vars)
+# Gemini key: npx wrangler secret put GEMINI_API_KEY   (local dev: GEMINI_API_KEY=... in .dev.vars)
