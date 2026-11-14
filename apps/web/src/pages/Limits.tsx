@@ -11,9 +11,9 @@ const LIMITS = [
 
 export default function Limits() {
   return (
-    <div className="space-y-4">
-      <h1 className="font-display text-2xl font-bold">What FlameAtlas does not claim</h1>
-      <ol className="list-decimal space-y-2 pl-5 text-sm">{LIMITS.map((l) => <li key={l}>{l}</li>)}</ol>
+    <div className="space-y-6">
+      <h1 className="display text-2xl sm:text-3xl">What FlameAtlas does not claim</h1>
+      <ol className="measure list-decimal space-y-3 pl-6">{LIMITS.map((l) => <li key={l} className="pl-1">{l}</li>)}</ol>
     </div>
   );
 }

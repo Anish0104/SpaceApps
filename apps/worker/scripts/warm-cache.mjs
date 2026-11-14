@@ -2,9 +2,10 @@
 /**
  * pnpm warm-cache
  *
- * Asks the demo questions (q2, q3, q4 from data/eval/questions.json) for scenario "moon-fm2", ONCE
- * each, through the real ask() pipeline of the locally running worker (POST /api/dev/warm-cache),
- * and writes only validated LLM answers to data/cache/demo-answers.json.
+ * Asks the demo questions from data/eval/questions.json (q2 under scenario "moon-challenge", q3 and
+ * q4 under "moon-fm2": the same pairs as the Ask page's demo buttons), ONCE each, through the real
+ * ask() pipeline of the locally running worker (POST /api/dev/warm-cache), and writes only
+ * validated LLM answers to data/cache/demo-answers.json.
  *
  * SPENDS GEMINI QUOTA: at most one request per model in GEMINI_MODELS per question (so at most
  * 3 x 3 = 9 requests, normally 3). Nothing is retried. Questions already in the file are not asked
@@ -16,8 +17,12 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-const SCENARIO_ID = "moon-fm2";
-const QUESTION_IDS = ["q2", "q3", "q4"];
+// Keep in sync with DEMO_BUTTONS in apps/web/src/pages/Ask.tsx: the cache key includes the scenario.
+const DEMO_QUESTIONS = [
+  { id: "q2", scenarioId: "moon-challenge" },
+  { id: "q3", scenarioId: "moon-fm2" },
+  { id: "q4", scenarioId: "moon-fm2" },
+];
 const WORKER = (process.env.WORKER_URL ?? "http://localhost:8787").replace(/\/$/, "");
 const PER_QUESTION_TIMEOUT_MS = 240_000; // 3 models x 60 s, plus slack
 
@@ -26,10 +31,10 @@ const cachePath = fileURLToPath(new URL("data/cache/demo-answers.json", root));
 const readJson = (path) => JSON.parse(readFileSync(path, "utf8"));
 
 const all = readJson(fileURLToPath(new URL("data/eval/questions.json", root))).questions;
-const questions = QUESTION_IDS.map((id) => {
+const questions = DEMO_QUESTIONS.map(({ id, scenarioId }) => {
   const q = all.find((x) => x.id === id);
   if (!q) throw new Error(`question ${id} not found in data/eval/questions.json`);
-  return { id: q.id, question: q.question };
+  return { id: q.id, question: q.question, scenarioId };
 });
 
 // A free call: is the worker there, and does it have a key?
@@ -52,14 +57,14 @@ const file = readJson(cachePath);
 file.answers ??= {};
 let saved = 0;
 
-for (const q of questions) {
-  process.stdout.write(`${q.id}  ${q.question}\n`);
+for (const { scenarioId, ...q } of questions) {
+  process.stdout.write(`${q.id} [${scenarioId}]  ${q.question}\n`);
   try {
     // One POST per question; no retry on any failure.
     const res = await fetch(`${WORKER}/api/dev/warm-cache`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ scenarioId: SCENARIO_ID, questions: [q] }),
+      body: JSON.stringify({ scenarioId, questions: [q] }),
       signal: AbortSignal.timeout(PER_QUESTION_TIMEOUT_MS),
     });
     if (!res.ok) { console.log(`    skipped: worker returned HTTP ${res.status} ${(await res.text()).slice(0, 200)}`); continue; }
