@@ -1,74 +1,105 @@
-"""Scrape PSI investigation pages.
+"""Scrape PSI investigation records + experiment tables via the repo's JSON API (no browser).
 
-PSI is a JavaScript app, so this script opens each page in a headless browser and saves:
-  data/raw/psi/<PSI-ID>/page.txt        rendered page text (description, metadata, publications)
-  data/raw/psi/<PSI-ID>/network/*.json  every JSON response the page loaded
+PSI is an Angular app, but it is backed by a clean JSON web service at /geode-py/ws/.
+Endpoints (discovered from the network tab):
 
-Step 1 is discovery: run it on PSI-26 and open network/. The investigation record and the
-experimental table (BASS: 123 rows) are almost certainly in one of those JSON files. Once you
-know the endpoint, write a direct httpx fetcher (fast, no browser) and parse into ingest/schema.py.
+  1. Search (all combustion investigations, full metadata in one call):
+     GET /geode-py/ws/repo/search?term=combustion&source=psi&type=investigation
+     -> { hits: { hits: [ { _source: {Accession, Title, Acronym, Objectives, Approach,
+          Hypothesis, "Research Impacts/Earth Benefits", Experiment Hardware, ...} } ] } }
+
+  2. Single investigation (full record + file lists):
+     GET /geode-py/ws/repo/investigations/<PSI-ID>        (NOTE the /repo/ - without it = 404)
+     -> { accession, objective, approach, hypothesis, experimentHardware,
+          experimentalTable: [ { file_name: "PSI-26_Experimental table_BASS.csv", ... } ], ... }
+
+  3. Experiment-table CSV (the run-level conditions, e.g. BASS = 123 rows):
+     GET /geode-py/ws/studies/<PSI-ID>/download?file=<file_name>&version=1
+     -> 302 redirect to a signed S3 URL that serves the CSV (follow redirects).
+
+Output:
+  data/raw/psi/_search.json                     full search dump (all investigations)
+  data/raw/psi/<PSI-ID>/investigation.json      full detail record
+  data/raw/psi/<PSI-ID>/experimental_table.csv  run conditions (when the investigation has one)
+
+Next step after this: parse these into ingest/schema.py (normalize.py / release.py).
 
 Usage:
-  python scrape_psi.py --ids PSI-26
+  python scrape_psi.py --ids PSI-26 PSI-25
   python scrape_psi.py --all
 """
 from __future__ import annotations
 
 import argparse
-import asyncio
 import json
-import re
 from pathlib import Path
 
-from playwright.async_api import async_playwright
+import httpx
 
-from psi_ids import INVESTIGATIONS, PAGE_URL
+from psi_ids import INVESTIGATIONS
 
+BASE = "https://psi.nasa.gov/geode-py/ws"
 RAW = Path(__file__).resolve().parent.parent / "data" / "raw" / "psi"
+HEADERS = {"User-Agent": "FlameAtlas/1.0 (NASA Space Apps; data ingest)"}
 
 
-async def scrape_one(browser, psi_id: str) -> dict:
+def fetch_search(client: httpx.Client, term: str = "combustion") -> list[dict]:
+    """All combustion investigations with full metadata, in one call."""
+    r = client.get(f"{BASE}/repo/search", params={
+        "term": term, "source": "psi", "type": "investigation",
+        "sort": "Public Release Date", "order": "desc",
+    })
+    r.raise_for_status()
+    hits = r.json().get("hits", {}).get("hits", [])
+    return [h.get("_source", {}) for h in hits]
+
+
+def fetch_detail(client: httpx.Client, psi_id: str) -> dict:
+    """Full single-investigation record (richer than the search hit; lists files)."""
+    r = client.get(f"{BASE}/repo/investigations/{psi_id}")
+    r.raise_for_status()
+    return r.json()
+
+
+def download_table(client: httpx.Client, psi_id: str, file_name: str, out_dir: Path) -> bool:
+    """Download one experiment-table CSV (follows the 302 to signed S3)."""
+    r = client.get(f"{BASE}/studies/{psi_id}/download",
+                   params={"file": file_name, "version": "1"}, follow_redirects=True)
+    if r.status_code != 200 or not r.content:
+        print(f"  {psi_id}: table download failed ({r.status_code})")
+        return False
+    (out_dir / "experimental_table.csv").write_bytes(r.content)
+    print(f"  {psi_id}: saved {file_name} ({len(r.content)} bytes)")
+    return True
+
+
+def scrape_one(client: httpx.Client, psi_id: str) -> None:
     out = RAW / psi_id
-    (out / "network").mkdir(parents=True, exist_ok=True)
-    page = await browser.new_page()
-    captured: list[dict] = []
+    out.mkdir(parents=True, exist_ok=True)
+    detail = fetch_detail(client, psi_id)
+    (out / "investigation.json").write_text(json.dumps(detail, indent=2, ensure_ascii=False))
 
-    async def on_response(resp):
-        ctype = resp.headers.get("content-type", "")
-        if "json" not in ctype:
-            return
-        try:
-            body = await resp.json()
-        except Exception:
-            return
-        idx = len(captured)
-        name = re.sub(r"[^A-Za-z0-9]+", "_", resp.url.split("?")[0])[-80:]
-        path = out / "network" / f"{idx:03d}_{name}.json"
-        path.write_text(json.dumps({"url": resp.url, "status": resp.status, "body": body}, indent=2))
-        captured.append({"url": resp.url, "file": path.name})
-
-    page.on("response", on_response)
-    await page.goto(PAGE_URL.format(psi_id=psi_id), wait_until="networkidle", timeout=90_000)
-    await page.wait_for_timeout(2_000)
-    text = await page.inner_text("body")
-    (out / "page.txt").write_text(text)
-    await page.close()
-
-    summary = {"psiId": psi_id, "chars": len(text), "jsonResponses": captured}
-    (out / "summary.json").write_text(json.dumps(summary, indent=2))
-    return summary
+    tables = detail.get("experimentalTable") or []
+    names = [t.get("file_name") for t in tables if isinstance(t, dict) and t.get("file_name")]
+    print(f"{psi_id}: {detail.get('investigationAcronym') or detail.get('accession')} "
+          f"- {len(names)} experiment table(s)")
+    for fn in names:
+        download_table(client, psi_id, fn, out)
 
 
-async def main(ids: list[str]) -> None:
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
+def main(ids: list[str]) -> None:
+    RAW.mkdir(parents=True, exist_ok=True)
+    with httpx.Client(headers=HEADERS, timeout=60.0) as client:
+        # Always snapshot the full search result (covers Layer A metadata for every investigation).
+        search = fetch_search(client)
+        (RAW / "_search.json").write_text(json.dumps(search, indent=2, ensure_ascii=False))
+        print(f"search: {len(search)} combustion investigations -> data/raw/psi/_search.json")
+
         for psi_id in ids:
             try:
-                s = await scrape_one(browser, psi_id)
-                print(f"{psi_id}: {s['chars']} chars, {len(s['jsonResponses'])} JSON responses")
+                scrape_one(client, psi_id)
             except Exception as e:  # keep going; report at the end
                 print(f"{psi_id}: FAILED {e}")
-        await browser.close()
 
 
 if __name__ == "__main__":
@@ -77,4 +108,4 @@ if __name__ == "__main__":
     g.add_argument("--ids", nargs="+")
     g.add_argument("--all", action="store_true")
     a = ap.parse_args()
-    asyncio.run(main(list(INVESTIGATIONS) if a.all else a.ids))
+    main(list(INVESTIGATIONS) if a.all else a.ids)
