@@ -1,0 +1,11 @@
+{
+  "_note": "Hand-built Referee pairs for the benchmark, on run ids in data/dataset.json. Each expected verdict and named field was worked out from the documented run conditions, not read from the engine. Labelled by the Science + Evaluation lead; a second person should review before the numbers are quoted. The three locked demo pairs live in data/demo-pairs.json and are scored with these.",
+  "pairs": [
+    { "id": "D", "kind": "missing", "a": "BASS2-CF-conc", "b": "BASS2-CF-opp", "target": "flowDirection", "expected": "CANT_CONFIRM", "names": "thicknessMm", "why": "Only flow direction differs, but thickness is not documented on either run." },
+    { "id": "E", "kind": "confounded", "a": "SAF-I-1", "b": "SAF-I-2", "target": "flowDirection", "expected": "CANNOT_ISOLATE", "names": "sizeMm", "why": "Concurrent vs opposed, but the sample length also changes (94 cm vs 10 cm)." },
+    { "id": "F", "kind": "confounded", "a": "SAF-VI-3", "b": "SAF-VI-4", "target": "thicknessMm", "expected": "CANNOT_ISOLATE", "names": "material", "why": "10 mm vs 5 mm PMMA, but one is two-sided and the other one-sided." },
+    { "id": "G", "kind": "confounded", "a": "SAF-IV-1", "b": "SAF-VI-2", "target": "pressureKPa", "expected": "CANNOT_ISOLATE", "names": "o2MolPct", "why": "Pressure drops 100 to 54.1 kPa while oxygen rises 22 to 31 mol%." },
+    { "id": "H", "kind": "no_contrast", "a": "SAF-I-1", "b": "SAF-I-1", "target": "pressureKPa", "expected": "NO_CONTRAST", "names": null, "why": "A run compared with itself has nothing to contrast." },
+    { "id": "I", "kind": "confounded", "a": "SAF-II-1", "b": "SAF-II-9", "target": "thicknessMm", "expected": "CANNOT_ISOLATE", "names": "material", "why": "Silicone 0.27 mm vs PMMA 10 mm: the material changes with the thickness." }
+  ]
+}

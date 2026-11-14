@@ -3,7 +3,7 @@
  * Relevance to a question and scenario. NEVER a fire-risk score.
  */
 import type { Investigation, Run, Scenario, SafetyRole } from "./schema";
-import { gravitySimilarity, o2PartialKPa } from "./units";
+import { gravityRegime, gravitySimilarity, o2PartialKPa } from "./units";
 
 export interface Weights { M: number; F: number; Q: number; D: number; C: number }
 export const DEFAULT_WEIGHTS: Weights = { M: 0.3, F: 0.2, Q: 0.25, D: 0.15, C: 0.1 };
@@ -51,10 +51,16 @@ export function missionMatch(inv: Investigation, runs: Run[], sc: Scenario) {
     const s = sim(o2, sc.o2MolPct, SCALES.o2MolPct);
     parts.push(s);
     if (Math.abs(o2 - sc.o2MolPct) <= 5) reasons.push("O2_WITHIN_5PCT");
-  } else notDocumented.push("o2MolPct");
+  } else {
+    notDocumented.push("o2MolPct");
+    reasons.push("NO_O2_DATA");
+  }
 
   if (p !== null) parts.push(sim(p, sc.pressureKPa, SCALES.pressureKPa));
-  else notDocumented.push("pressureKPa");
+  else {
+    notDocumented.push("pressureKPa");
+    reasons.push("NO_PRESSURE_DATA");
+  }
 
   if (o2 !== null && p !== null) {
     const target = o2PartialKPa(sc.o2MolPct, sc.pressureKPa);
@@ -72,7 +78,13 @@ export function missionMatch(inv: Investigation, runs: Run[], sc: Scenario) {
     const s = gravitySimilarity(g, sc.gravityG);
     parts.push(s);
     if (s < 1) reasons.push(`GRAVITY_DIFFERS`);
+    if (gravityRegime(g) === "orbit" && gravityRegime(sc.gravityG) !== "orbit") reasons.push("GRAVITY_ORBIT_ONLY");
   } else notDocumented.push("gravityG");
+
+  // Challenge brief: E-FIELD Flames mimicked partial gravity with an electric field.
+  // Context only: it is NOT lunar- or Mars-gravity data, so it never changes the score.
+  const partialG = ["moon", "mars"].includes(gravityRegime(sc.gravityG));
+  if (partialG && isEFieldFlames(inv)) reasons.push("PARTIAL_G_MIMIC_EFIELD");
 
   const cannotAssess = o2 === null && p === null;
   if (cannotAssess) reasons.push("CANNOT_ASSESS_APPLICABILITY");
@@ -80,12 +92,20 @@ export function missionMatch(inv: Investigation, runs: Run[], sc: Scenario) {
   return { M, reasons, notDocumented, cannotAssess };
 }
 
+const invText = (inv: Investigation) => `${inv.acronym} ${inv.name}`;
+/** ACME E-FIELD Flames: partial gravity mimicked through the electric field (challenge brief). */
+export const isEFieldFlames = (inv: Investigation) => /e-?field/i.test(invText(inv));
+/** ACME BRE: burned gas, but studied solid-material flammability (challenge brief). */
+export const isMaterialEmulator = (inv: Investigation) => /\bBRE\b|burning rate emulator/i.test(invText(inv));
+
 export function fuelApplicability(inv: Investigation, runs: Run[], sc: Scenario): { F: number; reason?: string } {
   if (!sc.fuelPhase) return { F: 1 };
   const mat = sc.material?.toLowerCase();
   if (mat && runs.some((r) => r.material.value?.toLowerCase().includes(mat))) return { F: 1, reason: "SAME_MATERIAL" };
   const phase = inv.fuelPhase ?? runs[0]?.fuelPhase;
   if (phase === sc.fuelPhase) return { F: 0.6, reason: `${sc.fuelPhase.toUpperCase()}_FUEL_MATCH` };
+  // A gas-burner emulator of solid materials counts as a same-phase analog, not a different phase.
+  if (sc.fuelPhase === "solid" && isMaterialEmulator(inv)) return { F: 0.6, reason: "MATERIAL_EMULATOR" };
   return { F: 0.2, reason: "DIFFERENT_FUEL_PHASE" };
 }
 
@@ -93,6 +113,26 @@ export function domainMatch(role: SafetyRole, filter: SafetyRole | null): number
   if (!filter) return 1;
   if (role === filter) return 1;
   return role === "physics" ? 0.5 : 0;
+}
+
+/**
+ * Words in a question that point at one safety role. Deliberately small and literal:
+ * a question is only assigned a role when exactly one role's words appear.
+ */
+export const ROLE_WORDS: Record<Exclude<SafetyRole, "physics">, RegExp> = {
+  detection: /\b(smoke|detect\w*|alarm\w*|aerosol\w*|particle\w*|particulate\w*|dust\w*|soot)\b/i,
+  suppression: /\b(suppress\w*|extinguish\w*|fire[- ]?fight\w*|water[- ]mist|quench\w*)\b/i,
+  prevention: /\b(flammab\w*|flame[- ]spread|ignit\w*|material selection|fabric\w*|textile\w*)\b/i,
+};
+
+/**
+ * Safety role a question is about, or null when it names none or more than one.
+ * Used as the domain filter (D) when the user has not picked one, so that a smoke-detector
+ * question is not ranked purely on how well a flame-spread test matches the cabin atmosphere.
+ */
+export function inferSafetyRole(question: string): SafetyRole | null {
+  const hits = (Object.keys(ROLE_WORDS) as (keyof typeof ROLE_WORDS)[]).filter((role) => ROLE_WORDS[role].test(question));
+  return hits.length === 1 ? hits[0] : null;
 }
 
 const KEY_FIELDS = ["o2MolPct", "pressureKPa", "flowCmS", "gravityG", "material", "sensors"] as const;
@@ -124,6 +164,7 @@ export function rankInvestigations(
     const Q = Math.max(0, Math.min(1, questionScore));
     const contributions = { M: w.M * m.M, F: w.F * f.F, Q: w.Q * Q, D: w.D * D, C: w.C * C };
     const reasons = [...m.reasons, ...(f.reason ? [f.reason] : [])];
+    if (filter && inv.safetyRole === filter) reasons.push(`${filter.toUpperCase()}_ROLE_MATCH`);
     const score = m.cannotAssess ? null : Object.values(contributions).reduce((a, b) => a + b, 0);
     return { psiId: inv.psiId, score, contributions, reasons, notDocumented: m.notDocumented, cannotAssess: m.cannotAssess };
   });

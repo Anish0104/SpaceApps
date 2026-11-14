@@ -5,7 +5,7 @@
  */
 import MiniSearch from "minisearch";
 import {
-  rankInvestigations, type Dataset, type Investigation, type RankedResult, type Scenario, type SearchRequest,
+  inferSafetyRole, rankInvestigations, type Dataset, type Investigation, type RankedResult, type Scenario, type SearchRequest,
 } from "@flameatlas/engine";
 import synonyms from "../../../data/synonyms.json";
 
@@ -71,5 +71,7 @@ export function search(
     runs: ds.runs.filter((r) => r.psiId === inv.psiId),
     questionScore: q.get(inv.psiId) ?? 0,
   }));
-  return rankInvestigations(inputs, scenario, req.filters.safetyRole).slice(0, req.limit);
+  // an explicit filter wins; otherwise take the safety role the question itself names, if it names exactly one
+  const role = req.filters.safetyRole ?? inferSafetyRole(req.query);
+  return rankInvestigations(inputs, scenario, role).slice(0, req.limit);
 }

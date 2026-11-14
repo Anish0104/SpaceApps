@@ -20,7 +20,7 @@
         "PSI-98",
         "SAFFIRE-IVVI",
         "PSI-100",
-        "PSI-69"
+        "PSI-99"
       ]
     },
     {
@@ -114,10 +114,10 @@
       ],
       "flameatlas": [
         "PSI-25",
-        "PSI-68",
         "PSI-98",
         "SAFFIRE-IVVI",
-        "PSI-100"
+        "PSI-100",
+        "PSI-99"
       ]
     },
     {
@@ -138,11 +138,11 @@
         "PSI-68"
       ],
       "flameatlas": [
+        "PSI-69",
+        "PSI-68",
         "PSI-25",
         "SAFFIRE-IVVI",
-        "PSI-69",
-        "PSI-98",
-        "PSI-100"
+        "PSI-98"
       ]
     },
     {
@@ -163,11 +163,11 @@
         "PSI-115"
       ],
       "flameatlas": [
+        "PSI-101",
+        "PSI-102",
         "SAFFIRE-IVVI",
         "PSI-25",
-        "PSI-98",
-        "PSI-100",
-        "PSI-101"
+        "PSI-98"
       ]
     },
     {
@@ -236,7 +236,7 @@
         "SAFFIRE-IVVI",
         "PSI-25",
         "PSI-100",
-        "PSI-68"
+        "PSI-99"
       ]
     },
     {
@@ -256,11 +256,11 @@
         "PSI-60"
       ],
       "flameatlas": [
+        "PSI-101",
+        "PSI-102",
         "SAFFIRE-IVVI",
         "PSI-98",
-        "PSI-100",
-        "PSI-69",
-        "PSI-25"
+        "PSI-47"
       ]
     },
     {
@@ -280,11 +280,11 @@
         "PSI-68"
       ],
       "flameatlas": [
+        "PSI-101",
+        "PSI-47",
+        "PSI-102",
         "SAFFIRE-IVVI",
-        "PSI-98",
-        "PSI-25",
-        "PSI-100",
-        "PSI-68"
+        "PSI-98"
       ]
     },
     {
@@ -330,10 +330,10 @@
       ],
       "flameatlas": [
         "SAFFIRE-IVVI",
-        "PSI-69",
         "PSI-25",
         "PSI-98",
-        "PSI-100"
+        "PSI-100",
+        "PSI-99"
       ]
     },
     {
@@ -376,11 +376,11 @@
         "PSI-107"
       ],
       "flameatlas": [
+        "PSI-101",
         "PSI-68",
+        "PSI-47",
         "SAFFIRE-IVVI",
-        "PSI-98",
-        "PSI-25",
-        "PSI-69"
+        "PSI-102"
       ]
     },
     {
@@ -424,7 +424,7 @@
         "PSI-25",
         "PSI-98",
         "PSI-100",
-        "PSI-68"
+        "PSI-99"
       ]
     },
     {
@@ -490,11 +490,11 @@
         "PSI-115"
       ],
       "flameatlas": [
+        "PSI-101",
+        "PSI-102",
         "SAFFIRE-IVVI",
         "PSI-98",
-        "PSI-25",
-        "PSI-100",
-        "PSI-101"
+        "PSI-25"
       ]
     },
     {
@@ -518,7 +518,7 @@
         "SAFFIRE-IVVI",
         "PSI-98",
         "PSI-100",
-        "PSI-69"
+        "PSI-99"
       ]
     },
     {

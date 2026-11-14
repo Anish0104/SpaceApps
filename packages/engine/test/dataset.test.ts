@@ -114,19 +114,13 @@ describe("locked Referee demo pairs", () => {
     expect(r.confounds).toEqual(["pressureKPa"]);
   });
 
-  // KNOWN MISMATCH, not forced. The team expects CAN_ISOLATE for pair B. The comparison is clean
-  // (no confounds, nothing undocumented), but the Referee's flow tolerance is 20% of the larger
-  // value, and 20 vs 25 cm/s differ by exactly 20%, so the engine calls the flow "the same" and
-  // returns NO_CONTRAST. Whoever owns the tolerance decides; then flip the two tests below.
+  // Flow tolerance is 10% of the larger value (was 20%, which called 20 vs 25 cm/s "the same").
   it("B: Saffire I-1 vs III-1 on flow is a clean comparison", () => {
     const r = judge("B");
     expect(r.confounds).toEqual([]);
     expect(r.undocumented).toEqual([]);
   });
-  it("B: currently returns NO_CONTRAST (20 vs 25 cm/s sits on the 20% flow tolerance)", () => {
-    expect(judge("B").verdict).toBe("NO_CONTRAST");
-  });
-  it.fails("B: gives the expected CAN_ISOLATE", () => {
+  it("B: gives the expected CAN_ISOLATE", () => {
     expect(judge("B").verdict).toBe(expected("B"));
   });
 });
