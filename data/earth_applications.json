@@ -1,0 +1,41 @@
+{
+  "_note": "Space-to-Earth card data. NASA spacecraft fire research that produced Earth technologies. Each links to a NASA source and (where applicable) the related PSI investigation(s).",
+  "applications": [
+    {
+      "id": "water-mist",
+      "title": "Fine water-mist fire extinguishers",
+      "space": "Low-mass, low-water fire suppression studied for the ISS, where every kilogram and every drop counts.",
+      "earth": "Informed efficient fine-water-mist extinguishers that put out fires with far less water than traditional systems.",
+      "relatedPsiIds": ["PSI-69", "PSI-68"],
+      "source": "NASA ISS fire-safety research (FLEX suppression lineage); NASA Space Apps challenge brief",
+      "url": "https://www.spaceappschallenge.org/2025/challenges/flame-in-freefall-visualizing-fire-safety-aboard-spacecraft/"
+    },
+    {
+      "id": "fire-detector",
+      "title": "Smoke-vs-dust fire detector",
+      "space": "A 1970s Shuttle smoke detector designed to tell real smoke apart from harmless dust.",
+      "earth": "Fewer nuisance alarms; adopted in industrial settings such as mining operations.",
+      "relatedPsiIds": ["PSI-102", "PSI-101", "PSI-47"],
+      "source": "NASA Spinoff: Fire Detector",
+      "url": "https://spinoff.nasa.gov/node/9407"
+    },
+    {
+      "id": "air-tanks",
+      "title": "Firefighter air tanks",
+      "space": "1970s adaptation of spacesuit breathing-system technology.",
+      "earth": "Lighter, higher-capacity air tanks and breathing gear for firefighters.",
+      "relatedPsiIds": [],
+      "source": "NASA Spinoff: Fireman's Air Tanks",
+      "url": "https://spinoff.nasa.gov/node/9582"
+    },
+    {
+      "id": "fire-attire",
+      "title": "Firefighter protective clothing",
+      "space": "1980s application of NASA spacesuit material technology.",
+      "earth": "More protective, heat-resistant firefighter turnout gear.",
+      "relatedPsiIds": [],
+      "source": "NASA Spinoff: New Technology for the Fire Attire",
+      "url": "https://spinoff.nasa.gov/node/9918"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "edges": [
+    {
+      "from": "PSI-117",
+      "to": "PSI-69",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-117",
+      "to": "PSI-142",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-62",
+      "to": "PSI-25",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-62",
+      "to": "PSI-26",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-60",
+      "to": "PSI-107",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-142",
+      "to": "PSI-69",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-101",
+      "to": "PSI-102",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-115",
+      "to": "PSI-102",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-98",
+      "to": "PSI-99",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-98",
+      "to": "PSI-100",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-98",
+      "to": "PSI-26",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-39",
+      "to": "PSI-69",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-106",
+      "to": "PSI-107",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-100",
+      "to": "PSI-99",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-25",
+      "to": "PSI-26",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-22",
+      "to": "PSI-23",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "PSI-26",
+      "to": "PSI-107",
+      "kind": "nasa_related",
+      "sourceId": "PSI"
+    },
+    {
+      "from": "SAFFIRE-IVVI",
+      "to": "PSI-100",
+      "kind": "nasa_related",
+      "sourceId": "S-SAF-IVVI"
+    },
+    {
+      "from": "PSI-102",
+      "to": "PSI-47",
+      "kind": "shared_hardware",
+      "sourceId": "S-BASS2b"
+    }
+  ]
+}
