@@ -51,6 +51,7 @@ class Ranges(BaseModel):
     flowCmS: Optional[tuple[float, float]] = None
     gravityG: Optional[tuple[float, float]] = None
     sourceId: Optional[str] = None
+    page: Optional[str] = None  # where in the source the range is stated
 
 
 class Investigation(BaseModel):

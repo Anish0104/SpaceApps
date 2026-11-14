@@ -31,17 +31,21 @@ from psi_ids import INVESTIGATIONS  # {psiId: (acronym, safetyRole, fuelPhase)}
 VERSION = "1.1.0"
 PSI_URL = "https://psi.nasa.gov/physci/repo/data/investigations/{}"
 
-# Documented operating ranges for run-less, demo-critical cards, so the ranking
-# engine can place them instead of showing "cannot assess applicability".
-# Values come from each investigation's PSI Approach text (sourceId "PSI").
+# Documented operating ranges, added ONLY where the PSI investigation page (or a
+# cited paper) states explicit O2 and/or pressure values. Each carries sourceId +
+# page for provenance. No guessed values: investigations whose PSI page gives no
+# O2/pressure range are left without one and the app correctly shows "cannot assess".
+# atm->kPa x101.325 ; psia->kPa x6.89476
 RANGES = {
-    "PSI-68": {"o2MolPct": [10.0, 40.0], "pressureKPa": [50.7, 304.0], "gravityG": [0.0, 0.0]},   # FLEX-2: O2 0.1-0.4, 0.5-3 atm
-    "PSI-69": {"pressureKPa": [50.7, 304.0], "gravityG": [0.0, 0.0]},                              # FLEX: droplet series, 0.5-3 atm
-    "PSI-39": {"pressureKPa": [25.3, 506.6], "gravityG": [0.0, 0.0]},                              # CFI: 0.25-5 atm
-    "PSI-102": {"o2MolPct": [21.0, 21.0], "pressureKPa": [101.3, 101.3], "gravityG": [0.0, 0.0]},  # SAME: cabin air
-    "PSI-101": {"o2MolPct": [21.0, 21.0], "pressureKPa": [101.3, 101.3], "gravityG": [0.0, 0.0]},  # SAME-R: cabin air
-    "PSI-47": {"pressureKPa": [101.3, 101.3], "gravityG": [0.0, 0.0]},                             # DAFT: cabin, aerosol sensor
-    "PSI-159": {"gravityG": [0.0, 0.0]},  # CFI-G: documented 85% O2 is BURNER gas, not cabin -> no O2 range (honest)
+    # FLEX-2 Approach: "pressure between 0.5 atm to 3.0 atm and O2 concentration between 0.1 to 0.4 mole fraction"
+    "PSI-68": {"o2MolPct": [10.0, 40.0], "pressureKPa": [50.7, 304.0], "gravityG": [0.0, 0.0],
+               "sourceId": "PSI", "page": "Approach - 0.5-3.0 atm; O2 0.1-0.4 mole fraction"},
+    # CFI Objectives: "pressures ranging from 0.25 atm to 5 atm"
+    "PSI-39": {"pressureKPa": [25.3, 506.6], "gravityG": [0.0, 0.0],
+               "sourceId": "PSI", "page": "Objectives - 0.25-5 atm"},
+    # ACME BRE Approach: examined "14.7 psia, 21% oxygen; 10.2 psia, 26.5%; and 8.2 psia, 34% oxygen"
+    "PSI-20": {"o2MolPct": [21.0, 34.0], "pressureKPa": [56.5, 101.4], "gravityG": [0.0, 0.0],
+               "sourceId": "PSI", "page": "Approach - 8.2-14.7 psia; 21-34% O2"},
 }
 
 
@@ -78,7 +82,7 @@ def build_investigation(rec: dict) -> dict:
     role_phase = INVESTIGATIONS.get(psi)
     role = role_phase[1] if role_phase else "physics"           # schema requires a role
     phase = role_phase[2] if role_phase else None
-    acr = (rec.get("Acronym") or "").strip() or (psi or "")
+    acr = (rec.get("Acronym") or "").strip()  # leave empty if PSI has no acronym; never the id
     inv = {
         "psiId": psi,
         "name": rec.get("Title") or psi,
@@ -126,8 +130,8 @@ def build_from_detail(psi: str, d: dict) -> dict:
     role_phase = INVESTIGATIONS.get(psi)
     role = role_phase[1] if role_phase else "physics"
     phase = role_phase[2] if role_phase else None
-    acr = (d.get("investigationAcronym") or "").strip() or (psi or "")
-    name = (d.get("projectTitle") or "").strip() or NAME_OVERRIDES.get(psi) or acr
+    acr = (d.get("investigationAcronym") or "").strip()  # leave empty if none; never the id
+    name = (d.get("projectTitle") or "").strip() or NAME_OVERRIDES.get(psi) or acr or psi
     inv = {
         "psiId": psi,
         "name": name,
@@ -183,7 +187,7 @@ def main() -> None:
     for inv in investigations:
         rng = RANGES.get(inv["psiId"])
         if rng:
-            inv["ranges"] = {**rng, "sourceId": "PSI"}
+            inv["ranges"] = dict(rng)
 
     # Keep curated investigations that aren't in PSI (e.g. Saffire IV-VI from NTRS reports).
     for ci in curated["investigations"]:
