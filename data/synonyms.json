@@ -1,0 +1,14 @@
+{
+  "fabric": ["textile", "cloth", "sibal", "cotton-fiberglass", "cotton fiberglass"],
+  "microgravity": ["0 g", "0g", "zero gravity", "weightless", "free fall", "freefall", "orbit"],
+  "lunar": ["moon", "1/6 g", "0.16 g", "0.165 g", "partial gravity"],
+  "martian": ["mars", "0.38 g"],
+  "pmma": ["acrylic", "plexiglass", "polymethyl methacrylate"],
+  "flame spread": ["spread rate", "flame propagation"],
+  "extinguish": ["suppression", "suppress", "put out", "extinction"],
+  "smoke": ["aerosol", "particulate", "soot"],
+  "detector": ["detection", "smoke alarm", "sensor"],
+  "oxygen": ["o2"],
+  "droplet": ["liquid fuel", "fuel droplet"],
+  "airflow": ["flow", "ventilation", "flow speed"]
+}

@@ -1,0 +1,19 @@
+name = "flameatlas-api"
+main = "src/index.ts"
+compatibility_date = "2024-11-06"
+
+[vars]
+DATA_VERSION = "fixture-0.1"
+
+# Workers AI: query embeddings with @cf/baai/bge-small-en-v1.5
+[ai]
+binding = "AI"
+
+# Answer cache keyed by (prompt, data version). Create with:
+#   npx wrangler kv namespace create ANSWERS
+# then paste the id below.
+# [[kv_namespaces]]
+# binding = "ANSWERS"
+# id = "<paste id>"
+
+# LLM key: npx wrangler secret put LLM_API_KEY   (local dev: put it in .dev.vars)

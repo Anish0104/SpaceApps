@@ -1,0 +1,15 @@
+{
+  "name": "flameatlas",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "workerd", "sharp", "@tailwindcss/oxide"]
+  },
+  "scripts": {
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "dev:worker": "pnpm --filter @flameatlas/worker dev",
+    "dev:web": "pnpm --filter @flameatlas/web dev",
+    "fixtures": "python3 ingest/make_fixtures.py"
+  }
+}

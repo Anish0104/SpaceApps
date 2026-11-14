@@ -1,0 +1,808 @@
+{
+  "_note": "FAKE values for UI and test development only. Never cite. Real data comes from ingest/release.py.",
+  "version": "fixture-0.1",
+  "generatedAt": "2026-11-13",
+  "fixture": true,
+  "investigations": [
+    {
+      "psiId": "PSI-26",
+      "name": "Burning and Suppression of Solids",
+      "acronym": "BASS",
+      "projectType": "Microgravity",
+      "safetyRole": "prevention",
+      "fuelPhase": "solid",
+      "hardware": "Microgravity Science Glovebox",
+      "objectives": "Bridge NASA-STD-6001 Test 1 and flammability in microgravity; assess an inert gaseous extinguishing agent.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+      "relatedIds": [
+        "PSI-107",
+        "PSI-25"
+      ],
+      "publications": [],
+      "runIds": [
+        "FIX-BASS-1",
+        "FIX-BASS-2",
+        "FIX-BASS-3",
+        "FIX-BASS-4"
+      ],
+      "sensors": []
+    },
+    {
+      "psiId": "PSI-25",
+      "name": "Burning and Suppression of Solids - II",
+      "acronym": "BASS-II",
+      "projectType": "Microgravity",
+      "safetyRole": "prevention",
+      "fuelPhase": "solid",
+      "hardware": "Microgravity Science Glovebox",
+      "objectives": "Ignition, flame spread and extinction of solids in low-speed flow.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+      "relatedIds": [
+        "PSI-26"
+      ],
+      "publications": [],
+      "runIds": [
+        "FIX-BASS2-1"
+      ],
+      "sensors": []
+    },
+    {
+      "psiId": "PSI-98",
+      "name": "Spacecraft Fire Safety Experiment-I",
+      "acronym": "Saffire-I",
+      "projectType": "Microgravity",
+      "safetyRole": "prevention",
+      "fuelPhase": "solid",
+      "hardware": "Cygnus vehicle",
+      "objectives": "How rapidly a large-scale fire grows in low gravity; low-g flammability limits.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+      "relatedIds": [
+        "PSI-99",
+        "PSI-100",
+        "PSI-26"
+      ],
+      "publications": [],
+      "runIds": [
+        "FIX-SAFF1-1"
+      ],
+      "sensors": []
+    },
+    {
+      "psiId": "PSI-68",
+      "name": "Flame Extinguishment Experiment - 2",
+      "acronym": "FLEX-2",
+      "projectType": "Microgravity",
+      "safetyRole": "suppression",
+      "fuelPhase": "liquid",
+      "hardware": "CIR / MDCA",
+      "objectives": "Extend FLEX-1 to fuels and conditions that mimic real combustors.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-68",
+      "relatedIds": [],
+      "publications": [],
+      "runIds": [],
+      "ranges": {
+        "o2MolPct": [
+          10,
+          40
+        ],
+        "pressureKPa": [
+          50.7,
+          304.0
+        ],
+        "gravityG": [
+          0,
+          0
+        ],
+        "sourceId": "FIXTURE"
+      },
+      "sensors": []
+    },
+    {
+      "psiId": "PSI-159",
+      "name": "ACME Cool Flames Investigation with Gases",
+      "acronym": "ACME CFI-G",
+      "projectType": "Microgravity",
+      "safetyRole": "physics",
+      "fuelPhase": "gas",
+      "hardware": "CIR / ACME",
+      "objectives": "Conditions for cool diffusion flames of propane, n-butane and n-pentane. NOTE: up to 85% O2 was burner gas, not cabin atmosphere.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-159",
+      "relatedIds": [],
+      "publications": [],
+      "runIds": [],
+      "sensors": []
+    },
+    {
+      "psiId": "PSI-102",
+      "name": "Smoke and Aerosol Measurement Experiment",
+      "acronym": "SAME",
+      "projectType": "Microgravity",
+      "safetyRole": "detection",
+      "fuelPhase": "aerosol",
+      "hardware": "Microgravity Science Glovebox",
+      "objectives": "Quantify smoke particle sizes in low gravity for detector design.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-102",
+      "relatedIds": [
+        "PSI-101"
+      ],
+      "publications": [],
+      "runIds": [],
+      "ranges": {
+        "gravityG": [
+          0,
+          0
+        ],
+        "sourceId": "FIXTURE"
+      },
+      "sensors": []
+    },
+    {
+      "psiId": "PSI-47",
+      "name": "Dust and Aerosol Measurement Feasibility Test",
+      "acronym": "DAFT",
+      "projectType": "Microgravity",
+      "safetyRole": "detection",
+      "fuelPhase": "aerosol",
+      "objectives": "Risk reduction for SAME instrumentation (smoke vs dust).",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-47",
+      "relatedIds": [
+        "PSI-102"
+      ],
+      "publications": [],
+      "runIds": [],
+      "sensors": []
+    },
+    {
+      "psiId": "PSI-62",
+      "name": "Concurrent Flame Spread Modeling vs BASS",
+      "acronym": "PSI-62",
+      "projectType": "Ground",
+      "safetyRole": "prevention",
+      "fuelPhase": "solid",
+      "objectives": "Flamelet-generated-manifold model validated against BASS / BASS-II imagery.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-62",
+      "relatedIds": [
+        "PSI-25",
+        "PSI-26"
+      ],
+      "publications": [],
+      "runIds": [],
+      "sensors": []
+    }
+  ],
+  "runs": [
+    {
+      "id": "FIX-BASS-1",
+      "psiId": "PSI-26",
+      "material": {
+        "value": "SIBAL",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sizeMm": {
+        "value": 20.0,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "thicknessMm": {
+        "value": 0.3,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2MolPct": {
+        "value": 21,
+        "unit": "mol%",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "unit": "kPa",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2PartialKPa": {
+        "value": 21.27,
+        "unit": "kPa",
+        "type": "COMPUTED",
+        "sourceId": "FIXTURE",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 10,
+        "unit": "cm/s",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "unit": "g",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "ductSize": {
+        "value": "76 x 76 mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "diluent": {
+        "value": "N2",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "apparatus": {
+        "value": "MSG flow duct",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "method": {
+        "value": "video",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sensors": [
+        "video"
+      ],
+      "outcomes": [
+        {
+          "label": "spread rate",
+          "value": {
+            "value": 1.0,
+            "unit": "mm/s",
+            "type": "MEASURED",
+            "sourceId": "FIXTURE"
+          }
+        }
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "FIX-BASS-2",
+      "psiId": "PSI-26",
+      "material": {
+        "value": "PMMA",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sphere",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sizeMm": {
+        "value": 20.0,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "thicknessMm": {
+        "value": 0.3,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2MolPct": {
+        "value": 21,
+        "unit": "mol%",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "unit": "kPa",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2PartialKPa": {
+        "value": 21.27,
+        "unit": "kPa",
+        "type": "COMPUTED",
+        "sourceId": "FIXTURE",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 10,
+        "unit": "cm/s",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "unit": "g",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "ductSize": {
+        "value": "76 x 76 mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "diluent": {
+        "value": "N2",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "apparatus": {
+        "value": "MSG flow duct",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "method": {
+        "value": "video",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sensors": [
+        "video"
+      ],
+      "outcomes": [
+        {
+          "label": "spread rate",
+          "value": {
+            "value": 1.0,
+            "unit": "mm/s",
+            "type": "MEASURED",
+            "sourceId": "FIXTURE"
+          }
+        }
+      ],
+      "status": "imported"
+    },
+    {
+      "id": "FIX-BASS-3",
+      "psiId": "PSI-26",
+      "material": {
+        "value": "SIBAL",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sizeMm": {
+        "value": 20.0,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "thicknessMm": {
+        "value": 0.3,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2MolPct": {
+        "value": 21,
+        "unit": "mol%",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "unit": "kPa",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2PartialKPa": {
+        "value": 21.27,
+        "unit": "kPa",
+        "type": "COMPUTED",
+        "sourceId": "FIXTURE",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": null,
+        "unit": "cm/s",
+        "type": "UNKNOWN",
+        "missingReason": "not_documented"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "unit": "g",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "ductSize": {
+        "value": "76 x 76 mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "diluent": {
+        "value": "N2",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "apparatus": {
+        "value": "MSG flow duct",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "method": {
+        "value": "video",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sensors": [
+        "video"
+      ],
+      "outcomes": [
+        {
+          "label": "spread rate",
+          "value": {
+            "value": 1.0,
+            "unit": "mm/s",
+            "type": "MEASURED",
+            "sourceId": "FIXTURE"
+          }
+        }
+      ],
+      "status": "imported"
+    },
+    {
+      "id": "FIX-BASS-4",
+      "psiId": "PSI-26",
+      "material": {
+        "value": "SIBAL",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sizeMm": {
+        "value": 20.0,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "thicknessMm": {
+        "value": 0.3,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2MolPct": {
+        "value": 21,
+        "unit": "mol%",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "unit": "kPa",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2PartialKPa": {
+        "value": 21.27,
+        "unit": "kPa",
+        "type": "COMPUTED",
+        "sourceId": "FIXTURE",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 20,
+        "unit": "cm/s",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "unit": "g",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "ductSize": {
+        "value": "76 x 76 mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "diluent": {
+        "value": "N2",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "apparatus": {
+        "value": "MSG flow duct",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "method": {
+        "value": "video",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sensors": [
+        "video"
+      ],
+      "outcomes": [
+        {
+          "label": "spread rate",
+          "value": {
+            "value": 1.0,
+            "unit": "mm/s",
+            "type": "MEASURED",
+            "sourceId": "FIXTURE"
+          }
+        }
+      ],
+      "status": "imported"
+    },
+    {
+      "id": "FIX-BASS2-1",
+      "psiId": "PSI-25",
+      "material": {
+        "value": "SIBAL",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sizeMm": {
+        "value": 20.0,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "thicknessMm": {
+        "value": 0.3,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2MolPct": {
+        "value": 17,
+        "unit": "mol%",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "unit": "kPa",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2PartialKPa": {
+        "value": 17.22,
+        "unit": "kPa",
+        "type": "COMPUTED",
+        "sourceId": "FIXTURE",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 5,
+        "unit": "cm/s",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "unit": "g",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "ductSize": {
+        "value": "76 x 76 mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "diluent": {
+        "value": "N2",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "apparatus": {
+        "value": "MSG flow duct",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "method": {
+        "value": "video",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sensors": [
+        "video"
+      ],
+      "outcomes": [
+        {
+          "label": "spread rate",
+          "value": {
+            "value": 1.0,
+            "unit": "mm/s",
+            "type": "MEASURED",
+            "sourceId": "FIXTURE"
+          }
+        }
+      ],
+      "status": "imported"
+    },
+    {
+      "id": "FIX-SAFF1-1",
+      "psiId": "PSI-98",
+      "material": {
+        "value": "SIBAL",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sizeMm": {
+        "value": 940,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "thicknessMm": {
+        "value": 0.3,
+        "unit": "mm",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2MolPct": {
+        "value": 21,
+        "unit": "mol%",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "unit": "kPa",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "o2PartialKPa": {
+        "value": 21.27,
+        "unit": "kPa",
+        "type": "COMPUTED",
+        "sourceId": "FIXTURE",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 20,
+        "unit": "cm/s",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "unit": "g",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "ductSize": {
+        "value": "large flow duct",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "diluent": {
+        "value": "N2",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "method": {
+        "value": "video",
+        "type": "MEASURED",
+        "sourceId": "FIXTURE"
+      },
+      "sensors": [
+        "video"
+      ],
+      "outcomes": [
+        {
+          "label": "spread rate",
+          "value": {
+            "value": 1.0,
+            "unit": "mm/s",
+            "type": "MEASURED",
+            "sourceId": "FIXTURE"
+          }
+        }
+      ],
+      "status": "imported"
+    }
+  ],
+  "edges": [
+    {
+      "from": "PSI-26",
+      "to": "PSI-25",
+      "kind": "nasa_related",
+      "sourceId": "FIXTURE"
+    },
+    {
+      "from": "PSI-26",
+      "to": "PSI-107",
+      "kind": "nasa_related",
+      "sourceId": "FIXTURE"
+    },
+    {
+      "from": "PSI-62",
+      "to": "PSI-26",
+      "kind": "reuses_data",
+      "sourceId": "FIXTURE"
+    },
+    {
+      "from": "PSI-62",
+      "to": "PSI-25",
+      "kind": "reuses_data",
+      "sourceId": "FIXTURE"
+    },
+    {
+      "from": "PSI-102",
+      "to": "PSI-101",
+      "kind": "nasa_related",
+      "sourceId": "FIXTURE"
+    },
+    {
+      "from": "PSI-47",
+      "to": "PSI-102",
+      "kind": "nasa_related",
+      "sourceId": "FIXTURE"
+    }
+  ],
+  "sources": [
+    {
+      "id": "FIXTURE",
+      "title": "FIXTURE (fake data)",
+      "url": "about:blank"
+    }
+  ]
+}

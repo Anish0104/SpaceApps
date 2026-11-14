@@ -1,0 +1,9 @@
+[
+  { "id": "earth", "name": "Earth sea level", "environment": "earth", "o2MolPct": 21, "pressureKPa": 101.3, "gravityG": 1, "flowCmS": null, "material": null, "fuelPhase": null, "source": "Standard atmosphere" },
+  { "id": "iss", "name": "ISS / spacecraft cabin", "environment": "station", "o2MolPct": 21, "pressureKPa": 101.3, "gravityG": 0, "flowCmS": 10, "material": null, "fuelPhase": null, "source": "Standard ISS cabin air; flow is an assumption" },
+  { "id": "moon-challenge", "name": "Moon Base (challenge boundary)", "environment": "moon", "o2MolPct": 30, "pressureKPa": 70.3, "gravityG": 0.165, "flowCmS": null, "material": "SIBAL", "fuelPhase": "solid", "source": "Challenge brief: >=30% O2 at <=10.2 psi", "note": "Illustrative boundary values, not a confirmed habitat specification" },
+  { "id": "moon-fm2", "name": "FM2 habitat air", "environment": "moon", "o2MolPct": 34, "pressureKPa": 56.5, "gravityG": 0.165, "flowCmS": null, "material": "SIBAL", "fuelPhase": "solid", "source": "Zayac et al. 2024; Ferkul et al. 2026 (8.2 psi, 34% O2)" },
+  { "id": "rover", "name": "Pressurized rover", "environment": "rover", "o2MolPct": 30, "pressureKPa": 70.3, "gravityG": 0.165, "flowCmS": null, "material": null, "fuelPhase": "solid", "source": "Challenge brief: >=30% O2 at <=10.2 psi" },
+  { "id": "mars", "name": "Mars habitat", "environment": "mars", "o2MolPct": 30, "pressureKPa": 70.3, "gravityG": 0.38, "flowCmS": null, "material": null, "fuelPhase": "solid", "source": "Assumption: lunar-style atmosphere at Mars gravity (user-adjustable)" },
+  { "id": "suit", "name": "Spacesuit", "environment": "suit", "o2MolPct": 100, "pressureKPa": 29.6, "gravityG": 0.165, "flowCmS": null, "material": null, "fuelPhase": null, "source": "Challenge brief: 100% O2 at 4.3 psi" }
+]

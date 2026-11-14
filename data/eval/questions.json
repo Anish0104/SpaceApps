@@ -1,0 +1,12 @@
+{
+  "_note": "Seed questions. The Data + Science Lead adds 15-20 more with labeled answers. Freeze before tuning search.",
+  "questions": [
+    { "id": "q1", "audience": "engineer", "question": "Which microgravity experiments measured opposed-flow flame spread on PMMA above 25% O2, and at what flow and pressure?", "relevantPsiIds": [], "expect": "cannot_confirm", "use": "abstention" },
+    { "id": "q2", "audience": "engineer", "question": "For 30% O2 at 10.2 psi, what is the nearest tested condition, matched on O2 partial pressure or on mole fraction?", "relevantPsiIds": [], "expect": "answered", "use": "demo" },
+    { "id": "q3", "audience": "researcher", "question": "Compare BASS-II small-sample and Saffire large-scale cotton-fiberglass results: is the difference scale alone, or confounded?", "relevantPsiIds": ["PSI-25", "PSI-98", "PSI-99", "PSI-100"], "expect": "answered", "use": "demo" },
+    { "id": "q4", "audience": "researcher", "question": "Where is the biggest evidence gap for a lunar habitat, and what one experiment would close it most efficiently?", "relevantPsiIds": ["PSI-26", "PSI-25", "PSI-98"], "expect": "answered", "use": "demo" },
+    { "id": "q5", "audience": "researcher", "question": "Is there evidence that lunar or Mars gravity could increase flammability rather than fall between Earth and microgravity?", "relevantPsiIds": [], "expect": "answered", "use": "honest_limit" },
+    { "id": "q6", "audience": "engineer", "question": "What do FLEX and BASS suppression tests say about extinguishing a low-flow microgravity flame, and do those margins hold at 30% O2?", "relevantPsiIds": ["PSI-69", "PSI-68", "PSI-26"], "expect": "answered", "use": "equipment" },
+    { "id": "q7", "audience": "engineer", "question": "How does microgravity smoke-particle size (SAME) differ from Earth, and what does that mean for detector thresholds in a dusty lunar cabin?", "relevantPsiIds": ["PSI-102", "PSI-101", "PSI-47"], "expect": "answered", "use": "equipment" }
+  ]
+}

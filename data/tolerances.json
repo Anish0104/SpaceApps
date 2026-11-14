@@ -1,0 +1,9 @@
+{
+  "_note": "Matching heuristics for evidence labels and the Referee. Not safety limits.",
+  "pressureKPa": 5,
+  "o2MolPct": 2,
+  "flowRelative": 0.2,
+  "gravityG": 0.02,
+  "thicknessMm": 0.05,
+  "sizeMm": 1
+}
