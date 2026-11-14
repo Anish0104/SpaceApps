@@ -3,7 +3,7 @@
  *   search -> demo cache? -> cache? -> Gemini (six-beat JSON; models tried in order) -> Zod
  *   -> citation validator (sentences + limit/differs/next.target) -> template fallback -> cache
  */
-import { AskResponse, SearchRequest, fieldLabel, gravityRegime, matchPhrase, type Dataset, type GravityRegime, type Investigation, type RankedResult, type Run, type Scenario } from "@flameatlas/engine";
+import { AskResponse, SearchRequest, fieldLabel, gravityRegime, investigationLabel, matchPhrase, type Dataset, type GravityRegime, type Investigation, type RankedResult, type Run, type Scenario } from "@flameatlas/engine";
 import type MiniSearch from "minisearch";
 import { search } from "./search";
 import { numbersIn, validateFields, validateSentences } from "./validator";
@@ -95,6 +95,16 @@ function contrasts(inv: Investigation, runs: Run[], r: RankedResult, sc: Scenari
  * citation validator unchanged; the prose parts carry no numbers (checked below). Inferred, assumed
  * and missing values are never quoted.
  */
+/**
+ * "SAFFIRE-I (PSI-98)", or "Concurrent Flame Spread Modeling using… (PSI-62)" when the record has no
+ * real acronym. A label that would put a number the validator counts into the sentence (a short title
+ * with a digit) is left out, so the sentence reads "PSI-62 …" instead of being dropped.
+ */
+function whoIs(inv: Investigation): string {
+  const label = investigationLabel(inv);
+  return numbersIn(label).length ? inv.psiId : `${label} (${inv.psiId})`;
+}
+
 function templateSentence(inv: Investigation, runs: Run[], r: RankedResult, sc: Scenario): AskResponse["sentences"][number] {
   const matches = [...new Set(r.reasons.map(matchPhrase).filter((p): p is string => Boolean(p)))];
   const buts = contrasts(inv, runs, r, sc);
@@ -125,7 +135,7 @@ function templateSentence(inv: Investigation, runs: Run[], r: RankedResult, sc: 
   if (buts.length) how += `${how ? ", but " : ""}${buts.join(", and ")}`;
   if (!how) how = "is related by topic";
   if (numbersIn(how).length) throw new Error(`template prose must not carry numbers: ${how}`); // a bug, never data
-  return { text: `${inv.acronym} (${inv.psiId}) ${how}; ${conditions}.`, recordIds: [inv.psiId, ...cited] };
+  return { text: `${whoIs(inv)} ${how}; ${conditions}.`, recordIds: [inv.psiId, ...cited] };
 }
 
 /** Rules-engine template answer: used when Gemini is unavailable or its answer fails validation. */
