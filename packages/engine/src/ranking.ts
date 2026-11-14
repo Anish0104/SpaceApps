@@ -36,9 +36,22 @@ function closest(target: number, runVals: (number | null)[], range?: [number, nu
   return null;
 }
 
+const invText = (inv: Investigation) => `${inv.acronym} ${inv.name}`;
+/** ACME E-FIELD Flames: partial gravity mimicked through the electric field (challenge brief). */
+export const isEFieldFlames = (inv: Investigation) => /e-?field/i.test(invText(inv));
+/**
+ * ACME CFI-G: the oxygen (up to 85%) flowed OUT of the spherical burner into a chamber of nitrogen and
+ * fuel gas (challenge brief). Its oxygen figure is burner gas, never a cabin atmosphere.
+ */
+export const isBurnerOxidizer = (inv: Investigation) => /\bCFI-G\b|cool flames investigation with gases/i.test(invText(inv));
+/** ACME BRE: burned gas, but studied solid-material flammability (challenge brief). */
+export const isMaterialEmulator = (inv: Investigation) => /\bBRE\b|burning rate emulator/i.test(invText(inv));
+
 export function missionMatch(inv: Investigation, runs: Run[], sc: Scenario) {
   const r = inv.ranges ?? {};
-  const o2 = closest(sc.o2MolPct, runs.map((x) => x.o2MolPct.value), r.o2MolPct);
+  // Burner-gas oxygen is not an atmosphere: never compare it with the scenario's cabin oxygen.
+  const burnerGas = isBurnerOxidizer(inv);
+  const o2 = burnerGas ? null : closest(sc.o2MolPct, runs.map((x) => x.o2MolPct.value), r.o2MolPct);
   const p = closest(sc.pressureKPa, runs.map((x) => x.pressureKPa.value), r.pressureKPa);
   const flow = sc.flowCmS === null ? null : closest(sc.flowCmS, runs.map((x) => x.flowCmS.value), r.flowCmS);
   const g = closest(sc.gravityG, runs.map((x) => x.gravityG.value), r.gravityG);
@@ -53,7 +66,7 @@ export function missionMatch(inv: Investigation, runs: Run[], sc: Scenario) {
     if (Math.abs(o2 - sc.o2MolPct) <= 5) reasons.push("O2_WITHIN_5PCT");
   } else {
     notDocumented.push("o2MolPct");
-    reasons.push("NO_O2_DATA");
+    reasons.push(burnerGas ? "O2_IS_BURNER_GAS" : "NO_O2_DATA");
   }
 
   if (p !== null) parts.push(sim(p, sc.pressureKPa, SCALES.pressureKPa));
@@ -92,12 +105,6 @@ export function missionMatch(inv: Investigation, runs: Run[], sc: Scenario) {
   return { M, reasons, notDocumented, cannotAssess };
 }
 
-const invText = (inv: Investigation) => `${inv.acronym} ${inv.name}`;
-/** ACME E-FIELD Flames: partial gravity mimicked through the electric field (challenge brief). */
-export const isEFieldFlames = (inv: Investigation) => /e-?field/i.test(invText(inv));
-/** ACME BRE: burned gas, but studied solid-material flammability (challenge brief). */
-export const isMaterialEmulator = (inv: Investigation) => /\bBRE\b|burning rate emulator/i.test(invText(inv));
-
 export function fuelApplicability(inv: Investigation, runs: Run[], sc: Scenario): { F: number; reason?: string } {
   if (!sc.fuelPhase) return { F: 1 };
   const mat = sc.material?.toLowerCase();
@@ -126,11 +133,19 @@ export const ROLE_WORDS: Record<Exclude<SafetyRole, "physics">, RegExp> = {
 };
 
 /**
+ * Flame-physics terms that contain a role word but are not about that role: "smoke point" is a
+ * property of a gas flame (SPICE), not smoke detection; "re-ignite" describes flame dynamics
+ * (cool flames), not material ignition.
+ */
+const NOT_ROLE_WORDS = /\bsmoke[- ]points?\b|\bre-?ignit\w*/gi;
+
+/**
  * Safety role a question is about, or null when it names none or more than one.
  * Used as the domain filter (D) when the user has not picked one, so that a smoke-detector
  * question is not ranked purely on how well a flame-spread test matches the cabin atmosphere.
  */
 export function inferSafetyRole(question: string): SafetyRole | null {
+  question = question.replace(NOT_ROLE_WORDS, " ");
   const hits = (Object.keys(ROLE_WORDS) as (keyof typeof ROLE_WORDS)[]).filter((role) => ROLE_WORDS[role].test(question));
   return hits.length === 1 ? hits[0] : null;
 }

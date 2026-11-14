@@ -330,10 +330,10 @@
       ],
       "flameatlas": [
         "SAFFIRE-IVVI",
+        "PSI-69",
         "PSI-25",
         "PSI-98",
-        "PSI-100",
-        "PSI-99"
+        "PSI-100"
       ]
     },
     {
@@ -376,11 +376,11 @@
         "PSI-107"
       ],
       "flameatlas": [
-        "PSI-101",
         "PSI-68",
-        "PSI-47",
         "SAFFIRE-IVVI",
-        "PSI-102"
+        "PSI-98",
+        "PSI-25",
+        "PSI-69"
       ]
     },
     {

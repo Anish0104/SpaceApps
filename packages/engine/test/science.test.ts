@@ -67,6 +67,17 @@ describe("ranking reason codes", () => {
     expect(fuelApplicability(bre, [], moon)).toEqual({ F: 0.6, reason: "MATERIAL_EMULATOR" });
     expect(fuelApplicability(inv("PSI-159"), [], moon).reason).toBe("DIFFERENT_FUEL_PHASE");
   });
+  it("never reads CFI-G burner-gas oxygen as a cabin atmosphere, even when a range is entered", () => {
+    const cfig = { ...inv("PSI-159"), ranges: { o2MolPct: [21, 85] as [number, number], pressureKPa: [101.3, 101.3] as [number, number], gravityG: [0, 0] as [number, number] } };
+    const m = missionMatch(cfig, [], moon);
+    expect(m.reasons).toContain("O2_IS_BURNER_GAS");
+    expect(m.reasons).not.toContain("O2_WITHIN_5PCT");
+    expect(m.reasons).not.toContain("PO2_CLOSE");
+    expect(m.notDocumented).toContain("o2MolPct");
+    // the same range on any other gas experiment is still read as an atmosphere
+    const other = { ...cfig, psiId: "TEST-GAS", acronym: "ACME s-Flame", name: "s-Flame" };
+    expect(missionMatch(other, [], moon).reasons).toContain("O2_WITHIN_5PCT");
+  });
   it("tags E-FIELD Flames as a partial-gravity mimic without changing its score", () => {
     const base = { ...inv("PSI-159"), ranges: { gravityG: [0, 0] as [number, number], o2MolPct: [21, 21] as [number, number] } };
     const efield = { ...base, acronym: "ACME E-FIELD Flames" };
@@ -85,6 +96,10 @@ describe("safety role from the question", () => {
     expect(inferSafetyRole("Which fabric has the lowest flammability limit?")).toBe("prevention");
     expect(inferSafetyRole("Where is the biggest evidence gap for a lunar habitat?")).toBeNull();
     expect(inferSafetyRole("Does suppressing a fire change the smoke a detector sees?")).toBeNull(); // two roles
+    // flame-physics terms that only look like role words
+    expect(inferSafetyRole("What is the smoke point of gas jet diffusion flames in microgravity?")).toBeNull();
+    expect(inferSafetyRole("Do cool flames re-ignite or persist after an apparent extinction event?")).toBeNull();
+    expect(inferSafetyRole("How easily does this fabric ignite?")).toBe("prevention");
   });
   it("a role match is a reason code and never turns a cannot-assess card into a score", () => {
     const inputs = ds.investigations.map((i) => ({ investigation: i, runs: ds.runs.filter((r) => r.psiId === i.psiId), questionScore: i.psiId === "PSI-47" ? 1 : 0 }));
@@ -177,6 +192,14 @@ describe("evidence labels", () => {
     const moon = sc("moon-challenge");
     expect(labelCondition("gravityG", moon, ds.runs)?.sides).toMatchObject({ below: { value: 0 }, above: null });
     expect(labelCondition("material", moon, ds.runs)?.sides).toBeNull();
+  });
+  it("a far verified run never hides a near unverified one; verification only breaks ties", () => {
+    const far = mk("FIX-BASS-1", "T-FAR", { o2MolPct: 21, status: "verified" });
+    const near = mk("FIX-BASS-1", "T-NEAR", { o2MolPct: 31, status: "imported" });
+    expect(nearestTested(sc("moon-challenge"), [far, near]).byMolPct).toMatchObject({ runId: "T-NEAR", verified: false });
+    const tieA = mk("FIX-BASS-1", "T-TIE-A", { o2MolPct: 29, status: "imported" });
+    const tieB = mk("FIX-BASS-1", "T-TIE-B", { o2MolPct: 31, status: "verified" });
+    expect(nearestTested(sc("moon-challenge"), [tieA, tieB]).byMolPct?.runId).toBe("T-TIE-B");
   });
   it("nearest tested condition differs by mole fraction vs partial pressure", () => {
     // same 30% O2 at low pressure vs 21% at sea level: the low-O2% run is closer in partial pressure

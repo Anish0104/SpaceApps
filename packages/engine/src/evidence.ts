@@ -43,7 +43,7 @@ export interface ConditionEvidence {
    * (fixable by verification), or a different material (context only).
    */
   analogKind?: AnalogKind;
-  /** closest documented run to the target (verified runs preferred); null for material or when nothing is documented */
+  /** closest documented run to the target (a verified run wins a tie); null for material or when nothing is documented */
   nearest: NearestRun | null;
   /** closest documented run below and above the target; null for material (it has no sides) */
   sides: Sides | null;
@@ -118,15 +118,17 @@ export function findConflicts(runs: Run[]): OutcomeConflict[] {
 }
 
 function nearestRun(c: Condition, target: number, runs: Run[]): NearestRun | null {
-  const documented = runs.filter((r) => typeof conditionValue(r, c) === "number");
-  const verified = documented.filter((r) => r.status === "verified");
-  const pool = verified.length ? verified : documented;
+  // The closest documented run wins. Verification only breaks a tie: a verified run far from the
+  // target must never hide an unverified run that sits right next to it.
   let best: NearestRun | null = null;
-  for (const r of pool) {
-    const value = conditionValue(r, c) as number;
+  for (const r of runs) {
+    const value = conditionValue(r, c);
+    if (typeof value !== "number") continue;
     const delta = value - target;
-    if (!best || Math.abs(delta) < Math.abs(best.delta)) {
-      best = { runId: r.id, psiId: r.psiId, value, delta, verified: r.status === "verified" };
+    const verified = r.status === "verified";
+    const gap = best ? Math.abs(delta) - Math.abs(best.delta) : -1;
+    if (!best || gap < -1e-9 || (Math.abs(gap) <= 1e-9 && verified && !best.verified)) {
+      best = { runId: r.id, psiId: r.psiId, value, delta, verified };
     }
   }
   return best;

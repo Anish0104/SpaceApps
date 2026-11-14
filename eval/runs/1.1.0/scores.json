@@ -128,7 +128,7 @@
       "id": "burner_o2_vs_cabin_o2",
       "trap": "counting CFI-G's burner gas (up to 85% O2) as a high-oxygen cabin atmosphere",
       "caught": true,
-      "detail": "PSI-159 gets no oxygen-match reason and no applicability score (NO_O2_DATA, NO_PRESSURE_DATA, GRAVITY_DIFFERS, GRAVITY_ORBIT_ONLY, CANNOT_ASSESS_APPLICABILITY, DIFFERENT_FUEL_PHASE)."
+      "detail": "Synthetic: PSI-159 with a 21-85% O2 range entered as if it were chamber air. Reasons: O2_IS_BURNER_GAS, GRAVITY_DIFFERS, GRAVITY_ORBIT_ONLY, DIFFERENT_FUEL_PHASE."
     },
     {
       "id": "liquid_vs_solid",

@@ -73,8 +73,10 @@ denominator and failures:
   `data/eval/referee-pairs.json`). The expected answers were worked out from the documented run
   conditions, not read from the engine; a second person should review them before they are quoted.
 - **Adversarial**: the five traps (kPa vs psi, mole fraction vs partial pressure, CFI-G burner O2 vs
-  cabin O2, liquid vs solid fuel, missing airflow). Two use a real run with one field altered; the
-  output marks them "synthetic".
+  cabin O2, liquid vs solid fuel, missing airflow). Three spring the trap on purpose with altered
+  copies of real records (CFI-G with its burner range entered as chamber air, a run marked liquid, a
+  run with airflow removed); the output marks them "synthetic". They are written by the engine's
+  author, so they show the rules behave as intended, not that they generalise.
 - **Recorded answers**, per system, once `pnpm eval:record` has saved any: unsupported sentences shown,
   off-record citations, what FlameAtlas's validator caught, malformed answers, correct abstentions.
 
@@ -130,8 +132,10 @@ questions are frozen. The `1.0.0-seed` ranking is kept for comparison.
 Update (branch `juvana`): that failure is reported, and one rule was then changed *after* seeing it.
 When no safety-role filter is set, the ranking now reads the role from the question's own words
 (`inferSafetyRole` in `packages/engine/src/ranking.ts`: smoke / detector / dust mean detection, extinguish
-means suppression, and so on; a question naming none or more than one role is left alone). Weights are
-unchanged. On the 18 questions with labelled ids:
+means suppression, and so on; a question naming none or more than one role is left alone, and the
+flame-physics terms "smoke point" and "re-ignite" are not read as role words). Weights are unchanged.
+Against the labelled investigations' roles the rule is right on 7 of the 7 questions where it names a
+role and labels exist; it names no role on q14 and q16, which FlameAtlas still misses. On the 18 questions with labelled ids:
 
 | System | Top-1 | Top-3 | Top-3 misses |
 |---|---|---|---|

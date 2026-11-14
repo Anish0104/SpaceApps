@@ -44,6 +44,12 @@ describe("engineer readout on real data", () => {
     expect(moon.nearestTested.byPartialPressure?.psiId).not.toBe("SAFFIRE-IVVI");
     expect(moon.nearestTested.disagree).toBe(true);
   });
+  it("verifying some runs never changes which run is nearest", () => {
+    const partly = ds.runs.map((r) => (r.psiId === "PSI-25" ? { ...r, status: "verified" as const } : r));
+    const after = engineerReadout(sc("moon-challenge"), partly).nearestTested;
+    expect(after.byMolPct?.runId).toBe("SAF-VI-2");
+    expect(after.disagree).toBe(true);
+  });
   it("ISS: nothing to transfer across gravity and no new experiment needed, only cross-checks", () => {
     const iss = engineerReadout(sc("iss"), ds.runs);
     expect(iss.doesNotTransfer.join(" ")).not.toContain("Gravity");

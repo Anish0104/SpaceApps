@@ -119,15 +119,23 @@ export function adversarial(ds: Dataset, index: MiniSearch, scenarios: Scenario[
   });
 
   // 3. CFI-G burner oxygen vs cabin oxygen
-  const ranked = search(ds, index, moon, SearchRequest.parse({ query: "highest oxygen concentration microgravity tests", scenarioId: moon.id }));
+  // The trap is sprung on purpose: CFI-G's burner-gas range (21-85% O2) is entered as if it were a
+  // chamber atmosphere, which is exactly the mistake a careless import would make.
   const cfig = ds.investigations.find((i) => /CFI-G/i.test(i.acronym));
-  const hit = cfig ? ranked.find((r) => r.psiId === cfig.psiId) : undefined;
-  const o2Reason = hit?.reasons.find((x) => x === "O2_WITHIN_5PCT" || x === "PO2_CLOSE");
-  out.push({
-    id: "burner_o2_vs_cabin_o2", trap: "counting CFI-G's burner gas (up to 85% O2) as a high-oxygen cabin atmosphere",
-    caught: !!cfig && !!hit && !o2Reason && hit.score === null,
-    detail: !cfig ? "CFI-G is not in this dataset." : `${cfig.psiId} gets no oxygen-match reason and no applicability score (${hit?.reasons.join(", ")}).`,
-  });
+  if (!cfig) {
+    out.push({ id: "burner_o2_vs_cabin_o2", trap: "counting CFI-G's burner gas (up to 85% O2) as a high-oxygen cabin atmosphere", caught: false, detail: "CFI-G is not in this dataset, so the trap could not be run." });
+  } else {
+    const trapped = { ...cfig, ranges: { ...cfig.ranges, o2MolPct: [21, 85] as [number, number], pressureKPa: [101.3, 101.3] as [number, number] } };
+    const dsTrap = { ...ds, investigations: ds.investigations.map((i) => (i.psiId === cfig.psiId ? trapped : i)) };
+    const hit = search(dsTrap, index, moon, SearchRequest.parse({ query: "highest oxygen concentration microgravity tests", scenarioId: moon.id }))
+      .find((r) => r.psiId === cfig.psiId);
+    const o2Reason = hit?.reasons.find((x) => x === "O2_WITHIN_5PCT" || x === "PO2_CLOSE");
+    out.push({
+      id: "burner_o2_vs_cabin_o2", trap: "counting CFI-G's burner gas (up to 85% O2) as a high-oxygen cabin atmosphere",
+      caught: !!hit && !o2Reason && hit.reasons.includes("O2_IS_BURNER_GAS"),
+      detail: `Synthetic: ${cfig.psiId} with a 21-85% O2 range entered as if it were chamber air. Reasons: ${hit?.reasons.join(", ") ?? "not ranked"}.`,
+    });
+  }
 
   // 4. liquid vs solid fuel
   const liquid = withValue(solid, { o2MolPct: (solid.o2MolPct.value as number) + 10 }, "SYNTHETIC-liquid", "liquid");
