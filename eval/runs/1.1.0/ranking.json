@@ -1,0 +1,570 @@
+{
+  "dataVersion": "1.1.0",
+  "k": 5,
+  "questions": [
+    {
+      "qid": "q1",
+      "question": "Which microgravity experiments measured opposed-flow flame spread on PMMA above 25% O2, and at what flow and pressure?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-69",
+        "PSI-26",
+        "PSI-20",
+        "PSI-62",
+        "PSI-99"
+      ],
+      "flameatlas": [
+        "PSI-25",
+        "PSI-98",
+        "SAFFIRE-IVVI",
+        "PSI-100",
+        "PSI-69"
+      ]
+    },
+    {
+      "qid": "q2",
+      "question": "For 30% O2 at 10.2 psi, what is the nearest tested condition, matched on O2 partial pressure or on mole fraction?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-98",
+        "PSI-100",
+        "SAFFIRE-IVVI"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-142",
+        "PSI-20",
+        "PSI-68",
+        "PSI-99",
+        "PSI-100"
+      ],
+      "flameatlas": [
+        "PSI-100",
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-68",
+        "PSI-99"
+      ]
+    },
+    {
+      "qid": "q3",
+      "question": "Compare BASS-II small-sample and Saffire large-scale cotton-fiberglass results: is the difference scale alone, or confounded?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-25",
+        "PSI-98",
+        "PSI-99",
+        "PSI-100"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-98",
+        "PSI-26",
+        "PSI-99",
+        "PSI-100",
+        "PSI-25"
+      ],
+      "flameatlas": [
+        "PSI-98",
+        "SAFFIRE-IVVI",
+        "PSI-100",
+        "PSI-25",
+        "PSI-99"
+      ]
+    },
+    {
+      "qid": "q4",
+      "question": "Where is the biggest evidence gap for a lunar habitat, and what one experiment would close it most efficiently?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-26",
+        "PSI-25",
+        "PSI-98"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-68",
+        "PSI-69",
+        "PSI-26",
+        "PSI-22",
+        "PSI-142"
+      ],
+      "flameatlas": [
+        "PSI-68",
+        "PSI-25",
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-69"
+      ]
+    },
+    {
+      "qid": "q5",
+      "question": "Is there evidence that lunar or Mars gravity could increase flammability rather than fall between Earth and microgravity?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-142",
+        "PSI-26",
+        "PSI-69",
+        "PSI-68",
+        "PSI-25"
+      ],
+      "flameatlas": [
+        "PSI-25",
+        "PSI-68",
+        "PSI-98",
+        "SAFFIRE-IVVI",
+        "PSI-100"
+      ]
+    },
+    {
+      "qid": "q6",
+      "question": "What do FLEX and BASS suppression tests say about extinguishing a low-flow microgravity flame, and do those margins hold at 30% O2?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-69",
+        "PSI-68",
+        "PSI-26"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-69",
+        "PSI-26",
+        "PSI-20",
+        "PSI-25",
+        "PSI-68"
+      ],
+      "flameatlas": [
+        "PSI-25",
+        "SAFFIRE-IVVI",
+        "PSI-69",
+        "PSI-98",
+        "PSI-100"
+      ]
+    },
+    {
+      "qid": "q7",
+      "question": "How does microgravity smoke-particle size (SAME) differ from Earth, and what does that mean for detector thresholds in a dusty lunar cabin?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-102",
+        "PSI-101",
+        "PSI-47"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-101",
+        "PSI-102",
+        "PSI-69",
+        "PSI-47",
+        "PSI-115"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-98",
+        "PSI-100",
+        "PSI-101"
+      ]
+    },
+    {
+      "qid": "q8",
+      "question": "Which large-scale spacecraft fire tests burned materials at elevated oxygen and reduced pressure like a future habitat?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "SAFFIRE-IVVI"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-20",
+        "PSI-98",
+        "PSI-69",
+        "PSI-99",
+        "PSI-100"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-100",
+        "PSI-25",
+        "PSI-99"
+      ]
+    },
+    {
+      "qid": "q9",
+      "question": "How does flame spread rate differ between concurrent and opposed flow for cotton-fiberglass fabric?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-98",
+        "PSI-100",
+        "PSI-26"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-26",
+        "PSI-25",
+        "PSI-98",
+        "PSI-69",
+        "PSI-62"
+      ],
+      "flameatlas": [
+        "PSI-25",
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-100",
+        "PSI-99"
+      ]
+    },
+    {
+      "qid": "q10",
+      "question": "What is the measured flame-spread rate over solid fabric in actual lunar gravity?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-26",
+        "PSI-98",
+        "PSI-62",
+        "PSI-25",
+        "PSI-69"
+      ],
+      "flameatlas": [
+        "PSI-98",
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-100",
+        "PSI-68"
+      ]
+    },
+    {
+      "qid": "q11",
+      "question": "What smoke particle sizes were measured for overheated spacecraft polymers in microgravity?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-102",
+        "PSI-101"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-101",
+        "PSI-102",
+        "PSI-69",
+        "PSI-47",
+        "PSI-60"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-100",
+        "PSI-69",
+        "PSI-25"
+      ]
+    },
+    {
+      "qid": "q12",
+      "question": "Can a spacecraft particle counter tell cabin dust apart from smoke in microgravity?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-47",
+        "PSI-102"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-47",
+        "PSI-101",
+        "PSI-102",
+        "PSI-69",
+        "PSI-68"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-25",
+        "PSI-100",
+        "PSI-68"
+      ]
+    },
+    {
+      "qid": "q13",
+      "question": "What oxygen levels mark the extinction limit for fuel droplet flames diluted with inert gas?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-69",
+        "PSI-68",
+        "PSI-39"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-69",
+        "PSI-20",
+        "PSI-68",
+        "PSI-22",
+        "PSI-21"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-69",
+        "PSI-25",
+        "PSI-68",
+        "PSI-98"
+      ]
+    },
+    {
+      "qid": "q14",
+      "question": "Do cool flames re-ignite or persist after an apparent extinction event?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-39",
+        "PSI-159"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-69",
+        "PSI-142",
+        "PSI-20",
+        "PSI-26",
+        "PSI-39"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-69",
+        "PSI-25",
+        "PSI-98",
+        "PSI-100"
+      ]
+    },
+    {
+      "qid": "q15",
+      "question": "Can an electric field change flame behavior in microgravity in a way that mimics partial gravity?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-22"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-69",
+        "PSI-68",
+        "PSI-22",
+        "PSI-26",
+        "PSI-60"
+      ],
+      "flameatlas": [
+        "PSI-68",
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-69",
+        "PSI-25"
+      ]
+    },
+    {
+      "qid": "q16",
+      "question": "What is the smoke point of gas jet diffusion flames in microgravity?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-107",
+        "PSI-106"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-60",
+        "PSI-101",
+        "PSI-68",
+        "PSI-69",
+        "PSI-107"
+      ],
+      "flameatlas": [
+        "PSI-68",
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-25",
+        "PSI-69"
+      ]
+    },
+    {
+      "qid": "q17",
+      "question": "At what conditions do steady cool diffusion flames occur for gaseous fuels like propane?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-159"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-23",
+        "PSI-159",
+        "PSI-69",
+        "PSI-142",
+        "PSI-20"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-69",
+        "PSI-98",
+        "PSI-68"
+      ]
+    },
+    {
+      "qid": "q18",
+      "question": "Which experiments tested solid-fuel flammability in a cabin atmosphere above 40% oxygen?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-20",
+        "PSI-69",
+        "PSI-68",
+        "PSI-62",
+        "PSI-26"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-98",
+        "PSI-100",
+        "PSI-68"
+      ]
+    },
+    {
+      "qid": "q19",
+      "question": "For a 34% O2, 8.2 psi habitat, what is the nearest tested solid-fuel condition on record?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "SAFFIRE-IVVI",
+        "PSI-100"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-20",
+        "PSI-68",
+        "PSI-69",
+        "PSI-62",
+        "PSI-22"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-98",
+        "PSI-100",
+        "PSI-68"
+      ]
+    },
+    {
+      "qid": "q20",
+      "question": "Is there any Mars-gravity combustion data in this repository?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-69",
+        "PSI-26",
+        "PSI-68",
+        "PSI-142",
+        "PSI-20"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-69",
+        "PSI-68",
+        "PSI-25"
+      ]
+    },
+    {
+      "qid": "q21",
+      "question": "How should a smoke detector threshold be set given microgravity smoke differs from Earth smoke?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-102",
+        "PSI-101",
+        "PSI-47"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-101",
+        "PSI-102",
+        "PSI-60",
+        "PSI-47",
+        "PSI-115"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-25",
+        "PSI-100",
+        "PSI-101"
+      ]
+    },
+    {
+      "qid": "q22",
+      "question": "How does fuel thickness affect flame spread and extinction for PMMA samples?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-25",
+        "PSI-99"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-62",
+        "PSI-26",
+        "PSI-25",
+        "PSI-69",
+        "PSI-20"
+      ],
+      "flameatlas": [
+        "PSI-25",
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-100",
+        "PSI-69"
+      ]
+    },
+    {
+      "qid": "q23",
+      "question": "What Earth technologies came out of NASA spacecraft fire research?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-62",
+        "PSI-26",
+        "PSI-69",
+        "PSI-20",
+        "PSI-25"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-98",
+        "PSI-100",
+        "PSI-99"
+      ]
+    },
+    {
+      "qid": "q24",
+      "question": "Does a flame burn at a lower oxygen limit in microgravity than in normal gravity for thin solids?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-25",
+        "PSI-26"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-69",
+        "PSI-20",
+        "PSI-68",
+        "PSI-25",
+        "PSI-98"
+      ],
+      "flameatlas": [
+        "PSI-25",
+        "PSI-98",
+        "SAFFIRE-IVVI",
+        "PSI-69",
+        "PSI-100"
+      ]
+    }
+  ]
+}

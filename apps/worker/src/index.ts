@@ -9,7 +9,7 @@
  *   POST /api/dev/summaries    localhost only, used by `pnpm summaries` (spends Gemini quota)
  */
 import { AskRequest, AskResponse, Dataset, Scenario, SearchRequest } from "@flameatlas/engine";
-import datasetJson from "../../../data/dataset-v1.0.json";
+import datasetJson from "../../../data/dataset.json";
 import scenariosJson from "../../../data/scenarios.json";
 import demoAnswersJson from "../../../data/cache/demo-answers.json";
 import { buildIndex, search } from "./search";

@@ -1,21 +1,25 @@
 import { describe, it, expect } from "vitest";
-import datasetJson from "../../../data/dataset-v1.0.json";
+import datasetJson from "../../../data/dataset.json";
 import demoPairs from "../../../data/demo-pairs.json";
-import { Dataset, TRACKED, referee, type RefereeResult, type Tracked } from "../src";
+import coverageJson from "../../../data/coverage.json";
+import earthJson from "../../../data/earth_applications.json";
+import scenariosJson from "../../../data/scenarios.json";
+import { Dataset, Scenario, TRACKED, rankInvestigations, referee, type RefereeResult, type Tracked } from "../src";
 
 const parsed = Dataset.safeParse(datasetJson);
 
-describe("dataset-v1.0.json", () => {
+describe("dataset.json", () => {
   it("parses against the Zod Dataset schema", () => {
     // On failure this prints each mismatch as "path: message".
     const issues = parsed.success ? [] : parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`);
     expect(issues).toEqual([]);
   });
 
-  it("is real data, not the fixture set", () => {
+  it("is release 1.1.0, real data, not the fixture set", () => {
+    expect(parsed.data?.version).toBe("1.1.0");
     expect(parsed.data?.fixture).toBe(false);
     expect(parsed.data?.runs).toHaveLength(13);
-    expect(parsed.data?.investigations).toHaveLength(9);
+    expect(parsed.data?.investigations).toHaveLength(25);
   });
 
   it("keeps a null optional field as absent, never as a value", () => {
@@ -41,10 +45,52 @@ describe("dataset-v1.0.json", () => {
   });
 });
 
+describe("release side files", () => {
+  const ds = parsed.data!;
+
+  it("coverage.json describes this dataset", () => {
+    expect(coverageJson).toMatchObject({
+      dataVersion: ds.version,
+      investigationsIndexed: ds.investigations.length,
+      runsImported: ds.runs.length,
+      runsVerified: ds.runs.filter((r) => r.status === "verified").length,
+      relationshipsMapped: ds.edges.length,
+    });
+  });
+
+  it("every Space-to-Earth item has a source link and only names investigations in the dataset", () => {
+    const psiIds = new Set(ds.investigations.map((i) => i.psiId));
+    expect(earthJson.applications.length).toBeGreaterThan(0);
+    for (const a of earthJson.applications) {
+      expect(a.source, a.id).toBeTruthy();
+      expect(a.url, a.id).toMatch(/^https:\/\//);
+      for (const id of a.relatedPsiIds) expect(psiIds.has(id), `${a.id} -> ${id}`).toBe(true);
+    }
+  });
+
+  it("an investigation with no documented oxygen or pressure is never scored", () => {
+    const has = (psiId: string, f: "o2MolPct" | "pressureKPa") => {
+      const inv = ds.investigations.find((i) => i.psiId === psiId)!;
+      return !!inv.ranges?.[f] || ds.runs.some((r) => r.psiId === psiId && r[f].value !== null);
+    };
+    const inputs = ds.investigations.map((inv) => ({ investigation: inv, runs: ds.runs.filter((r) => r.psiId === inv.psiId), questionScore: 0 }));
+    let unassessable = 0;
+    for (const sc of scenariosJson.map((s) => Scenario.parse(s))) {
+      for (const r of rankInvestigations(inputs, sc)) {
+        const none = !has(r.psiId, "o2MolPct") && !has(r.psiId, "pressureKPa");
+        expect(r.cannotAssess, `${sc.id} ${r.psiId}`).toBe(none);
+        expect(r.score === null, `${sc.id} ${r.psiId}`).toBe(none);
+        if (none) unassessable++;
+      }
+    }
+    expect(unassessable).toBeGreaterThan(0); // 1.1.0 has cards without either range
+  });
+});
+
 describe("locked Referee demo pairs", () => {
   const run = (id: string) => {
     const r = parsed.data?.runs.find((x) => x.id === id);
-    if (!r) throw new Error(`run ${id} is not in dataset-v1.0.json`);
+    if (!r) throw new Error(`run ${id} is not in dataset.json`);
     return r;
   };
   const judge = (id: string): RefereeResult => {

@@ -5,7 +5,7 @@ import { invById, isPsiRecord, runsFor, summaryFor } from "../lib/data";
 import { MOCK_ASK } from "../lib/api";
 import { mockSummary } from "../lib/mockSummary";
 import { RecordTag } from "../components/RecordTag";
-import { sentenceCase } from "../lib/labels";
+import { hasAcronym, sentenceCase } from "../lib/labels";
 import { ValueCell } from "../components/ValueCell";
 import { RegimeMark } from "../components/Badge";
 
@@ -64,7 +64,7 @@ export default function Investigation() {
   return (
     <div className="space-y-10">
       <div className="space-y-5">
-        <h1 className="display text-2xl sm:text-3xl">{inv.name} ({inv.acronym})</h1>
+        <h1 className="display text-2xl sm:text-3xl">{inv.name}{hasAcronym(inv) && ` (${inv.acronym.trim()})`}</h1>
         <dl className="flex flex-wrap gap-x-10 gap-y-3">
           {fromPsi
             ? <Fact label="PSI id">{inv.psiId}</Fact>

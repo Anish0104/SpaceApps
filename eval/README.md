@@ -24,13 +24,13 @@ accuracy, adversarial catches, skeptic catches. Always with sample size, denomin
 system: `flameatlas` (the real pipeline with every cache bypassed) and `plain_rag` (same records, same
 models, prompt "Answer the question using the records below.", no scenario block, no validator, no
 template fallback). Each system normally costs 1 request per question; a model that is out of quota
-makes it try the next one (up to 3). The full set is 7 questions x 2 systems = **14 requests at best**,
-so with the free tier (about 20 per model per day) record it over two days:
+makes it try the next one (up to 3). The full set is 24 questions x 2 systems = **48 requests at best**,
+so with the free tier (about 20 per model per day) record it over three days or more, 10 requests per run:
 
 ```bash
 pnpm eval:record --dry-run                  # see the plan
 pnpm eval:record --questions q1,q2,q3,q4,q5 # 10 requests at best
-pnpm eval:record                            # next day: only the missing ones are asked
+pnpm eval:record                            # each later run: only the missing ones are asked, up to 10
 ```
 
 Already-recorded outputs are skipped. Nothing is retried. An output is saved only if a Gemini model
@@ -45,7 +45,7 @@ else `moon-challenge`. Both systems always see the same scenario and the same re
 ```jsonc
 {
   "qid": "q3", "system": "plain_rag", "question": "...", "scenarioId": "moon-challenge",
-  "dataVersion": "1.0.0-seed", "recorded": true, "model": "gemini-3.8-flash", "callsUsed": 1,
+  "dataVersion": "1.1.0", "recorded": true, "model": "gemini-3.8-flash", "callsUsed": 1,
   "systemPrompt": "Answer the question using the records below.",
   "records": "[PSI-98] Saffire-I ...\n  [SAF-I-1] run of PSI-98 ...",   // exactly what Gemini saw
   "recordIds": ["PSI-98", "SAF-I-1", "..."],                              // ids in those records
@@ -83,7 +83,7 @@ as malformed (do not repair it).
 ### Correct abstention
 
 Compare `output.status` with the question's `expect`. A correct abstention is `"cannot_confirm"` where
-`expect` is `"cannot_confirm"`. In the frozen file that is **q1**. **q5** is labelled `expect: "answered"`
+`expect` is `"cannot_confirm"`. In the frozen file that is **q1, q10, q18 and q20**. **q5** is labelled `expect: "answered"`
 with `use: "honest_limit"`: it should answer, but say that lunar or Mars gravity is not covered (score
 its `limit`, not its status). Confirm with Navneet before scoring q5 as an abstention.
 
@@ -91,10 +91,12 @@ its `limit`, not its status). Confirm with Navneet before scoring q5 as an abste
 
 `ranking.json` has, per question, the top-5 `keyword` and `flameatlas` psiIds and the labelled
 `relevantPsiIds`. A question is a Top-k hit if any relevant id is in the first k. Questions with no
-labelled relevant ids (q1, q2, q5 today) are left out of the denominator; say so. `relevantNotInDataset`
-lists labelled ids that are not in this dataset (PSI-69, PSI-101, PSI-47 today): no system can rank
-them, so report Top-k both with and without those questions.
+labelled relevant ids are left out of the denominator; say so. `relevantNotInDataset` lists labelled ids
+that are not in the dataset: no system can rank them, so report Top-k both with and without those
+questions. In data `1.1.0` it is empty for every question (1.0.0-seed lacked PSI-69, PSI-101, PSI-47).
 
-Seen in the first run (data `1.0.0-seed`): on q7 (SAME, smoke detection) keyword ranks PSI-102 first,
-while FlameAtlas does not have it in its top 5, because the scenario match outweighs the question match.
-Worth reporting as a failure, not tuning away before the questions are frozen.
+Seen in the `1.1.0` ranking (`eval/runs/1.1.0/ranking.json`): on the detection questions (q7, q11, q12,
+q21) keyword search puts PSI-102 / PSI-101 / PSI-47 in its top 3, while FlameAtlas fills its top 4 with
+investigations that have run data (SAFFIRE-IVVI, PSI-98, PSI-25, PSI-100), because the scenario match
+and completeness outweigh the question match. Worth reporting as a failure, not tuning away before the
+questions are frozen. The `1.0.0-seed` ranking is kept for comparison.

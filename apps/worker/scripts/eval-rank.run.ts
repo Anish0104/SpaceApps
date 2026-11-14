@@ -8,7 +8,7 @@
 import { it } from "vitest";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { Dataset, Scenario } from "@flameatlas/engine";
-import datasetJson from "../../../data/dataset-v1.0.json";
+import datasetJson from "../../../data/dataset.json";
 import scenariosJson from "../../../data/scenarios.json";
 import questionsJson from "../../../data/eval/questions.json";
 import { buildIndex } from "../src/search";

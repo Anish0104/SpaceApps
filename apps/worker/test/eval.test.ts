@@ -4,7 +4,7 @@
  */
 import { describe, it, expect, beforeEach } from "vitest";
 import { Dataset, Scenario } from "@flameatlas/engine";
-import releaseJson from "../../../data/dataset-v1.0.json";
+import releaseJson from "../../../data/dataset.json";
 import scenariosJson from "../../../data/scenarios.json";
 import questionsJson from "../../../data/eval/questions.json";
 import { buildIndex } from "../src/search";
@@ -103,7 +103,7 @@ describe("/api/dev/eval runner", () => {
     const { results, callsUsed } = await runEval(req(), moon, deps(g.fetchImpl));
     expect(callsUsed).toBe(2);
     const [fa, plain] = results;
-    expect(fa).toMatchObject({ system: "flameatlas", recorded: true, model: "model-a", callsUsed: 1, dataVersion: "1.0.0-seed" });
+    expect(fa).toMatchObject({ system: "flameatlas", recorded: true, model: "model-a", callsUsed: 1, dataVersion: "1.1.0" });
     expect(plain).toMatchObject({ system: "plain_rag", recorded: true, model: "model-a", callsUsed: 1, systemPrompt: PLAIN_PROMPT, output: ANSWER });
     expect(fa.records).toBe(plain.records);
     expect(fa.recordIds.length).toBeGreaterThan(0);
@@ -225,10 +225,10 @@ describe("pnpm eval:record end to end (script tasks -> runEval, fake Gemini, in-
     const first = await runBudgeted(tasks, { maxCalls: 4, dryRun: false, log: quiet });
     expect(first.callsUsed).toBe(4);
     expect([...files.keys()]).toEqual([
-      "eval/runs/1.0.0-seed/flameatlas/q1.json", "eval/runs/1.0.0-seed/plain_rag/q1.json",
-      "eval/runs/1.0.0-seed/flameatlas/q2.json", "eval/runs/1.0.0-seed/plain_rag/q2.json",
+      "eval/runs/1.1.0/flameatlas/q1.json", "eval/runs/1.1.0/plain_rag/q1.json",
+      "eval/runs/1.1.0/flameatlas/q2.json", "eval/runs/1.1.0/plain_rag/q2.json",
     ]);
-    expect(files.get("eval/runs/1.0.0-seed/plain_rag/q1.json")).toMatchObject({ qid: "q1", scenarioId: "moon-challenge", recordIds: expect.any(Array), records: expect.any(String) });
+    expect(files.get("eval/runs/1.1.0/plain_rag/q1.json")).toMatchObject({ qid: "q1", scenarioId: "moon-challenge", recordIds: expect.any(Array), records: expect.any(String) });
 
     const before = g.calls.length;
     const second = await runBudgeted(tasks, { maxCalls: 4, dryRun: false, log: quiet });
@@ -253,15 +253,15 @@ describe("pnpm eval:record end to end (script tasks -> runEval, fake Gemini, in-
   });
 
   it("summary tasks skip investigations already in the file", async () => {
-    const file = { summaries: { "PSI-98@1.0.0-seed": {} } as Record<string, unknown> };
+    const file = { summaries: { "PSI-98@1.1.0": {} } as Record<string, unknown> };
     const posted: string[] = [];
     const tasks = summaryTasks(["PSI-98", "PSI-25"], {
-      dataVersion: "1.0.0-seed", models: 3, file,
+      dataVersion: "1.1.0", models: 3, file,
       post: async (b: object) => { posted.push((b as { psiId: string }).psiId); return { outcome: "saved", entry: { ok: 1 }, callsUsed: 1 }; },
     });
     await runBudgeted(tasks, { maxCalls: 9, dryRun: false, log: quiet });
     expect(posted).toEqual(["PSI-25"]);
-    expect(Object.keys(file.summaries)).toEqual(["PSI-98@1.0.0-seed", "PSI-25@1.0.0-seed"]);
+    expect(Object.keys(file.summaries)).toEqual(["PSI-98@1.1.0", "PSI-25@1.1.0"]);
   });
 });
 
@@ -282,7 +282,9 @@ describe("offline ranking (pnpm eval:rank)", () => {
   });
 
   it("flags labelled ids that no system can rank because they are not in the dataset", () => {
-    expect(out.questions.find((q) => q.qid === "q6")?.relevantNotInDataset).toEqual(["PSI-69"]);
-    expect(out.questions.find((q) => q.qid === "q7")?.relevantNotInDataset).toEqual(["PSI-101", "PSI-47"]);
+    // 1.1.0 indexes PSI-69, PSI-101 and PSI-47 (missing in 1.0.0-seed), so every labelled id is rankable.
+    for (const q of out.questions) expect(q.relevantNotInDataset, q.qid).toEqual([]);
+    const missing = rankingFor(ds, index, [{ ...questions[0], id: "qx", relevantPsiIds: ["PSI-102", "PSI-9999"] }], () => scenarios[0]);
+    expect(missing.questions[0].relevantNotInDataset).toEqual(["PSI-9999"]);
   });
 });

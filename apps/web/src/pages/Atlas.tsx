@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { rankInvestigations, type RankedResult, type SafetyRole } from "@flameatlas/engine";
-import { dataset, isPsiRecord, runsFor } from "../lib/data";
-import { fieldLabel, reasonLabel, sentenceCase } from "../lib/labels";
+import { dataset, isPsiRecord, releaseCoverage, runsFor } from "../lib/data";
+import { fieldLabel, investigationLabel, reasonLabel, sentenceCase } from "../lib/labels";
 import { useScenario } from "../lib/scenario";
 import { Tag } from "../components/Badge";
 
@@ -23,7 +23,16 @@ const PARTS = [
 const shade = (ink: number) => `color-mix(in srgb, var(--ink) ${ink}%, var(--panel))`;
 
 function ContributionBar({ r }: { r: RankedResult }) {
-  if (r.cannotAssess || r.score === null) return <Tag variant="hatch">Cannot assess applicability</Tag>;
+  // No documented oxygen and no documented pressure (run values or ranges): there is nothing to compare
+  // with the scenario's atmosphere, so no score is computed or shown. Hatch = not documented.
+  if (r.cannotAssess || r.score === null) {
+    return (
+      <div title="No oxygen or pressure range is documented for this investigation"
+        className="hatch flex h-6 w-40 items-center justify-center border border-regolith">
+        <span className="bg-panel px-1.5 text-sm">Cannot assess</span>
+      </div>
+    );
+  }
   const summary = PARTS.map((p) => `${p.label} ${r.contributions[p.key].toFixed(2)}`).join(", ");
   return (
     <div className="flex items-center gap-3">
@@ -61,7 +70,13 @@ export default function Atlas() {
         <h1 className="display text-2xl sm:text-3xl">Research atlas</h1>
         <p className="measure mt-2">
           Ranked for <b className="font-semibold">{scenario.name}</b>. The score is relevance to your question and scenario, never a fire-risk score.
+          Investigations with no documented oxygen or pressure range show “Cannot assess” instead of a score.
         </p>
+        {releaseCoverage && (
+          <p className="mt-2 text-sm text-ink/70">
+            Data {dataset.version}: {releaseCoverage.investigations} investigations indexed, {releaseCoverage.runsImported} runs imported, {releaseCoverage.runsVerified} runs verified.
+          </p>
+        )}
       </div>
 
       <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
@@ -87,7 +102,7 @@ export default function Atlas() {
               className="grid grid-cols-[1.5rem_minmax(0,1fr)] items-center gap-x-4 gap-y-2 px-4 py-3 hover:bg-module/60 lg:grid-cols-[1.5rem_minmax(0,18rem)_6rem_14rem_minmax(0,1fr)]">
               <span className="dense text-ink/70">{i + 1}</span>
               <div className="min-w-0">
-                <Link to={`/investigation/${inv.psiId}`} className="font-semibold hover:underline">{inv.acronym}</Link>
+                <Link to={`/investigation/${inv.psiId}`} title={inv.name} className="font-semibold hover:underline">{investigationLabel(inv)}</Link>
                 <span className="dense ml-2 text-sm text-ink/70">{isPsiRecord(inv) ? inv.psiId : "From NASA report, not PSI"}</span>
                 <p className="truncate text-sm text-ink/70">{inv.name}</p>
               </div>

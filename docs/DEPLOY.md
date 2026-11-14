@@ -44,7 +44,7 @@ Note the URL it prints: `https://flameatlas-api.<your-subdomain>.workers.dev`. T
 may ask you to pick the `<your-subdomain>` part for workers.dev.
 
 The bundle is about 273 KiB (52 KiB gzipped) against the Workers Free limit of 3 MB gzipped. The dataset
-(`data/dataset-v1.0.json`), scenarios and the demo-answer cache are bundled into it; nothing is fetched at
+(`data/dataset.json`), scenarios and the demo-answer cache are bundled into it; nothing is fetched at
 runtime except Gemini.
 
 ## 3. Create the Pages project (once)
@@ -92,7 +92,7 @@ This builds `apps/web` with `.env.production` and uploads `apps/web/dist`. Note 
 WORKER=https://flameatlas-api.<your-subdomain>.workers.dev
 SITE=https://flameatlas.pages.dev
 
-# expect {"ok":true,"dataVersion":"1.0.0-seed","fixture":false,"gemini":true}
+# expect {"ok":true,"dataVersion":"1.1.0","fixture":false,"gemini":true}
 curl -s $WORKER/api/health
 
 # expect the header "access-control-allow-origin: https://flameatlas.pages.dev"
@@ -104,7 +104,7 @@ curl -s -o /dev/null -w "%{http_code}\n" -X POST $WORKER/api/dev/warm-cache
 
 Then open `$SITE`. Home, Research atlas, Mission lab, Referee and the investigation pages make **no**
 Gemini calls (they use the bundled dataset in the browser). On the Ask page, a demo question that is in
-`data/cache/demo-answers.json` for data version `1.0.0-seed` is served from the cache (0 calls). Any other
+`data/cache/demo-answers.json` for data version `1.1.0` is served from the cache (0 calls). Any other
 question costs one request per model tried (1, or up to 3 if models are out of quota). Repeats of the same
 question are cached in memory only while that worker instance stays warm.
 

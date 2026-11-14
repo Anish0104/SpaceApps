@@ -63,3 +63,24 @@ export function humanizeField(text: string): string {
 
 /** "Flow speed" -> "flow speed" mid-sentence; "O2 partial pressure" keeps its capitals. */
 const lowerLabel = (label: string) => (/^[A-Z][a-z]/.test(label) ? label.charAt(0).toLowerCase() + label.slice(1) : label);
+
+/** True when the record has a real acronym: not blank and not just its PSI id ("PSI-62"). */
+export const hasAcronym = (inv: { psiId: string; acronym: string }) => {
+  const a = inv.acronym.trim();
+  return a !== "" && a.toLowerCase() !== inv.psiId.trim().toLowerCase();
+};
+
+/** Shortens a title to at most `max` characters at a word break, ending in "…". */
+export function shortTitle(name: string, max = 40): string {
+  const s = name.trim().replace(/\s+/g, " ");
+  if (s.length <= max) return s;
+  // Look one character past the room left for "…": a space there means the last word fits whole.
+  const room = s.slice(0, max);
+  const space = room.lastIndexOf(" ");
+  const atWord = space > max / 2 ? room.slice(0, space) : room.slice(0, max - 1);
+  return `${atWord.replace(/[\s,;:/–-]+$/, "")}…`;
+}
+
+/** Short label for an investigation: its acronym, or a shortened title when it has none. */
+export const investigationLabel = (inv: { psiId: string; acronym: string; name: string }) =>
+  hasAcronym(inv) ? inv.acronym.trim() : shortTitle(inv.name || inv.psiId);

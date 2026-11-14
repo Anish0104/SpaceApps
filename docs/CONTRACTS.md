@@ -6,7 +6,7 @@ Everyone builds against these. Change them only together, in one PR, and tell th
 
 - TypeScript (source of truth): `packages/engine/src/schema.ts` (Zod)
 - Python mirror: `ingest/schema.py` (Pydantic)
-- Release: `data/dataset-v1.0.json` (what the worker and the web app load)
+- Release: `data/dataset.json` (what the worker and the web app load)
 - Example: `data/fixtures.json` (FAKE values, `"fixture": true`; never cite; unit tests only)
 
 Key rules:

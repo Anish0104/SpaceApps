@@ -1,7 +1,7 @@
 /** Precomputed investigation summaries. Gemini is always a fake fetch here. */
 import { describe, it, expect } from "vitest";
 import { Dataset, SummaryFile, summaryKey } from "@flameatlas/engine";
-import releaseJson from "../../../data/dataset-v1.0.json";
+import releaseJson from "../../../data/dataset.json";
 import summariesJson from "../../../data/cache/summaries.json";
 import { recordsFor } from "../src/gemini";
 import { budgetedFetch } from "../src/evalRun";
@@ -43,7 +43,7 @@ describe("summarize", () => {
     const user = g.calls[0].body.contents[0].parts[0].text;
     expect(user).toContain(recordsFor(ds, inv("PSI-98")).text);
     expect(user).not.toMatch(/\[PSI-25\]|ranking reasons/); // only its own records, no ranking line
-    expect(r).toMatchObject({ outcome: "saved", entry: { psiId: "PSI-98", dataVersion: "1.0.0-seed", model: "model-a", dropped: 0, sentences: GOOD.sentences } });
+    expect(r).toMatchObject({ outcome: "saved", entry: { psiId: "PSI-98", dataVersion: "1.1.0", model: "model-a", dropped: 0, sentences: GOOD.sentences } });
   });
 
   it("drops a sentence with a number that is not on its cited records", async () => {

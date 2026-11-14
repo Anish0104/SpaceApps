@@ -1,12 +1,14 @@
 /**
- * Data access. Loads the released dataset (data/dataset-v1.0.json). data/fixtures.json holds FAKE
+ * Data access. Loads the released dataset (data/dataset.json, version 1.1.0). data/fixtures.json holds FAKE
  * values and is for unit tests only. For a new release, change the import below (or fetch
  * /api/data/:version); no other code changes needed.
  */
 import { Dataset, Scenario, SummaryFile, summaryKey, type Investigation, type Source, type SummaryEntry } from "@flameatlas/engine";
-import datasetJson from "../../../../data/dataset-v1.0.json";
+import datasetJson from "../../../../data/dataset.json";
 import scenariosJson from "../../../../data/scenarios.json";
 import summariesJson from "../../../../data/cache/summaries.json";
+import coverageJson from "../../../../data/coverage.json";
+import earthJson from "../../../../data/earth_applications.json";
 
 export const dataset = Dataset.parse(datasetJson);
 export const scenarios = scenariosJson.map((s) => Scenario.parse(s));
@@ -41,3 +43,27 @@ export const coverage = {
   relationships: dataset.edges.length,
   documents: dataset.sources.length,
 };
+
+/**
+ * Release counts written by ingest/release.py (data/coverage.json). Shown only when they describe the
+ * loaded dataset, so a stale file never puts wrong numbers on screen.
+ */
+export const releaseCoverage =
+  coverageJson.dataVersion === dataset.version
+    ? { investigations: coverageJson.investigationsIndexed, runsImported: coverageJson.runsImported, runsVerified: coverageJson.runsVerified }
+    : undefined;
+
+/** Space-to-Earth items (data/earth_applications.json). Each one carries its NASA source link. */
+export type EarthApplication = {
+  id: string;
+  title: string;
+  space: string;
+  earth: string;
+  relatedPsiIds: string[];
+  source: string;
+  url: string;
+};
+/** An item without a title, a source name or an https source link is left out, never shown unsourced. */
+export const earthApplications: EarthApplication[] = earthJson.applications.filter(
+  (a) => a.title && a.source && /^https:\/\//.test(a.url),
+);

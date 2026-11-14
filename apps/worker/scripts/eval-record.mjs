@@ -41,7 +41,7 @@ let health = null;
 try { health = await (await fetch(`${WORKER}/api/health`, { signal: AbortSignal.timeout(3000) })).json(); } catch { /* not running */ }
 if (!health && !flags.dryRun) { console.error(`No worker at ${WORKER}. Start it first: pnpm dev:worker`); process.exit(1); }
 if (health && !health.gemini && !flags.dryRun) { console.error("The worker has no GEMINI_API_KEY (apps/worker/.dev.vars). Nothing was asked."); process.exit(1); }
-const dataVersion = health?.dataVersion ?? readJson("data/dataset-v1.0.json").version;
+const dataVersion = health?.dataVersion ?? readJson("data/dataset.json").version;
 const models = health?.geminiModels ?? 3;
 if (health?.fixture) console.warn(`Note: data ${dataVersion} is FAKE fixture data; these outputs are not a benchmark.`);
 console.log(`Data ${dataVersion}; ${questions.length} question(s) x ${SYSTEMS.length} systems; budget ${flags.maxCalls} Gemini requests${flags.dryRun ? " (dry run)" : ""}\n`);

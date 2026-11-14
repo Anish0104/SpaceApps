@@ -2,7 +2,7 @@
 /**
  * pnpm summaries [--ids PSI-98,PSI-25] [--max-calls N] [--dry-run]
  *
- * Asks Gemini ONCE per investigation in data/dataset-v1.0.json for a 2-3 sentence cited summary,
+ * Asks Gemini ONCE per investigation in data/dataset.json for a 2-3 sentence cited summary,
  * through the locally running worker (POST /api/dev/summaries; it holds the key, this script never
  * reads it). Only sentences that cite that investigation's own records and pass the citation
  * validator are kept. Results go to data/cache/summaries.json, keyed by <psiId>@<data version>;
@@ -27,7 +27,7 @@ let flags;
 try { flags = parseFlags(process.argv.slice(2), { defaultMaxCalls: 9, listFlag: "--ids" }); }
 catch (e) { console.error(String(e instanceof Error ? e.message : e)); process.exit(2); }
 
-const dataset = readJson("data/dataset-v1.0.json");
+const dataset = readJson("data/dataset.json");
 const allIds = dataset.investigations.map((i) => i.psiId);
 const unknown = (flags.only ?? []).filter((id) => !allIds.includes(id));
 if (unknown.length) { console.error(`Unknown investigation id(s): ${unknown.join(", ")}`); process.exit(2); }
@@ -40,7 +40,7 @@ if (!health && !flags.dryRun) { console.error(`No worker at ${WORKER}. Start it 
 if (health && !health.gemini && !flags.dryRun) { console.error("The worker has no GEMINI_API_KEY (apps/worker/.dev.vars). Nothing was asked."); process.exit(1); }
 const dataVersion = health?.dataVersion ?? dataset.version;
 if (health && health.dataVersion !== dataset.version) {
-  console.error(`The worker serves data ${health.dataVersion} but data/dataset-v1.0.json is ${dataset.version}. Restart the worker.`);
+  console.error(`The worker serves data ${health.dataVersion} but data/dataset.json is ${dataset.version}. Restart the worker.`);
   process.exit(1);
 }
 if (health?.fixture) { console.error("The worker is serving FAKE fixture data; summaries must come from the real dataset."); process.exit(1); }

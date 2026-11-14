@@ -13,7 +13,7 @@ export const Source = z.object({
   id: z.string(),
   psiId: z.string().optional(),
   // ingest/schema.py types this Optional[str] = None and the release writer emits the None as
-  // JSON null (dataset-v1.0.json, source S-PMMA). null is read as "absent"; the type stays string | undefined.
+  // JSON null (dataset.json, source S-PMMA). null is read as "absent"; the type stays string | undefined.
   ntrsId: z.string().nullish().transform((v) => v ?? undefined),
   title: z.string(),
   url: z.string(),
