@@ -57,7 +57,7 @@ export default function MissionLab() {
 
       <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink/70">
         <li className="flex items-center gap-2"><VerdictLight light="green" /> Green: a verified run within tolerance</li>
-        <li className="flex items-center gap-2"><VerdictLight light="yellow" /> Yellow: unverified or analog only</li>
+        <li className="flex items-center gap-2"><VerdictLight light="yellow" /> Amber: unverified or analog only</li>
         <li className="flex items-center gap-2"><VerdictLight light="hatch" /> Hatched: not in our curated data</li>
       </ul>
       {/* TODO(Juvana): evidence map (gravity × O₂ partial pressure, Recharts scatter), nearest tested condition by mole fraction vs partial pressure */}

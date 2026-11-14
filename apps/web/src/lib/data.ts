@@ -3,9 +3,10 @@
  * values and is for unit tests only. For a new release, change the import below (or fetch
  * /api/data/:version); no other code changes needed.
  */
-import { Dataset, Scenario, type Investigation, type Source } from "@flameatlas/engine";
+import { Dataset, Scenario, SummaryFile, summaryKey, type Investigation, type Source, type SummaryEntry } from "@flameatlas/engine";
 import datasetJson from "../../../../data/dataset-v1.0.json";
 import scenariosJson from "../../../../data/scenarios.json";
+import summariesJson from "../../../../data/cache/summaries.json";
 
 export const dataset = Dataset.parse(datasetJson);
 export const scenarios = scenariosJson.map((s) => Scenario.parse(s));
@@ -24,6 +25,14 @@ export function sourceKind(src: Source): { label: string; ref?: string } {
   if (src.doi) return { label: "Journal article", ref: `doi:${src.doi}` };
   return { label: "Source" };
 }
+
+/**
+ * Precomputed, validated summaries (`pnpm summaries`). Only an entry for the loaded data version is
+ * shown; a malformed file shows none rather than breaking the page.
+ */
+const summaryFile = SummaryFile.safeParse(summariesJson);
+export const summaryFor = (psiId: string): SummaryEntry | undefined =>
+  summaryFile.success ? summaryFile.data.summaries[summaryKey(psiId, dataset.version)] : undefined;
 
 export const coverage = {
   investigations: dataset.investigations.length,

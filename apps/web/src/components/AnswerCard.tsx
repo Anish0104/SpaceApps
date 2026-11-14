@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { AskResponse } from "@flameatlas/engine";
 import { dataset } from "../lib/data";
+import { humanizeField } from "../lib/labels";
 import { VerdictLight, type Light } from "./Badge";
 import { RecordTag } from "./RecordTag";
 
@@ -65,7 +66,7 @@ function WhatWeNeed({ a }: { a: AskResponse }) {
       <h3 className="font-semibold">What we'd need to answer this</h3>
       {a.missingFields.length > 0 ? (
         <ul className="dense mt-1 list-disc pl-5">
-          {a.missingFields.map((f) => <li key={f}>{f}</li>)}
+          {a.missingFields.map((f) => <li key={f}>{humanizeField(f)}</li>)}
         </ul>
       ) : (
         <p className="mt-1 text-sm text-ink/70">The answer did not name specific missing fields.</p>
@@ -110,7 +111,7 @@ export function AnswerCard({ a }: { a: AskResponse }) {
       {a.differs.length > 0 && (
         <Beat label="Differs or missing">
           <ul className="flex flex-wrap gap-1.5">
-            {a.differs.map((d) => <li key={d} className="chip chip-quiet whitespace-normal">{d}</li>)}
+            {a.differs.map((d) => <li key={d} className="chip chip-quiet whitespace-normal">{humanizeField(d)}</li>)}
           </ul>
         </Beat>
       )}

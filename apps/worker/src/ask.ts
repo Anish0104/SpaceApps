@@ -3,11 +3,11 @@
  *   search -> demo cache? -> cache? -> Gemini (six-beat JSON; models tried in order) -> Zod
  *   -> citation validator (sentences + limit/differs/next.target) -> template fallback -> cache
  */
-import { AskResponse, SearchRequest, fieldLabel, reasonLabel, type Dataset, type Investigation, type RankedResult, type Run, type Scenario } from "@flameatlas/engine";
+import { AskResponse, SearchRequest, fieldLabel, gravityRegime, matchPhrase, type Dataset, type GravityRegime, type Investigation, type RankedResult, type Run, type Scenario } from "@flameatlas/engine";
 import type MiniSearch from "minisearch";
 import { search } from "./search";
 import { numbersIn, validateFields, validateSentences } from "./validator";
-import { SYSTEM_PROMPT, buildRecords, buildUserPrompt, cacheKey, callGemini, sentRecordIds, DEFAULT_MODELS, GeminiError } from "./gemini";
+import { SYSTEM_PROMPT, buildRecords, buildUserPrompt, cacheKey, callModels, sentRecordIds, DEFAULT_MODELS } from "./gemini";
 import type { DemoAnswers } from "./demoCache";
 
 export interface AskDeps {
@@ -21,7 +21,21 @@ export interface AskDeps {
   kv?: KVNamespace;
   fetchImpl?: typeof fetch;
   log?: (msg: string) => void;
+  /** Skip every cache read (demo, memory, KV): the eval recorder wants a fresh answer each time. */
+  skipCache?: boolean;
 }
+
+/**
+ * Retrieval shared by ask() and the plain-RAG baseline: the ranked investigations, the record text
+ * sent to Gemini (top 5, up to 6 runs each) and the ids of those records.
+ */
+export function retrieve(ds: Dataset, index: MiniSearch, sc: Scenario, question: string) {
+  const ranked = search(ds, index, sc, SearchRequest.parse({ query: question, scenarioId: sc.id }));
+  return { ranked, records: buildRecords(ds, ranked), recordIds: sentRecordIds(ds, ranked) };
+}
+
+/** The models to try: deps.models, or the defaults when none are given. */
+export const modelsOf = (deps: Pick<AskDeps, "models">) => (deps.models?.length ? deps.models : DEFAULT_MODELS);
 
 const memCache = new Map<string, AskResponse>();
 
@@ -39,18 +53,51 @@ const span = (vals: number[]) => {
   return lo === hi ? String(lo) : `${lo} to ${hi}`;
 };
 
-/** "Gravity differs" -> "gravity differs"; "O2 partial pressure close" keeps its capitals. */
-const lowerFirst = (s: string) => (/^[A-Z][a-z]/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s);
+/** "a", "a and b", "a, b and c". */
+const listJoin = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`);
+
+const WHERE: Record<GravityRegime, string> = {
+  orbit: "in orbit", moon: "at lunar gravity", mars: "at Mars gravity", earth: "at Earth gravity",
+};
 
 /**
- * One template sentence: the investigation, why it ranked (readable labels), and the conditions its
- * runs MEASURED. Every number in the text is a value stored on a cited run or on the investigation's
- * sourced ranges, so the sentence passes the citation validator unchanged. Labels that carry a number
- * of their own (e.g. the 5 mol% tolerance in "Oxygen within 5 mol%") are left out: that number is a
- * rule, not a value on any record. Inferred, assumed and missing values are never quoted.
+ * Where the investigation was tested, in words, from documented gravity only: MEASURED run values,
+ * or sourced investigation ranges when there are no runs. Undefined when that is not one regime.
  */
-function templateSentence(inv: Investigation, runs: Run[], r: RankedResult): AskResponse["sentences"][number] {
-  const why = r.reasons.map(reasonLabel).filter((l) => numbersIn(l).length === 0).map(lowerFirst);
+function testedWhere(inv: Investigation, runs: Run[]): string | undefined {
+  const measured = runs.filter((x) => x.gravityG.type === "MEASURED" && x.gravityG.value !== null).map((x) => x.gravityG.value as number);
+  const values = measured.length ? measured : !runs.length && inv.ranges?.sourceId && inv.ranges.gravityG ? [...inv.ranges.gravityG] : [];
+  const regimes = new Set(values.map(gravityRegime));
+  return regimes.size === 1 ? WHERE[[...regimes][0]] : undefined;
+}
+
+/**
+ * "but ..." clauses: how the evidence differs from the scenario, from the ranking's own reasons.
+ * Claims a place ("in orbit") only when documented gravity says so; otherwise stays general.
+ */
+function contrasts(inv: Investigation, runs: Run[], r: RankedResult, sc: Scenario): string[] {
+  const out: string[] = [];
+  if (r.reasons.includes("GRAVITY_DIFFERS")) {
+    const where = testedWhere(inv, runs);
+    out.push(where ? `was tested ${where}, not at the scenario's gravity` : "was tested at a different gravity than the scenario");
+  }
+  if (r.reasons.includes("DIFFERENT_FUEL_PHASE")) {
+    const phase = inv.fuelPhase ?? runs[0]?.fuelPhase;
+    out.push(phase && sc.fuelPhase ? `uses ${phase} fuel, not ${sc.fuelPhase}` : "uses a different fuel phase than the scenario");
+  }
+  return out;
+}
+
+/**
+ * One template sentence: the investigation, what matches the scenario and what does not (in words,
+ * from the ranking's reasons), and the conditions its runs MEASURED. Every number in the text is a
+ * value stored on a cited run or on the investigation's sourced ranges, so the sentence passes the
+ * citation validator unchanged; the prose parts carry no numbers (checked below). Inferred, assumed
+ * and missing values are never quoted.
+ */
+function templateSentence(inv: Investigation, runs: Run[], r: RankedResult, sc: Scenario): AskResponse["sentences"][number] {
+  const matches = [...new Set(r.reasons.map(matchPhrase).filter((p): p is string => Boolean(p)))];
+  const buts = contrasts(inv, runs, r, sc);
   const cited = new Set<string>();
   const quoted: string[] = [];
   for (const { field, unit } of CONDITIONS) {
@@ -74,8 +121,11 @@ function templateSentence(inv: Investigation, runs: Run[], r: RankedResult): Ask
   } else {
     conditions = "no measured conditions are in our curated data";
   }
-  const reasons = why.length ? `ranked for ${why.join(", ")}` : "related by topic";
-  return { text: `${inv.acronym} (${inv.psiId}) is ${reasons}; ${conditions}.`, recordIds: [inv.psiId, ...cited] };
+  let how = matches.length ? `matches on ${listJoin(matches)}` : "";
+  if (buts.length) how += `${how ? ", but " : ""}${buts.join(", and ")}`;
+  if (!how) how = "is related by topic";
+  if (numbersIn(how).length) throw new Error(`template prose must not carry numbers: ${how}`); // a bug, never data
+  return { text: `${inv.acronym} (${inv.psiId}) ${how}; ${conditions}.`, recordIds: [inv.psiId, ...cited] };
 }
 
 /** Rules-engine template answer: used when Gemini is unavailable or its answer fails validation. */
@@ -91,7 +141,7 @@ export function templateAnswer(ds: Dataset, sc: Scenario, ranked: RankedResult[]
   }
   const sentences = top.map((r) => {
     const inv = ds.investigations.find((i) => i.psiId === r.psiId)!;
-    return templateSentence(inv, ds.runs.filter((run) => run.psiId === inv.psiId), r);
+    return templateSentence(inv, ds.runs.filter((run) => run.psiId === inv.psiId), r, sc);
   });
   const gravityGap = top.every((r) => r.reasons.includes("GRAVITY_DIFFERS"));
   return {
@@ -124,13 +174,12 @@ function validateAnswer(ds: Dataset, sc: Scenario, answer: AskResponse, sentIds:
 
 export async function ask(question: string, sc: Scenario, deps: AskDeps): Promise<AskResponse> {
   const { ds, index, log = () => {} } = deps;
-  const ranked = search(ds, index, sc, SearchRequest.parse({ query: question, scenarioId: sc.id }));
-  const sentIds = sentRecordIds(ds, ranked);
+  const { ranked, records, recordIds: sentIds } = retrieve(ds, index, sc, question);
   const key = await cacheKey(question, sc.id, ds.version);
 
   // 0. committed demo answers (work offline). Re-validated against the current data, so a stale
   //    or hand-edited entry is never served.
-  const demo = deps.demo?.[key];
+  const demo = deps.skipCache ? undefined : deps.demo?.[key];
   if (demo) {
     const { removed } = validateAnswer(ds, sc, demo.answer, sentIds);
     if (!removed.length) return { ...demo.answer, source: "cache", dataVersion: ds.version };
@@ -138,9 +187,9 @@ export async function ask(question: string, sc: Scenario, deps: AskDeps): Promis
   }
 
   // 1. cache
-  const mem = memCache.get(key);
+  const mem = deps.skipCache ? undefined : memCache.get(key);
   if (mem) return { ...mem, source: "cache" };
-  if (deps.kv) {
+  if (deps.kv && !deps.skipCache) {
     const hit = await deps.kv.get(key, "json");
     const parsed = AskResponse.safeParse(hit);
     if (parsed.success) { memCache.set(key, parsed.data); return { ...parsed.data, source: "cache" }; }
@@ -156,26 +205,20 @@ export async function ask(question: string, sc: Scenario, deps: AskDeps): Promis
 
   // One request per model, in order, no retries. Move on only when another model could still
   // answer (404 closed/gone, 429 quota, 503 overloaded, timeout); anything else goes to the template.
-  const prompt = buildUserPrompt(question, sc, buildRecords(ds, ranked));
-  const models = deps.models?.length ? deps.models : DEFAULT_MODELS;
-  let raw: unknown;
-  let answeredBy: string | undefined;
-  for (const model of models) {
-    try {
-      raw = await callGemini(SYSTEM_PROMPT, prompt, { apiKey: deps.apiKey, model, fetchImpl: deps.fetchImpl });
-      answeredBy = model;
-      break;
-    } catch (e) {
-      const tryNext = e instanceof GeminiError && e.tryNextModel;
-      log(`ask: ${model} failed (${String(e).slice(0, 200)})${tryNext ? "" : ", using template"}`);
-      if (!tryNext) return fallback();
-    }
+  const prompt = buildUserPrompt(question, sc, records);
+  const models = modelsOf(deps);
+  const out = await callModels(SYSTEM_PROMPT, prompt, {
+    apiKey: deps.apiKey, models, fetchImpl: deps.fetchImpl,
+    onFail: (model, e, tryNext) => log(`ask: ${model} failed (${String(e).slice(0, 200)})${tryNext ? "" : ", using template"}`),
+  });
+  if (!out.ok) {
+    if (out.reason === "exhausted") log(`ask: all ${models.length} models failed, using template`);
+    return fallback();
   }
-  if (!answeredBy) { log(`ask: all ${models.length} models failed, using template`); return fallback(); }
-  log(`ask: answered by ${answeredBy}`);
+  log(`ask: answered by ${out.model}`);
 
   // 3. shape check
-  const parsed = AskResponse.safeParse({ ...(raw as object), source: "llm", dataVersion: ds.version });
+  const parsed = AskResponse.safeParse({ ...(out.raw as object), source: "llm", dataVersion: ds.version });
   if (!parsed.success) { log(`ask: schema fail ${parsed.error.message.slice(0, 200)}`); return fallback(); }
 
   // 4. citation validator: drop sentences with unknown ids or numbers not in cited records

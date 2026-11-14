@@ -474,7 +474,7 @@ describe("template answer on the released dataset (dataset-v1.0.json)", () => {
     const ranked = search(release, releaseIndex, moon, SearchRequest.parse({ query: QUESTIONS[0], scenarioId: moon.id }));
     const saffire1 = templateAnswer(release, moon, ranked).sentences.find((x) => x.recordIds[0] === "PSI-98");
     expect(saffire1).toEqual({
-      text: "Saffire-I (PSI-98) is ranked for O2 partial pressure close, gravity differs, same material; its runs measured oxygen 21.5 to 21.7 mol%, flow speed 20 cm/s, gravity 0 g.",
+      text: "Saffire-I (PSI-98) matches on O2 partial pressure and material, but was tested in orbit, not at the scenario's gravity; its runs measured oxygen 21.5 to 21.7 mol%, flow speed 20 cm/s, gravity 0 g.",
       recordIds: ["PSI-98", "SAF-I-1", "SAF-I-2"],
     });
     expect(saffire1?.text).not.toMatch(/101\.3/); // Saffire-I pressure is INFERRED, so it is not quoted
