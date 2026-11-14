@@ -1,392 +1,384 @@
-# Verification checklist: data/dataset.json 1.1.0
+# Verification record: data/dataset.json 1.1.0
 
-Cross-check rule: whoever collected a value never verifies it. Every value below was collected by someone else;
-Juvana checks each one against the cited source page and ticks the box. Nothing here has been verified yet.
+Checked on 2026-11-14 by Juvana against the cited NASA sources. Values were collected by Navneet; the collector never verifies.
+**3 of 13 runs confirmed, 10 flagged.** 15 individual values are not supported by their cited source.
 
-How to use this file:
+What this changed in the data:
 
-1. Open the source URL, go to the page given, and compare the value. Tick `[x]` when it matches.
-2. At the end of each run, mark the decision: **confirmed** or **flagged**, and write the reason for any flag.
-3. Only runs marked confirmed get `status: "verified"` and `verifiedBy: "Juvana"` in the dataset. Flagged runs stay `imported`.
+- Confirmed runs (SAF-V-2, SAF-VI-3, SAF-VI-4) are `status: "verified"`, with `verifiedBy: "Juvana"` on every value that was checked. `collectedBy` is unchanged.
+- Flagged runs stay `status: "imported"`. No value was edited: corrections belong to the collector.
+- The COMPUTED O2 partial pressure was not checked against a source and carries no `verifiedBy`. Its arithmetic is shown in the note column.
+- `data/dataset-v1.0.json` (the curated runs `ingest/release.py` reads), `data/coverage.json` and `data/modeling.csv` carry the same statuses.
+- `ingest/make_dataset.py` still writes every run as `imported`. Re-running it will drop these statuses until it reads them from a verification log.
 
-Things to watch while checking:
+How to read the marks: `[x]` supported by the cited source (possibly approximate or inferred, as noted); `[ ]` contradicted, not
+tied to this run, or wrongly recorded as unknown; `skipped` is the computed field.
 
-- **INFERRED** values were not read directly off the page (for example cabin pressure taken as 101.3 kPa). Decide whether the source supports the inference.
-- **COMPUTED** O2 partial pressure is not in the source. The note column recomputes it from the oxygen and pressure in the same run.
-- The page reference belongs to the source as a whole, not to each value, so a value may sit on a neighbouring page or slide.
+Qualifiers that apply to every run:
 
-## Sources
-
-| Source id | Title | Reference | Page | URL |
-|---|---|---|---|---|
-| S-BASS-SR | Thickness and Fuel Preheating Effects on Material Flammability in Microgravity from the BASS Experiment | NTRS 20140011099 | Thin Fuel Flame Spread slide | https://ntrs.nasa.gov/citations/20140011099 |
-| S-BASS2 | Concurrent flame growth, spread and extinction over composite cotton-fiberglass fabric blend in microgravity | NTRS 20150008962 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |
-| S-SAF-IIII | Saffire: A Novel Approach to Study of Spacecraft Fire Safety Using Un-manned Spacecraft | NTRS 20180005168 | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |
-| S-SAF-IVVI | Preliminary Results from the Saffire VI Experiment | NTRS 20240002981 | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |
+- A nominal `0.0 g` is a microgravity label, not literally zero gravitational acceleration.
+- Nitrogen is the principal diluent of cabin air, not a claim of a pure O2/N2 mixture.
+- Oxygen fractions are initial measurements; several runs report a lower value at the end of the burn.
+- Page numbers are physical PDF pages unless stated.
 
 ## Summary
 
-| Run | Investigation | Values | Decision | Verified by |
+| Run | Investigation | Decision | Verified by | Reason |
 |---|---|---|---|---|
-| SAF-I-1 | PSI-98 | 14 | pending | |
-| SAF-I-2 | PSI-98 | 14 | pending | |
-| SAF-II-1 | PSI-99 | 14 | pending | |
-| SAF-II-9 | PSI-99 | 14 | pending | |
-| SAF-III-1 | PSI-100 | 14 | pending | |
-| SAF-III-2 | PSI-100 | 14 | pending | |
-| SAF-IV-1 | SAFFIRE-IVVI | 14 | pending | |
-| SAF-V-2 | SAFFIRE-IVVI | 14 | pending | |
-| SAF-VI-2 | SAFFIRE-IVVI | 14 | pending | |
-| SAF-VI-3 | SAFFIRE-IVVI | 14 | pending | |
-| SAF-VI-4 | SAFFIRE-IVVI | 14 | pending | |
-| BASS2-CF-conc | PSI-25 | 15 | pending | |
-| BASS2-CF-opp | PSI-25 | 15 | pending | |
+| SAF-I-1 | PSI-98 | **flagged** |  | Unsubstantiated 101.3 kPa pressure; later source gives I-1 as 102 kPa. |
+| SAF-I-2 | PSI-98 | **flagged** |  | Unsubstantiated 101.3 kPa pressure; length is only ~10 cm. |
+| SAF-II-1 | PSI-99 | **flagged** |  | Unsubstantiated 101.3 kPa pressure; table reports no pressure. |
+| SAF-II-9 | PSI-99 | **flagged** |  | Unsubstantiated 101.3 kPa pressure; table reports no pressure. |
+| SAF-III-1 | PSI-100 | **flagged** |  | Unsubstantiated 101.3 kPa pressure; later source gives III-1 as 99 kPa. |
+| SAF-III-2 | PSI-100 | **flagged** |  | Unsubstantiated 101.3 kPa pressure; length is only ~10 cm. |
+| SAF-IV-1 | SAFFIRE-IVVI | **flagged** |  | 0.37 mm thickness lacks run-specific support in cited paper. |
+| SAF-V-2 | SAFFIRE-IVVI | confirmed | Juvana | No unsupported applicable fields identified in cited report. |
+| SAF-VI-2 | SAFFIRE-IVVI | **flagged** |  | 0.37 mm thickness lacks run-specific support in cited paper. |
+| SAF-VI-3 | SAFFIRE-IVVI | confirmed | Juvana | No unsupported applicable fields identified in cited report. |
+| SAF-VI-4 | SAFFIRE-IVVI | confirmed | Juvana | No unsupported applicable fields identified in cited report. |
+| BASS2-CF-conc | PSI-25 | **flagged** |  | Source explicitly gives ~0.32 mm thickness; 2.55 mm/s belongs to BASS material and is not tied to a BASS-II run. |
+| BASS2-CF-opp | PSI-25 | **flagged** |  | Source explicitly gives ~0.32 mm thickness; opposed flow/1.21 mm/s is not tied to a BASS-II run. |
 
-## SAF-I-1 (PSI-98)
+## What the collector needs to fix before the flagged runs can be verified
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
+1. **Saffire I-III pressure (6 runs).** 101.3 kPa is not in the cited table. A later paper reports 102 kPa for I-1 and 99 kPa for III-1. Source run-specific pressures, or record pressure as unknown, then recompute the O2 partial pressures.
+2. **SIBAL thickness on SAF-IV-1 and SAF-VI-2.** 0.37 mm is not given for these runs in the cited 2024 paper. Source it or mark it not documented.
+3. **The two BASS-II runs.** The cited paper gives the thickness (about 0.32 mm) that the dataset records as not documented. The 2.55 and 1.21 mm/s spread rates come from a BASS presentation and are not tied to a BASS-II run; the paper's appendix classes the 21% O2, 10 cm/s case as BASS; and the paper analyses concurrent tests, not an opposed BASS-II run.
+4. **Sample length on SAF-I-2 and SAF-III-2.** The table says approximately 10 cm, not an exact 100 mm.
 
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Geometry | sheet, 40.6 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Size | 940 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Oxygen | 21.7 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | O2 partial pressure | 21.98 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | 21.7 / 100 x 101.3 = 21.98 kPa |
-| [ ] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Duct size | Saffire large flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
+Flagged runs must not be promoted to verified without these changes and a fresh check.
 
-No outcome values are recorded for this run.
+## Sources used for the check
 
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+- Saffire I-III, Table 1 (slide 30): https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf#page=30
+- Saffire IV-VI, Table 1 (PDF p. 3) and PMMA thickness (PDF p. 4): https://ntrs.nasa.gov/api/citations/20240002981/downloads/Saffire-ICES-2024-ICES-365-accepted%20final.pdf#page=3
+- BASS / BASS-II 2015 paper, sections 2-3 and appendix: https://ntrs.nasa.gov/api/citations/20150008962/downloads/20150008962.pdf#page=3
+- BASS 2014 presentation, PDF p. 20 (2.55 and 1.21 mm/s): https://ntrs.nasa.gov/api/citations/20140011099/downloads/20140011099.pdf#page=20
+- Not in the dataset's sources, used to test the pressure inference: independent Saffire I / III flight pressures (Table 1, manuscript p. 8): https://dirros.openscience.si/Dokument.php?id=23986&lang=slv
 
-## SAF-I-2 (PSI-98)
+## SAF-I-1 (PSI-98): flagged
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
+Status in dataset: `imported`. Checked against: https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf#page=30
 
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Geometry | sheet, 40.6 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Size | 100 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Oxygen | 21.5 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | O2 partial pressure | 21.78 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | 21.5 / 100 x 101.3 = 21.78 kPa |
-| [ ] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Flow direction | opposed | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Duct size | Saffire large flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Geometry | sheet, 40.6 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Size | 940 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Oxygen | 21.7 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | Table reports starting 21.7%, ending 21.5%. |
+| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | 101.3 kPa not stated in cited table; independent later research gives 102 kPa for I-1. |
+| skipped | O2 partial pressure | 21.98 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | COMPUTED — skipped by request |
+| [x] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Duct size | Saffire large flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | Inferred, not read off the page |
+| [x] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
 
-No outcome values are recorded for this run.
+- Decision: flagged
+- Reason: Unsubstantiated 101.3 kPa pressure; later source gives I-1 as 102 kPa.
+- Checked on: 2026-11-14
 
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+## SAF-I-2 (PSI-98): flagged
 
-## SAF-II-1 (PSI-99)
+Status in dataset: `imported`. Checked against: https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf#page=30
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Geometry | sheet, 40.6 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Size | 100 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | Table says approximately 10 cm, not an exact 100 mm. |
+| [x] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Oxygen | 21.5 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | 101.3 kPa not established for this run. |
+| skipped | O2 partial pressure | 21.78 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | COMPUTED — skipped by request |
+| [x] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Flow direction | opposed | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Duct size | Saffire large flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | Inferred, not read off the page |
+| [x] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
 
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | Silicone | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Geometry | sheet, 5 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Size | 290 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Thickness | 0.27 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Oxygen | 22.1 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | O2 partial pressure | 22.39 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | 22.1 / 100 x 101.3 = 22.39 kPa |
-| [ ] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
+- Decision: flagged
+- Reason: Unsubstantiated 101.3 kPa pressure; length is only ~10 cm.
+- Checked on: 2026-11-14
 
-No outcome values are recorded for this run.
+## SAF-II-1 (PSI-99): flagged
 
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+Status in dataset: `imported`. Checked against: https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf#page=30
 
-## SAF-II-9 (PSI-99)
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | Silicone | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Geometry | sheet, 5 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Size | 290 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Thickness | 0.27 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Oxygen | 22.1 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | Table says approximately 22.1%. |
+| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | 101.3 kPa not established; later Saffire II values around 103 kPa cannot automatically be assigned to this sample. |
+| skipped | O2 partial pressure | 22.39 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | COMPUTED — skipped by request |
+| [x] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | Inferred, not read off the page |
+| [x] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
+- Decision: flagged
+- Reason: Unsubstantiated 101.3 kPa pressure; table reports no pressure.
+- Checked on: 2026-11-14
 
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | PMMA (acrylic) | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Geometry | flat slab, 5 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Size | 290 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Thickness | 10.0 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Oxygen | 22.0 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | O2 partial pressure | 22.29 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | 22.0 / 100 x 101.3 = 22.29 kPa |
-| [ ] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
+## SAF-II-9 (PSI-99): flagged
 
-No outcome values are recorded for this run.
+Status in dataset: `imported`. Checked against: https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf#page=30
 
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | PMMA (acrylic) | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Geometry | flat slab, 5 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Size | 290 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Thickness | 10.0 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Oxygen | 22.0 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | Table reports 22.0% initially, 21.9% finally. |
+| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | 101.3 kPa not established for this sample. |
+| skipped | O2 partial pressure | 22.29 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | COMPUTED — skipped by request |
+| [x] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | Inferred, not read off the page |
+| [x] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
 
-## SAF-III-1 (PSI-100)
+- Decision: flagged
+- Reason: Unsubstantiated 101.3 kPa pressure; table reports no pressure.
+- Checked on: 2026-11-14
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
+## SAF-III-1 (PSI-100): flagged
 
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Geometry | sheet, 40.6 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Size | 940 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Oxygen | 21.2 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | O2 partial pressure | 21.48 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | 21.2 / 100 x 101.3 = 21.48 kPa |
-| [ ] | Flow speed | 25 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Duct size | Saffire large flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
+Status in dataset: `imported`. Checked against: https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf#page=30
 
-No outcome values are recorded for this run.
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Geometry | sheet, 40.6 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Size | 940 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Oxygen | 21.2 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | 21.2% initial, 21.0% final. |
+| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | 101.3 kPa not established; later research reports 99 kPa for III-1. |
+| skipped | O2 partial pressure | 21.48 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | COMPUTED — skipped by request |
+| [x] | Flow speed | 25 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Duct size | Saffire large flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | Inferred, not read off the page |
+| [x] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
 
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+- Decision: flagged
+- Reason: Unsubstantiated 101.3 kPa pressure; later source gives III-1 as 99 kPa.
+- Checked on: 2026-11-14
 
-## SAF-III-2 (PSI-100)
+## SAF-III-2 (PSI-100): flagged
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
+Status in dataset: `imported`. Checked against: https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf#page=30
 
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Geometry | sheet, 40.6 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Size | 100 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Oxygen | 21.2 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | O2 partial pressure | 21.48 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | 21.2 / 100 x 101.3 = 21.48 kPa |
-| [ ] | Flow speed | 25 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Flow direction | opposed | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Duct size | Saffire large flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 | Inferred, not read off the page |
-| [ ] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | https://ntrs.nasa.gov/citations/20180005168 |  |
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Geometry | sheet, 40.6 cm wide | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Size | 100 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | Table says approximately 10 cm, not an exact 100 mm. |
+| [x] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Oxygen | 21.2 mol% | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) | 21.2% initial, 21.0% final. |
+| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | 101.3 kPa not established. |
+| skipped | O2 partial pressure | 21.48 kPa | COMPUTED | Navneet | S-SAF-IIII | Table 1 (p.31) | COMPUTED — skipped by request |
+| [x] | Flow speed | 25 cm/s | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Flow direction | opposed | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Duct size | Saffire large flow duct | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IIII | Table 1 (p.31) | Inferred, not read off the page |
+| [x] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-SAF-IIII | Table 1 (p.31) |  |
 
-No outcome values are recorded for this run.
+- Decision: flagged
+- Reason: Unsubstantiated 101.3 kPa pressure; length is only ~10 cm.
+- Checked on: 2026-11-14
 
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+## SAF-IV-1 (SAFFIRE-IVVI): flagged
 
-## SAF-IV-1 (SAFFIRE-IVVI)
+Status in dataset: `imported`. Checked against: https://ntrs.nasa.gov/api/citations/20240002981/downloads/Saffire-ICES-2024-ICES-365-accepted%20final.pdf#page=3
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Geometry | cloth | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Size | 500 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [ ] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | 0.37 mm not specified for this run in cited 2024 paper; material composition/areal density alone is insufficient. |
+| [x] | Oxygen | 22.0 mol% | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Pressure | 100.0 kPa | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| skipped | O2 partial pressure | 22.0 kPa | COMPUTED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | COMPUTED — skipped by request |
+| [x] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | Inferred, not read off the page |
+| [x] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
 
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Geometry | cloth | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Size | 500 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Oxygen | 22.0 mol% | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Pressure | 100.0 kPa | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | O2 partial pressure | 22.0 kPa | COMPUTED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 | 22.0 / 100 x 100.0 = 22.00 kPa |
-| [ ] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 | Inferred, not read off the page |
-| [ ] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
+- Decision: flagged
+- Reason: 0.37 mm thickness lacks run-specific support in cited paper.
+- Checked on: 2026-11-14
 
-No outcome values are recorded for this run.
+## SAF-V-2 (SAFFIRE-IVVI): confirmed
 
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+Status in dataset: `verified`. Checked against: https://ntrs.nasa.gov/api/citations/20240002981/downloads/Saffire-ICES-2024-ICES-365-accepted%20final.pdf#page=3
 
-## SAF-V-2 (SAFFIRE-IVVI)
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | Cotton jersey fabric | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Geometry | cloth | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Size | 500 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Thickness | not documented (not_documented) | UNKNOWN | Navneet | none | no page recorded | Not documented in cited source; acceptable as UNKNOWN. |
+| [x] | Oxygen | 26.2 mol% | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Pressure | 70.7 kPa | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| skipped | O2 partial pressure | 18.52 kPa | COMPUTED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | COMPUTED — skipped by request |
+| [x] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | Inferred, not read off the page |
+| [x] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
+- Decision: confirmed
+- Reason: No unsupported applicable fields identified in cited report.
+- Checked on: 2026-11-14
 
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | Cotton jersey fabric | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Geometry | cloth | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Size | 500 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Thickness | not documented (not_documented) | UNKNOWN | Navneet | none | no page recorded | no URL | Confirm the source really does not give it |
-| [ ] | Oxygen | 26.2 mol% | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Pressure | 70.7 kPa | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | O2 partial pressure | 18.52 kPa | COMPUTED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 | 26.2 / 100 x 70.7 = 18.52 kPa |
-| [ ] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 | Inferred, not read off the page |
-| [ ] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
+## SAF-VI-2 (SAFFIRE-IVVI): flagged
 
-No outcome values are recorded for this run.
+Status in dataset: `imported`. Checked against: https://ntrs.nasa.gov/api/citations/20240002981/downloads/Saffire-ICES-2024-ICES-365-accepted%20final.pdf#page=3
 
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Geometry | cloth | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Size | 500 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [ ] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | 0.37 mm not specified for this run in cited 2024 paper; material composition/areal density alone is insufficient. |
+| [x] | Oxygen | 31.0 mol% | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Pressure | 54.1 kPa | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| skipped | O2 partial pressure | 16.77 kPa | COMPUTED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | COMPUTED — skipped by request |
+| [x] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | Inferred, not read off the page |
+| [x] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
 
-## SAF-VI-2 (SAFFIRE-IVVI)
+- Decision: flagged
+- Reason: 0.37 mm thickness lacks run-specific support in cited paper.
+- Checked on: 2026-11-14
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
+## SAF-VI-3 (SAFFIRE-IVVI): confirmed
 
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Geometry | cloth | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Size | 500 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Thickness | 0.37 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Oxygen | 31.0 mol% | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Pressure | 54.1 kPa | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | O2 partial pressure | 16.77 kPa | COMPUTED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 | 31.0 / 100 x 54.1 = 16.77 kPa |
-| [ ] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 | Inferred, not read off the page |
-| [ ] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
+Status in dataset: `verified`. Checked against: https://ntrs.nasa.gov/api/citations/20240002981/downloads/Saffire-ICES-2024-ICES-365-accepted%20final.pdf#page=3
 
-No outcome values are recorded for this run.
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | PMMA (acrylic), two-sided | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Geometry | slab | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Size | 180 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Thickness | 10.0 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | 10 mm corroborated by the 2024 paper text. |
+| [x] | Oxygen | 30.3 mol% | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Pressure | 54.6 kPa | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| skipped | O2 partial pressure | 16.54 kPa | COMPUTED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | COMPUTED — skipped by request |
+| [x] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | Inferred, not read off the page |
+| [x] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
 
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+- Decision: confirmed
+- Reason: No unsupported applicable fields identified in cited report.
+- Checked on: 2026-11-14
 
-## SAF-VI-3 (SAFFIRE-IVVI)
+## SAF-VI-4 (SAFFIRE-IVVI): confirmed
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
+Status in dataset: `verified`. Checked against: https://ntrs.nasa.gov/api/citations/20240002981/downloads/Saffire-ICES-2024-ICES-365-accepted%20final.pdf#page=3
 
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | PMMA (acrylic), two-sided | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Geometry | slab | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Size | 180 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Thickness | 10.0 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Oxygen | 30.3 mol% | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Pressure | 54.6 kPa | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | O2 partial pressure | 16.54 kPa | COMPUTED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 | 30.3 / 100 x 54.6 = 16.54 kPa |
-| [ ] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 | Inferred, not read off the page |
-| [ ] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | PMMA (acrylic), one-sided | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Geometry | slab | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Size | 180 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Thickness | 5.0 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | 5 mm corroborated by the 2024 paper text. |
+| [x] | Oxygen | 28.8 mol% | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Pressure | 55.2 kPa | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| skipped | O2 partial pressure | 15.9 kPa | COMPUTED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | COMPUTED — skipped by request |
+| [x] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | Inferred, not read off the page |
+| [x] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) |  |
 
-No outcome values are recorded for this run.
+- Decision: confirmed
+- Reason: No unsupported applicable fields identified in cited report.
+- Checked on: 2026-11-14
 
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+## BASS2-CF-conc (PSI-25): flagged
 
-## SAF-VI-4 (SAFFIRE-IVVI)
+Status in dataset: `imported`. Checked against: https://ntrs.nasa.gov/api/citations/20150008962/downloads/20150008962.pdf#page=3
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [x] | Geometry | sheet, 2.2 cm wide | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [x] | Size | 100 mm | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [ ] | Thickness | not documented (not_documented) | UNKNOWN | Navneet | none | no page recorded | Paper explicitly specifies ~0.32 mm; dataset incorrectly says not documented. |
+| [x] | Oxygen | 21.0 mol% | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | Paper has a 10 cm/s, 21% example but its appendix classifies 21% 10 cm/s as BASS, not BASS-II; missing run-level attribution. |
+| [x] | Pressure | 101.3 kPa | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | Inferred, not read off the page |
+| skipped | O2 partial pressure | 21.27 kPa | COMPUTED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | COMPUTED — skipped by request |
+| [ ] | Flow speed | 10 cm/s | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | 10 cm/s is demonstrated in study but not established for this named BASS-II record. |
+| [x] | Flow direction | concurrent | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [x] | Duct size | 76 x 76 mm | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | Inferred, not read off the page |
+| [x] | Apparatus | Microgravity Science Glovebox (BASS-II duct) | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [ ] | Outcome: flame spread rate | 2.55 mm/s | MEASURED | Navneet | S-BASS-SR | Thin Fuel Flame Spread slide | 2.55 mm/s printed in older BASS presentation, not linked to specific BASS-II run. |
 
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | PMMA (acrylic), one-sided | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Geometry | slab | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Size | 180 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Thickness | 5.0 mm | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Oxygen | 28.8 mol% | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Pressure | 55.2 kPa | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | O2 partial pressure | 15.9 kPa | COMPUTED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 | 28.8 / 100 x 55.2 = 15.90 kPa |
-| [ ] | Flow speed | 20 cm/s | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Flow direction | concurrent | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Duct size | Saffire flow duct | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 | Inferred, not read off the page |
-| [ ] | Apparatus | Cygnus Saffire module | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-SAF-IVVI | Test Matrix (slide ~11) | https://ntrs.nasa.gov/citations/20240002981 |  |
+- Decision: flagged
+- Reason: Source explicitly gives ~0.32 mm thickness; 2.55 mm/s belongs to BASS material and is not tied to a BASS-II run.
+- Checked on: 2026-11-14
 
-No outcome values are recorded for this run.
+## BASS2-CF-opp (PSI-25): flagged
 
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+Status in dataset: `imported`. Checked against: https://ntrs.nasa.gov/api/citations/20150008962/downloads/20150008962.pdf#page=3
 
-## BASS2-CF-conc (PSI-25)
+| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Note |
+|---|---|---|---|---|---|---|---|
+| [x] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [x] | Geometry | sheet, 2.2 cm wide | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [x] | Size | 100 mm | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [ ] | Thickness | not documented (not_documented) | UNKNOWN | Navneet | none | no page recorded | Paper explicitly specifies ~0.32 mm; dataset incorrectly says not documented. |
+| [x] | Oxygen | 21.0 mol% | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | 21% at 10 cm/s not established for an opposed BASS-II run. |
+| [x] | Pressure | 101.3 kPa | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | Inferred, not read off the page |
+| skipped | O2 partial pressure | 21.27 kPa | COMPUTED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | COMPUTED — skipped by request |
+| [ ] | Flow speed | 10 cm/s | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | 10 cm/s example in 2014 BASS presentation is not linked to a BASS-II run. |
+| [ ] | Flow direction | opposed | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | 2015 BASS-II paper analyzes concurrent tests, not the asserted opposed BASS-II run. |
+| [x] | Gravity | 0.0 g | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [x] | Duct size | 76 x 76 mm | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [x] | Diluent | nitrogen | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | Inferred, not read off the page |
+| [x] | Apparatus | Microgravity Science Glovebox (BASS-II duct) | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [x] | Method | cameras / video | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) |  |
+| [ ] | Outcome: flame spread rate | 1.21 mm/s | MEASURED | Navneet | S-BASS-SR | Thin Fuel Flame Spread slide | 1.21 mm/s is shown in BASS presentation, not linked to a specific BASS-II run. |
 
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
-
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Geometry | sheet, 2.2 cm wide | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Size | 100 mm | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Thickness | not documented (not_documented) | UNKNOWN | Navneet | none | no page recorded | no URL | Confirm the source really does not give it |
-| [ ] | Oxygen | 21.0 mol% | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 | Inferred, not read off the page |
-| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 | Inferred, not read off the page |
-| [ ] | O2 partial pressure | 21.27 kPa | COMPUTED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 | 21.0 / 100 x 101.3 = 21.27 kPa |
-| [ ] | Flow speed | 10 cm/s | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Flow direction | concurrent | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Duct size | 76 x 76 mm | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 | Inferred, not read off the page |
-| [ ] | Apparatus | Microgravity Science Glovebox (BASS-II duct) | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Outcome: flame spread rate | 2.55 mm/s | MEASURED | Navneet | S-BASS-SR | Thin Fuel Flame Spread slide | https://ntrs.nasa.gov/citations/20140011099 |  |
-
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
-
-## BASS2-CF-opp (PSI-25)
-
-Current status: `imported`. Fuel phase: solid. Sensors: cameras, thermocouples.
-
-| OK | Field | Value in dataset | Type | Collected by | Source id | Page | Source URL | Note |
-|---|---|---|---|---|---|---|---|---|
-| [ ] | Material | Cotton-fiberglass fabric (SIBAL) | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Geometry | sheet, 2.2 cm wide | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Size | 100 mm | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Thickness | not documented (not_documented) | UNKNOWN | Navneet | none | no page recorded | no URL | Confirm the source really does not give it |
-| [ ] | Oxygen | 21.0 mol% | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 | Inferred, not read off the page |
-| [ ] | Pressure | 101.3 kPa | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 | Inferred, not read off the page |
-| [ ] | O2 partial pressure | 21.27 kPa | COMPUTED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 | 21.0 / 100 x 101.3 = 21.27 kPa |
-| [ ] | Flow speed | 10 cm/s | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Flow direction | opposed | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Gravity | 0.0 g | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Duct size | 76 x 76 mm | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Diluent | nitrogen | INFERRED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 | Inferred, not read off the page |
-| [ ] | Apparatus | Microgravity Science Glovebox (BASS-II duct) | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Method | cameras / video | MEASURED | Navneet | S-BASS2 | Abstract (p.1), Sec.2 (p.2-3) | https://ntrs.nasa.gov/citations/20150008962 |  |
-| [ ] | Outcome: flame spread rate | 1.21 mm/s | MEASURED | Navneet | S-BASS-SR | Thin Fuel Flame Spread slide | https://ntrs.nasa.gov/citations/20140011099 |  |
-
-- Decision: [ ] confirmed  [ ] flagged
-- Reason if flagged:
-- Checked on:
+- Decision: flagged
+- Reason: Source explicitly gives ~0.32 mm thickness; opposed flow/1.21 mm/s is not tied to a BASS-II run.
+- Checked on: 2026-11-14
