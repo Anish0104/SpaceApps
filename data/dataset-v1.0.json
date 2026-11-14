@@ -227,48 +227,48 @@
       "material": {
         "value": "Cotton-fiberglass fabric (SIBAL)",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "sheet, 40.6 cm wide",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sizeMm": {
         "value": 940,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "thicknessMm": {
         "value": 0.37,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "o2MolPct": {
         "value": 21.7,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
         "value": 101.3,
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII"
       },
       "o2PartialKPa": {
         "value": 21.98,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -276,45 +276,45 @@
       "flowCmS": {
         "value": 20,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-SAF-IIII"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-SAF-IIII"
       },
       "ductSize": {
         "value": "Saffire large flow duct",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sensors": [
@@ -330,48 +330,48 @@
       "material": {
         "value": "Cotton-fiberglass fabric (SIBAL)",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "sheet, 40.6 cm wide",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sizeMm": {
         "value": 100,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "thicknessMm": {
         "value": 0.37,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "o2MolPct": {
         "value": 21.5,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
         "value": 101.3,
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII"
       },
       "o2PartialKPa": {
         "value": 21.78,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -379,45 +379,45 @@
       "flowCmS": {
         "value": 20,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-SAF-IIII"
       },
       "flowDirection": {
         "value": "opposed",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-SAF-IIII"
       },
       "ductSize": {
         "value": "Saffire large flow duct",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sensors": [
@@ -433,48 +433,48 @@
       "material": {
         "value": "Silicone",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "sheet, 5 cm wide",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sizeMm": {
         "value": 290,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "thicknessMm": {
         "value": 0.27,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "o2MolPct": {
         "value": 22.1,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
         "value": 101.3,
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII"
       },
       "o2PartialKPa": {
         "value": 22.39,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -482,45 +482,45 @@
       "flowCmS": {
         "value": 20,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-SAF-IIII"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-SAF-IIII"
       },
       "ductSize": {
         "value": "Saffire flow duct",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sensors": [
@@ -536,48 +536,48 @@
       "material": {
         "value": "PMMA (acrylic)",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "flat slab, 5 cm wide",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sizeMm": {
         "value": 290,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "thicknessMm": {
         "value": 10.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "o2MolPct": {
         "value": 22.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
         "value": 101.3,
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII"
       },
       "o2PartialKPa": {
         "value": 22.29,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -585,45 +585,45 @@
       "flowCmS": {
         "value": 20,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-SAF-IIII"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-SAF-IIII"
       },
       "ductSize": {
         "value": "Saffire flow duct",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sensors": [
@@ -639,48 +639,48 @@
       "material": {
         "value": "Cotton-fiberglass fabric (SIBAL)",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "sheet, 40.6 cm wide",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sizeMm": {
         "value": 940,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "thicknessMm": {
         "value": 0.37,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "o2MolPct": {
         "value": 21.2,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
         "value": 101.3,
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII"
       },
       "o2PartialKPa": {
         "value": 21.48,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -688,45 +688,45 @@
       "flowCmS": {
         "value": 25,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-SAF-IIII"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-SAF-IIII"
       },
       "ductSize": {
         "value": "Saffire large flow duct",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sensors": [
@@ -742,48 +742,48 @@
       "material": {
         "value": "Cotton-fiberglass fabric (SIBAL)",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "sheet, 40.6 cm wide",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sizeMm": {
         "value": 100,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "thicknessMm": {
         "value": 0.37,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IIII"
       },
       "o2MolPct": {
         "value": 21.2,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
         "value": 101.3,
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII"
       },
       "o2PartialKPa": {
         "value": 21.48,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IIII",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -791,45 +791,45 @@
       "flowCmS": {
         "value": 25,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-SAF-IIII"
       },
       "flowDirection": {
         "value": "opposed",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-SAF-IIII"
       },
       "ductSize": {
         "value": "Saffire large flow duct",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IIII"
       },
       "sensors": [
@@ -845,48 +845,48 @@
       "material": {
         "value": "Cotton-fiberglass fabric (SIBAL)",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "cloth",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "sizeMm": {
         "value": 500,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IVVI"
       },
       "thicknessMm": {
         "value": 0.37,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IVVI"
       },
       "o2MolPct": {
         "value": 22.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-SAF-IVVI"
       },
       "pressureKPa": {
         "value": 100.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IVVI"
       },
       "o2PartialKPa": {
         "value": 22.0,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IVVI",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -894,45 +894,45 @@
       "flowCmS": {
         "value": 20,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-SAF-IVVI"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-SAF-IVVI"
       },
       "ductSize": {
         "value": "Saffire flow duct",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "sensors": [
@@ -948,20 +948,20 @@
       "material": {
         "value": "Cotton jersey fabric",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "cloth",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "sizeMm": {
         "value": 500,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IVVI"
       },
@@ -970,26 +970,26 @@
         "unit": "mm",
         "type": "UNKNOWN",
         "missingReason": "not_documented",
-        "collectedBy": "claude-research (unverified)"
+        "collectedBy": "Navneet"
       },
       "o2MolPct": {
         "value": 26.2,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-SAF-IVVI"
       },
       "pressureKPa": {
         "value": 70.7,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IVVI"
       },
       "o2PartialKPa": {
         "value": 18.52,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IVVI",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -997,45 +997,45 @@
       "flowCmS": {
         "value": 20,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-SAF-IVVI"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-SAF-IVVI"
       },
       "ductSize": {
         "value": "Saffire flow duct",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "sensors": [
@@ -1051,48 +1051,48 @@
       "material": {
         "value": "Cotton-fiberglass fabric (SIBAL)",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "cloth",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "sizeMm": {
         "value": 500,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IVVI"
       },
       "thicknessMm": {
         "value": 0.37,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IVVI"
       },
       "o2MolPct": {
         "value": 31.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-SAF-IVVI"
       },
       "pressureKPa": {
         "value": 54.1,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IVVI"
       },
       "o2PartialKPa": {
         "value": 16.77,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IVVI",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -1100,45 +1100,45 @@
       "flowCmS": {
         "value": 20,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-SAF-IVVI"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-SAF-IVVI"
       },
       "ductSize": {
         "value": "Saffire flow duct",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "sensors": [
@@ -1154,48 +1154,48 @@
       "material": {
         "value": "PMMA (acrylic), two-sided",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "slab",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "sizeMm": {
         "value": 180,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IVVI"
       },
       "thicknessMm": {
         "value": 10.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IVVI"
       },
       "o2MolPct": {
         "value": 30.3,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-SAF-IVVI"
       },
       "pressureKPa": {
         "value": 54.6,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IVVI"
       },
       "o2PartialKPa": {
         "value": 16.54,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IVVI",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -1203,45 +1203,45 @@
       "flowCmS": {
         "value": 20,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-SAF-IVVI"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-SAF-IVVI"
       },
       "ductSize": {
         "value": "Saffire flow duct",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "sensors": [
@@ -1257,48 +1257,48 @@
       "material": {
         "value": "PMMA (acrylic), one-sided",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "slab",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "sizeMm": {
         "value": 180,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IVVI"
       },
       "thicknessMm": {
         "value": 5.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-SAF-IVVI"
       },
       "o2MolPct": {
         "value": 28.8,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-SAF-IVVI"
       },
       "pressureKPa": {
         "value": 55.2,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IVVI"
       },
       "o2PartialKPa": {
         "value": 15.9,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-SAF-IVVI",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -1306,45 +1306,45 @@
       "flowCmS": {
         "value": 20,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-SAF-IVVI"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-SAF-IVVI"
       },
       "ductSize": {
         "value": "Saffire flow duct",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-SAF-IVVI"
       },
       "sensors": [
@@ -1360,20 +1360,20 @@
       "material": {
         "value": "Cotton-fiberglass fabric (SIBAL)",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "sheet, 2.2 cm wide",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "sizeMm": {
         "value": 100,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-BASS2"
       },
@@ -1382,26 +1382,26 @@
         "unit": "mm",
         "type": "UNKNOWN",
         "missingReason": "not_documented",
-        "collectedBy": "claude-research (unverified)"
+        "collectedBy": "Navneet"
       },
       "o2MolPct": {
         "value": 21.0,
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-BASS2"
       },
       "pressureKPa": {
         "value": 101.3,
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-BASS2"
       },
       "o2PartialKPa": {
         "value": 21.27,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-BASS2",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -1409,45 +1409,45 @@
       "flowCmS": {
         "value": 10,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-BASS2"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-BASS2"
       },
       "ductSize": {
         "value": "76 x 76 mm",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "apparatus": {
         "value": "Microgravity Science Glovebox (BASS-II duct)",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "sensors": [
@@ -1460,7 +1460,7 @@
           "value": {
             "value": 2.55,
             "type": "MEASURED",
-            "collectedBy": "claude-research (unverified)",
+            "collectedBy": "Navneet",
             "unit": "mm/s",
             "sourceId": "S-BASS-SR"
           }
@@ -1474,20 +1474,20 @@
       "material": {
         "value": "Cotton-fiberglass fabric (SIBAL)",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "sheet, 2.2 cm wide",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "sizeMm": {
         "value": 100,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mm",
         "sourceId": "S-BASS2"
       },
@@ -1496,26 +1496,26 @@
         "unit": "mm",
         "type": "UNKNOWN",
         "missingReason": "not_documented",
-        "collectedBy": "claude-research (unverified)"
+        "collectedBy": "Navneet"
       },
       "o2MolPct": {
         "value": 21.0,
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-BASS2"
       },
       "pressureKPa": {
         "value": 101.3,
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-BASS2"
       },
       "o2PartialKPa": {
         "value": 21.27,
         "type": "COMPUTED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-BASS2",
         "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
@@ -1523,45 +1523,45 @@
       "flowCmS": {
         "value": 10,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "cm/s",
         "sourceId": "S-BASS2"
       },
       "flowDirection": {
         "value": "opposed",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "unit": "g",
         "sourceId": "S-BASS2"
       },
       "ductSize": {
         "value": "76 x 76 mm",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "apparatus": {
         "value": "Microgravity Science Glovebox (BASS-II duct)",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
-        "collectedBy": "claude-research (unverified)",
+        "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
       },
       "sensors": [
@@ -1574,7 +1574,7 @@
           "value": {
             "value": 1.21,
             "type": "MEASURED",
-            "collectedBy": "claude-research (unverified)",
+            "collectedBy": "Navneet",
             "unit": "mm/s",
             "sourceId": "S-BASS-SR"
           }
@@ -1625,14 +1625,14 @@
     {
       "id": "S-SAF-IIII",
       "ntrsId": "20180005168",
-      "title": "Saffire I-III Objectives and Results (NASA GRC)",
+      "title": "Saffire: A Novel Approach to Study of Spacecraft Fire Safety Using Un-manned Spacecraft",
       "url": "https://ntrs.nasa.gov/citations/20180005168",
       "page": "Table 1 (p.31)"
     },
     {
       "id": "S-SAF-IVVI",
-      "ntrsId": "20240007488",
-      "title": "Preliminary Results from the Saffire VI Experiment (ICES 2024)",
+      "ntrsId": "20240002981",
+      "title": "Preliminary Results from the Saffire VI Experiment",
       "url": "https://ntrs.nasa.gov/citations/20240002981",
       "page": "Test Matrix (slide ~11)"
     },
@@ -1646,7 +1646,7 @@
     {
       "id": "S-BASS2",
       "ntrsId": "20150008962",
-      "title": "Flame growth, spread and extinction over cotton-fiberglass, BASS/BASS-II",
+      "title": "Concurrent flame growth, spread and extinction over composite cotton-fiberglass fabric blend in microgravity",
       "url": "https://ntrs.nasa.gov/citations/20150008962",
       "page": "Abstract (p.1), Sec.2 (p.2-3)"
     },
@@ -1660,7 +1660,7 @@
     {
       "id": "S-BASS-SR",
       "ntrsId": "20140011099",
-      "title": "BASS/BASS-II thin-fuel flame spread and extinction results",
+      "title": "Thickness and Fuel Preheating Effects on Material Flammability in Microgravity from the BASS Experiment",
       "url": "https://ntrs.nasa.gov/citations/20140011099",
       "page": "Thin Fuel Flame Spread slide"
     },

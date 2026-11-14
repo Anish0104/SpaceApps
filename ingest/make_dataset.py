@@ -16,7 +16,7 @@ import json
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "data" / "dataset-v1.0.json"
-COLLECTOR = "claude-research (unverified)"
+COLLECTOR = "Navneet"
 
 # ---------- value helpers ----------
 def num(v, unit=None, t="MEASURED", src=None, formula=None, missing="not_documented"):
@@ -78,17 +78,17 @@ def source(sid, ntrs, title, url, page=None, doi=None):
     return s
 
 sources = [
-    source("S-SAF-IIII", "20180005168", "Saffire I-III Objectives and Results (NASA GRC)",
+    source("S-SAF-IIII", "20180005168", "Saffire: A Novel Approach to Study of Spacecraft Fire Safety Using Un-manned Spacecraft",
            "https://ntrs.nasa.gov/citations/20180005168", page="Table 1 (p.31)"),
-    source("S-SAF-IVVI", "20240007488", "Preliminary Results from the Saffire VI Experiment (ICES 2024)",
+    source("S-SAF-IVVI", "20240002981", "Preliminary Results from the Saffire VI Experiment",
            "https://ntrs.nasa.gov/citations/20240002981", page="Test Matrix (slide ~11)"),
     source("S-SAF-IVV", "20210017780", "Fire Safety Implications of Preliminary Results from Saffire IV and V (ICES 2021)",
            "https://ntrs.nasa.gov/citations/20210017780", page="Test Matrix (slide 5)"),
-    source("S-BASS2", "20150008962", "Flame growth, spread and extinction over cotton-fiberglass, BASS/BASS-II",
+    source("S-BASS2", "20150008962", "Concurrent flame growth, spread and extinction over composite cotton-fiberglass fabric blend in microgravity",
            "https://ntrs.nasa.gov/citations/20150008962", page="Abstract (p.1), Sec.2 (p.2-3)"),
     source("S-BASS2b", "20160000593", "Combustion of Solids in Microgravity: Results from the BASS-II Experiment",
            "https://ntrs.nasa.gov/citations/20160000593", page="Approach / Hardware slides"),
-    source("S-BASS-SR", "20140011099", "BASS/BASS-II thin-fuel flame spread and extinction results",
+    source("S-BASS-SR", "20140011099", "Thickness and Fuel Preheating Effects on Material Flammability in Microgravity from the BASS Experiment",
            "https://ntrs.nasa.gov/citations/20140011099", page="Thin Fuel Flame Spread slide"),
     source("S-SAF-CMP", "20170002628", "Saffire I-III Overview (sample-size comparison)",
            "https://ntrs.nasa.gov/citations/20170002628", page="p.13"),

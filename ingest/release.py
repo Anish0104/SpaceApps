@@ -31,6 +31,19 @@ from psi_ids import INVESTIGATIONS  # {psiId: (acronym, safetyRole, fuelPhase)}
 VERSION = "1.1.0"
 PSI_URL = "https://psi.nasa.gov/physci/repo/data/investigations/{}"
 
+# Documented operating ranges for run-less, demo-critical cards, so the ranking
+# engine can place them instead of showing "cannot assess applicability".
+# Values come from each investigation's PSI Approach text (sourceId "PSI").
+RANGES = {
+    "PSI-68": {"o2MolPct": [10.0, 40.0], "pressureKPa": [50.7, 304.0], "gravityG": [0.0, 0.0]},   # FLEX-2: O2 0.1-0.4, 0.5-3 atm
+    "PSI-69": {"pressureKPa": [50.7, 304.0], "gravityG": [0.0, 0.0]},                              # FLEX: droplet series, 0.5-3 atm
+    "PSI-39": {"pressureKPa": [25.3, 506.6], "gravityG": [0.0, 0.0]},                              # CFI: 0.25-5 atm
+    "PSI-102": {"o2MolPct": [21.0, 21.0], "pressureKPa": [101.3, 101.3], "gravityG": [0.0, 0.0]},  # SAME: cabin air
+    "PSI-101": {"o2MolPct": [21.0, 21.0], "pressureKPa": [101.3, 101.3], "gravityG": [0.0, 0.0]},  # SAME-R: cabin air
+    "PSI-47": {"pressureKPa": [101.3, 101.3], "gravityG": [0.0, 0.0]},                             # DAFT: cabin, aerosol sensor
+    "PSI-159": {"gravityG": [0.0, 0.0]},  # CFI-G: documented 85% O2 is BURNER gas, not cabin -> no O2 range (honest)
+}
+
 
 def project_type(raw: str | None) -> str:
     return "Ground" if (raw or "").lower().startswith("ground") else "Microgravity"
@@ -97,13 +110,80 @@ def build_investigation(rec: dict) -> dict:
     return inv
 
 
+# Readable names for detail-built cards whose PSI projectTitle is blank.
+NAME_OVERRIDES = {
+    "PSI-47": "Dust and Aerosol Measurement Feasibility Test",
+}
+
+
+def build_from_detail(psi: str, d: dict) -> dict:
+    """Build a card from a per-investigation investigation.json (detail format).
+
+    Used for investigations PSI search doesn't return (e.g. PSI-47 / DAFT), whose
+    only source is data/raw/psi/<id>/investigation.json. Field names differ from
+    the _search format, so they are mapped explicitly here.
+    """
+    role_phase = INVESTIGATIONS.get(psi)
+    role = role_phase[1] if role_phase else "physics"
+    phase = role_phase[2] if role_phase else None
+    acr = (d.get("investigationAcronym") or "").strip() or (psi or "")
+    name = (d.get("projectTitle") or "").strip() or NAME_OVERRIDES.get(psi) or acr
+    inv = {
+        "psiId": psi,
+        "name": name,
+        "acronym": acr,
+        "projectType": project_type(d.get("projectType")),
+        "safetyRole": role,
+        "objectives": (d.get("objective") or "").strip() or "(not documented)",
+        "url": PSI_URL.format(psi),
+        "relatedIds": [],          # detail record carries no PSI "Related Investigations"
+        "publications": [],
+        "runIds": [],
+        "sensors": [],
+    }
+    if phase:
+        inv["fuelPhase"] = phase
+    hw = hardware_name(d.get("experimentHardware"))
+    if hw:
+        inv["hardware"] = hw
+    if (d.get("flightProgram") or "").strip():
+        inv["platform"] = d["flightProgram"].strip()
+    if (d.get("approach") or "").strip():
+        inv["approach"] = d["approach"].strip()
+    if (d.get("investigationStartDate") or "").strip():
+        inv["startDate"] = d["investigationStartDate"].strip()
+    if (d.get("investigationEndDate") or "").strip():
+        inv["endDate"] = d["investigationEndDate"].strip()
+    return inv
+
+
 def main() -> None:
     search = json.loads((RAW / "_search.json").read_text())
     curated = json.loads((ROOT / "data" / "dataset-v1.0.json").read_text())
 
-    # Layer A: one card per scraped investigation.
-    investigations = [build_investigation(r) for r in search if r.get("Accession")]
+    # Layer A: one card per curated PSI investigation (the 24 ids in psi_ids.py).
+    # Filtering to that roster drops non-combustion search hits (PSI-108 surface-tension
+    # fluid physics, PSI-181 lead-tin solders) and pulls in PSI-47 (DAFT), which PSI's
+    # search endpoint does not return, from its per-investigation detail file.
+    search_by_id = {r["Accession"]: r for r in search if r.get("Accession")}
+    investigations = []
+    for psi in INVESTIGATIONS:
+        rec = search_by_id.get(psi)
+        if rec:
+            investigations.append(build_investigation(rec))
+            continue
+        detail_path = RAW / psi / "investigation.json"
+        if detail_path.exists():
+            investigations.append(build_from_detail(psi, json.loads(detail_path.read_text())))
+        else:
+            print(f"WARN: {psi} not in search and has no investigation.json - skipped")
     have = {i["psiId"] for i in investigations}
+
+    # Attach documented operating ranges to run-less, demo-critical cards.
+    for inv in investigations:
+        rng = RANGES.get(inv["psiId"])
+        if rng:
+            inv["ranges"] = {**rng, "sourceId": "PSI"}
 
     # Keep curated investigations that aren't in PSI (e.g. Saffire IV-VI from NTRS reports).
     for ci in curated["investigations"]:
@@ -122,17 +202,22 @@ def main() -> None:
         if inv["psiId"] in by_psi:
             inv["runIds"] = by_psi[inv["psiId"]]
 
-    # Edges from "Related Investigations" (only to investigations we actually have).
+    # Edges from "Related Investigations" - both endpoints must be cards we actually have,
+    # so excluded investigations (PSI-108/181) never leave a dangling edge.
     seen, edges = set(), []
     for rec in search:
         a = rec.get("Accession")
+        if a not in have:
+            continue
         for b in split_ids(rec.get("Related Investigations")):
             if b in have and a != b:
                 key = tuple(sorted((a, b)))
                 if key not in seen:
                     seen.add(key)
                     edges.append({"from": a, "to": b, "kind": "nasa_related", "sourceId": "PSI"})
-    for ce in curated.get("edges", []):  # keep curated edges (e.g. Saffire IV-VI -> III)
+    for ce in curated.get("edges", []):  # keep curated edges, filtered to existing cards
+        if ce["from"] not in have or ce["to"] not in have:
+            continue
         key = tuple(sorted((ce["from"], ce["to"])))
         if key not in seen:
             seen.add(key)
