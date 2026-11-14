@@ -7,8 +7,8 @@
       "space": "Low-mass, low-water fire suppression studied for the ISS, where every kilogram and every drop counts.",
       "earth": "Informed efficient fine-water-mist extinguishers that put out fires with far less water than traditional systems.",
       "relatedPsiIds": ["PSI-69", "PSI-68"],
-      "source": "NASA ISS fire-safety research (FLEX suppression lineage); NASA Space Apps challenge brief",
-      "url": "https://www.spaceappschallenge.org/2025/challenges/flame-in-freefall-visualizing-fire-safety-aboard-spacecraft/"
+      "source": "NASA: Development of the ISS Fine Water Mist (FWM) Portable Fire Extinguisher (NTRS 20120018019)",
+      "url": "https://ntrs.nasa.gov/citations/20120018019"
     },
     {
       "id": "fire-detector",
