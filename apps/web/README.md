@@ -18,6 +18,6 @@ pnpm dev:worker   # in a second terminal, for Ask / search
 | Missing Experiment | `src/pages/MissingExperiment.tsx` | Juvana |
 | Limits | `src/pages/Limits.tsx` | anyone |
 
-- Data comes from `src/lib/data.ts` (fixtures now; switch to the real release there only).
+- Data comes from `src/lib/data.ts` (loads `data/dataset-v1.0.json`; switch releases there only. `data/fixtures.json` is for unit tests).
 - Every value goes through `ValueCell` (evidence badge + source receipt; missing = "not documented", never 0).
 - Lights are always labeled "Evidence coverage, not a safety rating."

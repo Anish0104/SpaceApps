@@ -12,6 +12,11 @@
     "dev:web": "pnpm --filter @flameatlas/web dev",
     "dev:web:mock": "VITE_MOCK_ASK=1 pnpm --filter @flameatlas/web dev",
     "fixtures": "python3 ingest/make_fixtures.py",
-    "warm-cache": "pnpm --filter @flameatlas/worker warm-cache"
+    "warm-cache": "pnpm --filter @flameatlas/worker warm-cache",
+    "eval:record": "pnpm --filter @flameatlas/worker eval:record",
+    "eval:rank": "pnpm --filter @flameatlas/worker eval:rank",
+    "summaries": "pnpm --filter @flameatlas/worker summaries",
+    "deploy:worker": "pnpm --filter @flameatlas/worker deploy",
+    "deploy:web": "pnpm --filter @flameatlas/web build && pnpm --filter @flameatlas/worker exec wrangler pages deploy ../web/dist --project-name flameatlas --branch main"
   }
 }

@@ -1,0 +1,175 @@
+{
+  "dataVersion": "1.0.0-seed",
+  "k": 5,
+  "questions": [
+    {
+      "qid": "q1",
+      "question": "Which microgravity experiments measured opposed-flow flame spread on PMMA above 25% O2, and at what flow and pressure?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-25",
+        "PSI-26",
+        "PSI-159",
+        "PSI-100",
+        "PSI-98"
+      ],
+      "flameatlas": [
+        "PSI-25",
+        "SAFFIRE-IVVI",
+        "PSI-100",
+        "PSI-98",
+        "PSI-68"
+      ]
+    },
+    {
+      "qid": "q2",
+      "question": "For 30% O2 at 10.2 psi, what is the nearest tested condition, matched on O2 partial pressure or on mole fraction?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "SAFFIRE-IVVI",
+        "PSI-159",
+        "PSI-68",
+        "PSI-99",
+        "PSI-100"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-100",
+        "PSI-25",
+        "PSI-98",
+        "PSI-68"
+      ]
+    },
+    {
+      "qid": "q3",
+      "question": "Compare BASS-II small-sample and Saffire large-scale cotton-fiberglass results: is the difference scale alone, or confounded?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-25",
+        "PSI-98",
+        "PSI-99",
+        "PSI-100"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-98",
+        "SAFFIRE-IVVI",
+        "PSI-100",
+        "PSI-99",
+        "PSI-25"
+      ],
+      "flameatlas": [
+        "PSI-98",
+        "SAFFIRE-IVVI",
+        "PSI-100",
+        "PSI-25",
+        "PSI-99"
+      ]
+    },
+    {
+      "qid": "q4",
+      "question": "Where is the biggest evidence gap for a lunar habitat, and what one experiment would close it most efficiently?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-26",
+        "PSI-25",
+        "PSI-98"
+      ],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-159",
+        "PSI-26",
+        "PSI-98",
+        "SAFFIRE-IVVI",
+        "PSI-102"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-25",
+        "PSI-100",
+        "PSI-99"
+      ]
+    },
+    {
+      "qid": "q5",
+      "question": "Is there evidence that lunar or Mars gravity could increase flammability rather than fall between Earth and microgravity?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [],
+      "relevantNotInDataset": [],
+      "keyword": [
+        "PSI-26",
+        "PSI-25",
+        "PSI-159",
+        "PSI-102",
+        "PSI-98"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-98",
+        "PSI-100",
+        "PSI-99"
+      ]
+    },
+    {
+      "qid": "q6",
+      "question": "What do FLEX and BASS suppression tests say about extinguishing a low-flow microgravity flame, and do those margins hold at 30% O2?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-69",
+        "PSI-68",
+        "PSI-26"
+      ],
+      "relevantNotInDataset": [
+        "PSI-69"
+      ],
+      "keyword": [
+        "PSI-25",
+        "PSI-26",
+        "PSI-68",
+        "PSI-159",
+        "PSI-100"
+      ],
+      "flameatlas": [
+        "PSI-25",
+        "SAFFIRE-IVVI",
+        "PSI-100",
+        "PSI-98",
+        "PSI-68"
+      ]
+    },
+    {
+      "qid": "q7",
+      "question": "How does microgravity smoke-particle size (SAME) differ from Earth, and what does that mean for detector thresholds in a dusty lunar cabin?",
+      "scenarioId": "moon-challenge",
+      "relevantPsiIds": [
+        "PSI-102",
+        "PSI-101",
+        "PSI-47"
+      ],
+      "relevantNotInDataset": [
+        "PSI-101",
+        "PSI-47"
+      ],
+      "keyword": [
+        "PSI-102",
+        "PSI-159",
+        "PSI-26",
+        "PSI-98",
+        "PSI-25"
+      ],
+      "flameatlas": [
+        "SAFFIRE-IVVI",
+        "PSI-98",
+        "PSI-25",
+        "PSI-100",
+        "PSI-99"
+      ]
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { Dataset } from "@flameatlas/engine";
 import fixtures from "../../../data/fixtures.json";
 import { expandQuery, rrf } from "../src/search";
 import { validateSentences } from "../src/validator";
-import worker from "../src/index";
+import worker, { corsHeaders } from "../src/index";
 
 const ds = Dataset.parse(fixtures);
 const env = { DATA_VERSION: "fixture-0.1" };
@@ -43,6 +43,19 @@ describe("validator", () => {
   });
 });
 
+describe("served dataset", () => {
+  it("is the released dataset, not the fixtures", async () => {
+    const res = await worker.fetch(new Request("http://x/api/health"), env);
+    expect(await res.json()).toMatchObject({ ok: true, dataVersion: "1.0.0-seed", fixture: false, gemini: false });
+  });
+  it("never ranks or cites a fixture record", async () => {
+    const ranked = (await (await post("/api/search", { query: "fabric flame spread", scenarioId: "moon-challenge" })).json()) as { psiId: string }[];
+    const answer = await (await post("/api/ask", { question: "fabric fire on the Moon", scenarioId: "moon-challenge", dataVersion: "1.0.0-seed" })).text();
+    expect(ranked.map((r) => r.psiId).filter((id) => id.startsWith("FIX-"))).toEqual([]);
+    expect(answer).not.toMatch(/FIX-/);
+  });
+});
+
 describe("/api/ask", () => {
   it("returns a valid six-beat answer", async () => {
     const res = await post("/api/ask", { question: "fabric fire on the Moon", scenarioId: "moon-challenge", dataVersion: "fixture-0.1" });
@@ -50,5 +63,46 @@ describe("/api/ask", () => {
     expect(res.status).toBe(200);
     expect(["answered", "cannot_confirm"]).toContain(body.status);
     expect(body.source).toBe("template");
+  });
+});
+
+describe("CORS", () => {
+  const PAGES = "https://flameatlas.pages.dev";
+  const deployed = { DATA_VERSION: "x", ALLOWED_ORIGIN: PAGES };
+  const health = (origin: string | null, e: typeof deployed | typeof env = deployed, method = "GET") =>
+    worker.fetch(new Request("https://flameatlas-api.example.workers.dev/api/health", { method, headers: origin ? { Origin: origin } : {} }), e);
+
+  it("allows the deployed web app and the local Vite server", async () => {
+    expect((await health(PAGES)).headers.get("Access-Control-Allow-Origin")).toBe(PAGES);
+    expect((await health("http://localhost:5173")).headers.get("Access-Control-Allow-Origin")).toBe("http://localhost:5173");
+    const pre = await health(PAGES, deployed, "OPTIONS");
+    expect(pre.headers.get("Access-Control-Allow-Origin")).toBe(PAGES);
+    expect(pre.headers.get("Access-Control-Allow-Methods")).toContain("POST");
+  });
+  it("gives any other origin no allow header (the browser refuses it)", async () => {
+    for (const o of ["https://evil.example", "https://preview.flameatlas.pages.dev", "http://localhost:3000"]) {
+      expect((await health(o)).headers.get("Access-Control-Allow-Origin"), o).toBeNull();
+    }
+    expect((await health(PAGES, env)).headers.get("Access-Control-Allow-Origin")).toBeNull(); // ALLOWED_ORIGIN unset
+  });
+  it("still answers clients that send no Origin (curl)", async () => {
+    const res = await health(null);
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Access-Control-Allow-Origin")).toBeNull();
+  });
+  it("tolerates a trailing slash and a comma-separated list", () => {
+    expect(corsHeaders(PAGES, { ALLOWED_ORIGIN: `https://a.example, ${PAGES}/` })["Access-Control-Allow-Origin"]).toBe(PAGES);
+  });
+});
+
+describe("/api/dev/* is localhost only", () => {
+  const routes = ["/api/dev/warm-cache", "/api/dev/eval", "/api/dev/summaries", "/api/dev/anything"];
+  it.each(routes)("%s is 404 on a deployed host, before the body is read", async (path) => {
+    const res = await worker.fetch(new Request(`https://flameatlas-api.example.workers.dev${path}`, { method: "POST", body: "not json" }), env);
+    expect(res.status).toBe(404);
+  });
+  it("is reachable on localhost (a bad body gets 400, not 404)", async () => {
+    const res = await worker.fetch(new Request("http://localhost:8787/api/dev/warm-cache", { method: "POST", body: JSON.stringify({}) }), env);
+    expect(res.status).toBe(400);
   });
 });

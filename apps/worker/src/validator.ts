@@ -59,7 +59,8 @@ const close = (a: number, b: number) => Math.abs(a - b) <= Math.max(0.05, 0.01 *
 // rounding like "8.2 psi" for 8.19 without letting "0.2 g" pass as 0.165 g.
 const closeAssumed = (a: number, b: number) => Math.abs(a - b) <= 0.01 * Math.abs(b) + 1e-9;
 
-const numbersIn = (text: string) => (text.replace(IGNORE, " ").match(NUM) ?? []).map(Number);
+/** The numbers the validator checks in a text (labels like "PSI-26" or "O2" are not counted). */
+export const numbersIn = (text: string) => (text.replace(IGNORE, " ").match(NUM) ?? []).map(Number);
 /** First number that matches neither a record value nor an assumed scenario value. */
 const unsupported = (nums: number[], pool: number[], assumed: number[]) =>
   nums.find((n) => !pool.some((v) => close(n, v)) && !assumed.some((v) => closeAssumed(n, v)));

@@ -8,7 +8,10 @@
     "deploy": "wrangler deploy",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "warm-cache": "node scripts/warm-cache.mjs"
+    "warm-cache": "node scripts/warm-cache.mjs",
+    "eval:record": "node scripts/eval-record.mjs",
+    "eval:rank": "vitest run --config vitest.eval.config.ts",
+    "summaries": "node scripts/summaries.mjs"
   },
   "dependencies": {
     "@flameatlas/engine": "workspace:*",

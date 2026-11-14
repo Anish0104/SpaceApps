@@ -1,13 +1,14 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { Dataset, Scenario } from "@flameatlas/engine";
+import { AskResponse, Dataset, Scenario, SearchRequest } from "@flameatlas/engine";
 import fixtures from "../../../data/fixtures.json";
+import releaseJson from "../../../data/dataset-v1.0.json";
 import scenarios from "../../../data/scenarios.json";
 import demoAnswersJson from "../../../data/cache/demo-answers.json";
 import captured from "./captured/gemini-3.5-flash-moon-fm2.json";
 import worker from "../src/index";
-import { buildIndex } from "../src/search";
-import { ask, clearAskCache } from "../src/ask";
-import { DEFAULT_MODELS, GEMINI_TIMEOUT_MS, SYSTEM_PROMPT, buildRecords, buildUserPrompt, cacheKey, callGemini, parseModels } from "../src/gemini";
+import { buildIndex, search } from "../src/search";
+import { ask, clearAskCache, templateAnswer } from "../src/ask";
+import { DEFAULT_MODELS, GEMINI_TIMEOUT_MS, SYSTEM_PROMPT, buildRecords, buildUserPrompt, cacheKey, callGemini, parseModels, sentRecordIds } from "../src/gemini";
 import { GENERIC_LIMIT, validateFields, validateSentences } from "../src/validator";
 import { DemoCacheFile, loadDemoAnswers, warmCache, type DemoAnswers } from "../src/demoCache";
 
@@ -441,5 +442,49 @@ describe("POST /api/dev/warm-cache route", () => {
   it("rejects a malformed body and an unknown scenario", async () => {
     expect((await post("http://localhost:8787", { scenarioId: "moon-fm2", questions: [] })).status).toBe(400);
     expect((await post("http://localhost:8787", { ...body, scenarioId: "nope" })).status).toBe(404);
+  });
+});
+
+describe("template answer on the released dataset (dataset-v1.0.json)", () => {
+  const release = Dataset.parse(releaseJson);
+  const releaseIndex = buildIndex(release);
+  const QUESTIONS = ["Would a cotton fabric fire spread differently here?", "What is the nearest tested condition?"];
+  const cases = scenarios.map((s) => Scenario.parse(s)).flatMap((sc) => QUESTIONS.map((q) => [sc.id, q, sc] as const));
+
+  it.each(cases)("%s: \"%s\" keeps its receipts after validation", (_id, question, sc) => {
+    const ranked = search(release, releaseIndex, sc, SearchRequest.parse({ query: question, scenarioId: sc.id }));
+    const t = AskResponse.parse(templateAnswer(release, sc, ranked));
+    const { kept, dropped } = validateSentences(release, t.sentences, sc);
+    expect(dropped.map((d) => `${d.sentence.text} => ${d.reason}`)).toEqual([]); // nothing is lost, not just "something survives"
+    if (t.status === "answered") expect(kept.length).toBeGreaterThanOrEqual(1);
+    else expect(t.status).toBe("cannot_confirm");
+    expect(validateFields(release, t, sentRecordIds(release, ranked), sc).notes).toEqual([]);
+  });
+
+  it("sentences use readable labels, never raw reason codes", () => {
+    for (const sc of scenarios.map((s) => Scenario.parse(s))) {
+      const ranked = search(release, releaseIndex, sc, SearchRequest.parse({ query: QUESTIONS[0], scenarioId: sc.id }));
+      const t = templateAnswer(release, sc, ranked);
+      for (const text of [...t.sentences.map((x) => x.text), ...t.differs]) expect(text).not.toMatch(/\b[A-Z][A-Z0-9]*_[A-Z0-9_]+\b|\b(?:o2MolPct|pressureKPa|flowCmS|gravityG|thicknessMm|sizeMm|ductSize|flowDirection)\b/);
+    }
+  });
+
+  it("quotes only measured values that are on the cited runs", () => {
+    const moon = Scenario.parse(scenarios.find((s) => s.id === "moon-challenge"));
+    const ranked = search(release, releaseIndex, moon, SearchRequest.parse({ query: QUESTIONS[0], scenarioId: moon.id }));
+    const saffire1 = templateAnswer(release, moon, ranked).sentences.find((x) => x.recordIds[0] === "PSI-98");
+    expect(saffire1).toEqual({
+      text: "Saffire-I (PSI-98) matches on O2 partial pressure and material, but was tested in orbit, not at the scenario's gravity; its runs measured oxygen 21.5 to 21.7 mol%, flow speed 20 cm/s, gravity 0 g.",
+      recordIds: ["PSI-98", "SAF-I-1", "SAF-I-2"],
+    });
+    expect(saffire1?.text).not.toMatch(/101\.3/); // Saffire-I pressure is INFERRED, so it is not quoted
+  });
+
+  it("the no-key pipeline returns those sentences for every scenario", async () => {
+    for (const sc of scenarios.map((s) => Scenario.parse(s))) {
+      const a = await ask(QUESTIONS[0], sc, { ds: release, index: releaseIndex });
+      expect(a.source).toBe("template");
+      if (a.status === "answered") expect(a.sentences.length, sc.id).toBeGreaterThanOrEqual(1);
+    }
   });
 });

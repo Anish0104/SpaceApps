@@ -1,11 +1,38 @@
 import type { ReactNode } from "react";
 import { Link, useParams } from "react-router-dom";
-import { invById, runsFor } from "../lib/data";
+import type { SummaryEntry } from "@flameatlas/engine";
+import { invById, isPsiRecord, runsFor, summaryFor } from "../lib/data";
+import { MOCK_ASK } from "../lib/api";
+import { mockSummary } from "../lib/mockSummary";
+import { RecordTag } from "../components/RecordTag";
 import { sentenceCase } from "../lib/labels";
 import { ValueCell } from "../components/ValueCell";
 import { RegimeMark } from "../components/Badge";
 
 const COLUMNS = ["Run", "Material", "Geometry", "Oxygen", "Pressure", "O2 partial pressure", "Flow", "Gravity", "Status"];
+
+/** A precomputed summary: each sentence with its receipts. Every number in it was checked against the records it cites. */
+function Summary({ s }: { s: SummaryEntry }) {
+  const mock = s.model === "MOCK";
+  return (
+    <section aria-labelledby="summary-heading">
+      <h2 id="summary-heading" className="text-lg font-semibold">Summary</h2>
+      <ul className="measure mt-1 space-y-2">
+        {s.sentences.map((x) => (
+          <li key={x.text}>
+            {x.text}{" "}
+            <span className="inline-flex flex-wrap gap-1 align-middle">{x.recordIds.map((id) => <RecordTag key={id} id={id} />)}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-2 text-sm text-ink/70">
+        {mock
+          ? "Mock mode: placeholder summary for UI development, not from any record."
+          : `Written by AI from the records on this page${s.generatedAt ? ` on ${s.generatedAt}` : ""}. Each number was checked against the record it cites.`}
+      </p>
+    </section>
+  );
+}
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -29,32 +56,45 @@ export default function Investigation() {
     );
   }
   const runs = runsFor(psiId);
+  const fromPsi = isPsiRecord(inv);
+  const fromNtrs = inv.url.includes("ntrs.nasa.gov");
+  // Precomputed only; nothing is generated per page view. Mock mode previews the section when no summary exists yet.
+  const summary = summaryFor(inv.psiId) ?? (MOCK_ASK ? mockSummary(inv) : undefined);
 
   return (
     <div className="space-y-10">
       <div className="space-y-5">
         <h1 className="display text-2xl sm:text-3xl">{inv.name} ({inv.acronym})</h1>
         <dl className="flex flex-wrap gap-x-10 gap-y-3">
-          <Fact label="PSI id">{inv.psiId}</Fact>
+          {fromPsi
+            ? <Fact label="PSI id">{inv.psiId}</Fact>
+            : <Fact label="Record">{fromNtrs ? "From NASA report (NTRS), not PSI" : "Not a PSI record"}</Fact>}
           <Fact label="Project type">{inv.projectType}</Fact>
           <Fact label="Safety role">{sentenceCase(inv.safetyRole)}</Fact>
           {inv.hardware && <Fact label="Hardware">{inv.hardware}</Fact>}
           {inv.doi && <Fact label="DOI">{inv.doi}</Fact>}
-          <Fact label="Source"><a href={inv.url} target="_blank" rel="noreferrer" className="link">NASA PSI page</a></Fact>
+          <Fact label="Source"><a href={inv.url} target="_blank" rel="noreferrer" className="link">{fromPsi ? "NASA PSI page" : fromNtrs ? "NASA report on NTRS" : "Source document"}</a></Fact>
         </dl>
       </div>
 
       <section>
         <h2 className="text-lg font-semibold">Objectives</h2>
         <p className="measure mt-1">{inv.objectives}</p>
-        {/* TODO(Anish): cited AI summary from POST /api/summarize */}
       </section>
+
+      {summary && <Summary s={summary} />}
 
       {inv.relatedIds.length > 0 && (
         <section>
           <h2 className="text-lg font-semibold">Related investigations</h2>
           <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
-            {inv.relatedIds.map((id) => <li key={id}><Link to={`/investigation/${id}`} className="link">{id}</Link></li>)}
+            {inv.relatedIds.map((id) => (
+              <li key={id}>
+                {invById(id)
+                  ? <Link to={`/investigation/${id}`} className="link">{id}</Link>
+                  : <span>{id} <span className="text-sm text-ink/70">(not in this dataset)</span></span>}
+              </li>
+            ))}
           </ul>
         </section>
       )}
@@ -93,8 +133,11 @@ export default function Investigation() {
               </table>
             </div>
             <p className="mt-2 text-sm text-ink/70">
-              Solid fill is measured, solid outline is computed, dashed outline is assumed, hatch is not documented. Hover a value for its source.
+              Solid fill is measured, solid outline is computed, dotted outline is inferred, dashed outline is assumed, hatch is not documented. Hover a value for its source.
             </p>
+            {runs.some((r) => r.status === "imported") && (
+              <p className="mt-1 text-sm text-ink/70">Imported runs were collected from the source and have not yet been verified by a second person.</p>
+            )}
           </>
         )}
       </section>

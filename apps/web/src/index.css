@@ -5,7 +5,7 @@
  *
  * Colour carries one meaning each:
  *   gravity regime   orbit = ch-blue, Moon = regolith, Mars = warm regolith, Earth = soot
- *   verdict lights   green / yellow / red (evidence strength, never safety)
+ *   verdict lights   green / amber / red (evidence strength, never safety). Amber is not soot: soot means Earth / 1 g
  * Missing or undocumented evidence is the diagonal hatch, never a fill colour.
  * Evidence type is a line style: MEASURED solid fill, COMPUTED solid outline, ASSUMED dashed
  * outline, INFERRED dotted outline, UNKNOWN hatch. A text label always goes with it.
@@ -19,7 +19,8 @@
   --regolith: #8b929b; /* lunar gravity; neutral structure lines. Non-text only */
   --mars: #9c8b7e; /* regolith with a warm tint */
   --verdict-green: #1e8a5a;
-  --verdict-yellow: var(--soot); /* the palette has no separate yellow; lights are circles, regime marks are squares */
+  --verdict-yellow: #d98e04; /* amber light, its own colour: soot is reserved for Earth / 1 g */
+  --verdict-yellow-edge: #8a5a00; /* darker amber outline, 5.9:1 on white, so the light's edge meets 3:1 */
   --verdict-red: #c8402f;
   --rule: color-mix(in srgb, var(--regolith) 30%, transparent);
   --hatch: repeating-linear-gradient(45deg, color-mix(in srgb, var(--regolith) 60%, transparent) 0 1px, transparent 1px 6px);
@@ -244,7 +245,7 @@
   }
   .light-yellow {
     background: var(--verdict-yellow);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 45%, transparent);
+    box-shadow: inset 0 0 0 1.5px var(--verdict-yellow-edge);
   }
   .light-red {
     background: var(--verdict-red);

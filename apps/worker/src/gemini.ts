@@ -2,7 +2,7 @@
  * Gemini call for /api/ask. Gemini only PROPOSES the six-beat answer; the caller then
  * Zod-checks it, runs the citation validator, and falls back to the template if needed.
  */
-import { KPA_PER_ATM, O2_PARTIAL_FORMULA, kPaToPsi, o2PartialKPa, type Dataset, type RankedResult, type Scenario } from "@flameatlas/engine";
+import { KPA_PER_ATM, O2_PARTIAL_FORMULA, kPaToPsi, o2PartialKPa, type Dataset, type Investigation, type RankedResult, type Run, type Scenario } from "@flameatlas/engine";
 import { scenarioRecordId } from "./validator";
 
 /** Tried in order; ask() moves to the next one when a model is gone, out of quota, overloaded or slow. */
@@ -82,14 +82,24 @@ export function sentRecordIds(ds: Dataset, ranked: RankedResult[], k = 5): strin
 
 /** Compact, id-tagged context: only the top-ranked investigations and their runs. */
 export function buildRecords(ds: Dataset, ranked: RankedResult[], k = 5): string {
+  return selectRecords(ds, ranked, k).flatMap(({ r, inv, runs }) => recordLines(inv, runs, r)).join("\n");
+}
+
+/** The same record text for one investigation and its runs, without the ranking line (used for summaries). */
+export function recordsFor(ds: Dataset, inv: Investigation): { text: string; ids: string[] } {
+  const runs = ds.runs.filter((x) => x.psiId === inv.psiId).slice(0, 6);
+  return { text: recordLines(inv, runs).join("\n"), ids: [inv.psiId, ...runs.map((run) => run.id)] };
+}
+
+function recordLines(inv: Investigation, runs: Run[], r?: RankedResult): string[] {
   const lines: string[] = [];
-  for (const { r, inv, runs } of selectRecords(ds, ranked, k)) {
+  {
     const rg = inv.ranges;
     lines.push(
       `[${inv.psiId}] ${inv.acronym} (${inv.name}); type ${inv.projectType}; role ${inv.safetyRole}; fuel ${inv.fuelPhase ?? "unknown"}; ` +
       `hardware ${inv.hardware ?? "unknown"}; objectives: ${inv.objectives}` +
       (rg ? `; documented ranges: ${JSON.stringify({ o2MolPct: rg.o2MolPct, pressureKPa: rg.pressureKPa, flowCmS: rg.flowCmS, gravityG: rg.gravityG })}` : "") +
-      `; ranking reasons: ${r.reasons.join(", ") || "none"}; not documented: ${r.notDocumented.join(", ") || "none"}`,
+      (r ? `; ranking reasons: ${r.reasons.join(", ") || "none"}; not documented: ${r.notDocumented.join(", ") || "none"}` : ""),
     );
     for (const run of runs) {
       lines.push(
@@ -100,7 +110,7 @@ export function buildRecords(ds: Dataset, ranked: RankedResult[], k = 5): string
       );
     }
   }
-  return lines.join("\n");
+  return lines;
 }
 
 const round = (x: number, digits: number) => Number(x.toFixed(digits));
@@ -122,6 +132,8 @@ export interface GeminiOptions {
   model?: string;
   timeoutMs?: number;
   fetchImpl?: typeof fetch;
+  /** Structured-output schema; defaults to the six-beat answer (RESPONSE_SCHEMA). */
+  schema?: object;
 }
 
 export const GEMINI_TIMEOUT_MS = 60_000;
@@ -153,7 +165,7 @@ export async function callGemini(system: string, user: string, opts: GeminiOptio
         systemInstruction: { parts: [{ text: system }] },
         contents: [{ role: "user", parts: [{ text: user }] }],
         generationConfig: {
-          temperature: 0.2, responseMimeType: "application/json", responseSchema: RESPONSE_SCHEMA,
+          temperature: 0.2, responseMimeType: "application/json", responseSchema: opts.schema ?? RESPONSE_SCHEMA,
           // Flash models "think" by default, which adds latency; the answer is a constrained
           // extraction over the given records, so thinking is switched off.
           thinkingConfig: { thinkingBudget: 0 },
@@ -172,6 +184,33 @@ export async function callGemini(system: string, user: string, opts: GeminiOptio
   } finally {
     clearTimeout(timer);
   }
+}
+
+export type ModelsResult =
+  | { ok: true; raw: unknown; model: string }
+  | { ok: false; reason: "fatal" | "exhausted" };
+
+/**
+ * One request per model, in order, no retries. Moves to the next model only when another model could
+ * still answer (404 closed/gone, 429 quota, 503 overloaded, timeout); any other error stops ("fatal").
+ * `onFail` hears about every failed request. Used by ask(), the plain-RAG baseline and summaries,
+ * so all three spend quota the same way.
+ */
+export async function callModels(
+  system: string, user: string,
+  opts: { apiKey: string; models: string[]; fetchImpl?: typeof fetch; schema?: object; onFail?: (model: string, e: unknown, tryNext: boolean) => void },
+): Promise<ModelsResult> {
+  for (const model of opts.models) {
+    try {
+      const raw = await callGemini(system, user, { apiKey: opts.apiKey, model, fetchImpl: opts.fetchImpl, schema: opts.schema });
+      return { ok: true, raw, model };
+    } catch (e) {
+      const tryNext = e instanceof GeminiError && e.tryNextModel;
+      opts.onFail?.(model, e, tryNext);
+      if (!tryNext) return { ok: false, reason: "fatal" };
+    }
+  }
+  return { ok: false, reason: "exhausted" };
 }
 
 /**

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { rankInvestigations, type RankedResult, type SafetyRole } from "@flameatlas/engine";
-import { dataset, runsFor } from "../lib/data";
+import { dataset, isPsiRecord, runsFor } from "../lib/data";
 import { fieldLabel, reasonLabel, sentenceCase } from "../lib/labels";
 import { useScenario } from "../lib/scenario";
 import { Tag } from "../components/Badge";
@@ -88,7 +88,7 @@ export default function Atlas() {
               <span className="dense text-ink/70">{i + 1}</span>
               <div className="min-w-0">
                 <Link to={`/investigation/${inv.psiId}`} className="font-semibold hover:underline">{inv.acronym}</Link>
-                <span className="dense ml-2 text-sm text-ink/70">{inv.psiId}</span>
+                <span className="dense ml-2 text-sm text-ink/70">{isPsiRecord(inv) ? inv.psiId : "From NASA report, not PSI"}</span>
                 <p className="truncate text-sm text-ink/70">{inv.name}</p>
               </div>
               <span className="col-start-2 text-sm lg:col-start-auto">{sentenceCase(inv.safetyRole)}</span>
