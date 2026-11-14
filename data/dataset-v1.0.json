@@ -1,0 +1,1688 @@
+{
+  "_note": "Layer B seed: real NASA runs, every value sourced. status=imported (awaiting cross-check). Saffire IV-VI are NASA-report (NTRS) data, not PSI. Expand with the full PSI pull via release.py.",
+  "version": "1.0.0-seed",
+  "generatedAt": "2026-11-14",
+  "fixture": false,
+  "investigations": [
+    {
+      "psiId": "PSI-26",
+      "name": "Burning and Suppression of Solids",
+      "acronym": "BASS",
+      "projectType": "Microgravity",
+      "safetyRole": "prevention",
+      "fuelPhase": "solid",
+      "objectives": "Flame spread, growth and extinction of solid fuels in low-speed forced flow in microgravity; bridge to NASA-STD-6001 Test 1.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+      "relatedIds": [
+        "PSI-25"
+      ],
+      "publications": [],
+      "runIds": [],
+      "sensors": [],
+      "hardware": "Microgravity Science Glovebox",
+      "platform": "ISS"
+    },
+    {
+      "psiId": "PSI-25",
+      "name": "Burning and Suppression of Solids - II",
+      "acronym": "BASS-II",
+      "projectType": "Microgravity",
+      "safetyRole": "prevention",
+      "fuelPhase": "solid",
+      "objectives": "Ignition, flame spread and extinction of thin/thick solids over varied oxygen and low-speed flow in microgravity.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+      "relatedIds": [
+        "PSI-26"
+      ],
+      "publications": [],
+      "runIds": [
+        "BASS2-CF-conc",
+        "BASS2-CF-opp"
+      ],
+      "sensors": [],
+      "hardware": "Microgravity Science Glovebox",
+      "platform": "ISS",
+      "ranges": {
+        "o2MolPct": [
+          16,
+          21
+        ],
+        "flowCmS": [
+          1,
+          55
+        ],
+        "gravityG": [
+          0,
+          0
+        ],
+        "sourceId": "S-BASS2"
+      }
+    },
+    {
+      "psiId": "PSI-98",
+      "name": "Spacecraft Fire Safety Experiment-I",
+      "acronym": "Saffire-I",
+      "projectType": "Microgravity",
+      "safetyRole": "prevention",
+      "fuelPhase": "solid",
+      "objectives": "First large-scale flame spread over a 94 x 40.6 cm cotton-fiberglass sample in microgravity aboard an uncrewed Cygnus vehicle.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+      "relatedIds": [
+        "PSI-99",
+        "PSI-100"
+      ],
+      "publications": [],
+      "runIds": [
+        "SAF-I-1",
+        "SAF-I-2"
+      ],
+      "sensors": [],
+      "hardware": "Cygnus Saffire module",
+      "platform": "Cygnus free-flyer"
+    },
+    {
+      "psiId": "PSI-99",
+      "name": "Spacecraft Fire Safety Experiment-II",
+      "acronym": "Saffire-II",
+      "projectType": "Microgravity",
+      "safetyRole": "prevention",
+      "fuelPhase": "solid",
+      "objectives": "Flammability of nine smaller material samples at spacecraft-relevant conditions aboard Cygnus.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-99",
+      "relatedIds": [
+        "PSI-98",
+        "PSI-100"
+      ],
+      "publications": [],
+      "runIds": [
+        "SAF-II-1",
+        "SAF-II-9"
+      ],
+      "sensors": [],
+      "hardware": "Cygnus Saffire module",
+      "platform": "Cygnus free-flyer"
+    },
+    {
+      "psiId": "PSI-100",
+      "name": "Spacecraft Fire Safety Experiment-III",
+      "acronym": "Saffire-III",
+      "projectType": "Microgravity",
+      "safetyRole": "prevention",
+      "fuelPhase": "solid",
+      "objectives": "Repeat of Saffire-I material at higher flow velocity (25 cm/s) to study scale and flow effects.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-100",
+      "relatedIds": [
+        "PSI-98",
+        "PSI-99"
+      ],
+      "publications": [],
+      "runIds": [
+        "SAF-III-1",
+        "SAF-III-2"
+      ],
+      "sensors": [],
+      "hardware": "Cygnus Saffire module",
+      "platform": "Cygnus free-flyer"
+    },
+    {
+      "psiId": "SAFFIRE-IVVI",
+      "name": "Spacecraft Fire Safety Experiment IV-VI (NASA report; not in PSI)",
+      "acronym": "Saffire IV-VI",
+      "projectType": "Microgravity",
+      "safetyRole": "prevention",
+      "fuelPhase": "solid",
+      "objectives": "Large-scale flammability of thicker fuels and exploration atmospheres (elevated O2, reduced pressure) aboard Cygnus. Source: NASA report (NTRS), not the PSI repository.",
+      "url": "https://ntrs.nasa.gov/citations/20240002981",
+      "relatedIds": [
+        "PSI-100"
+      ],
+      "publications": [],
+      "runIds": [
+        "SAF-IV-1",
+        "SAF-V-2",
+        "SAF-VI-2",
+        "SAF-VI-3",
+        "SAF-VI-4"
+      ],
+      "sensors": [],
+      "hardware": "Cygnus Saffire module",
+      "platform": "Cygnus free-flyer"
+    },
+    {
+      "psiId": "PSI-102",
+      "name": "Smoke and Aerosol Measurement Experiment",
+      "acronym": "SAME",
+      "projectType": "Microgravity",
+      "safetyRole": "detection",
+      "fuelPhase": "aerosol",
+      "objectives": "Smoke particle-size measurements from overheated spacecraft materials in microgravity, to inform fire-detector design.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-102",
+      "relatedIds": [
+        "PSI-47"
+      ],
+      "publications": [],
+      "runIds": [],
+      "sensors": [],
+      "hardware": "Microgravity Science Glovebox",
+      "platform": "ISS",
+      "ranges": {
+        "gravityG": [
+          0,
+          0
+        ],
+        "sourceId": "S-BASS2b"
+      }
+    },
+    {
+      "psiId": "PSI-68",
+      "name": "Flame Extinguishment Experiment - 2",
+      "acronym": "FLEX-2",
+      "projectType": "Microgravity",
+      "safetyRole": "suppression",
+      "fuelPhase": "liquid",
+      "objectives": "Droplet flame extinction limits with inert diluents across oxygen and pressure, to inform suppression.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-68",
+      "relatedIds": [],
+      "publications": [],
+      "runIds": [],
+      "sensors": [],
+      "hardware": "CIR / MDCA",
+      "platform": "ISS",
+      "ranges": {
+        "o2MolPct": [
+          10,
+          40
+        ],
+        "pressureKPa": [
+          50.7,
+          304.0
+        ],
+        "gravityG": [
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "psiId": "PSI-159",
+      "name": "ACME Cool Flames Investigation with Gases",
+      "acronym": "ACME CFI-G",
+      "projectType": "Microgravity",
+      "safetyRole": "physics",
+      "fuelPhase": "gas",
+      "objectives": "Cool diffusion flames of gaseous fuels. NOTE: the up-to-85% O2 figure was BURNER gas, not a cabin atmosphere - exclude from cabin-oxygen comparisons.",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-159",
+      "relatedIds": [],
+      "publications": [],
+      "runIds": [],
+      "sensors": [],
+      "hardware": "CIR / ACME",
+      "platform": "ISS"
+    }
+  ],
+  "runs": [
+    {
+      "id": "SAF-I-1",
+      "psiId": "PSI-98",
+      "material": {
+        "value": "Cotton-fiberglass fabric (SIBAL)",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet, 40.6 cm wide",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sizeMm": {
+        "value": 940,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "thicknessMm": {
+        "value": 0.37,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2MolPct": {
+        "value": 21.7,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-SAF-IIII"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2PartialKPa": {
+        "value": 21.98,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 20,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-SAF-IIII"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-SAF-IIII"
+      },
+      "ductSize": {
+        "value": "Saffire large flow duct",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [],
+      "status": "imported"
+    },
+    {
+      "id": "SAF-I-2",
+      "psiId": "PSI-98",
+      "material": {
+        "value": "Cotton-fiberglass fabric (SIBAL)",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet, 40.6 cm wide",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sizeMm": {
+        "value": 100,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "thicknessMm": {
+        "value": 0.37,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2MolPct": {
+        "value": 21.5,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-SAF-IIII"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2PartialKPa": {
+        "value": 21.78,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 20,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-SAF-IIII"
+      },
+      "flowDirection": {
+        "value": "opposed",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-SAF-IIII"
+      },
+      "ductSize": {
+        "value": "Saffire large flow duct",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [],
+      "status": "imported"
+    },
+    {
+      "id": "SAF-II-1",
+      "psiId": "PSI-99",
+      "material": {
+        "value": "Silicone",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet, 5 cm wide",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sizeMm": {
+        "value": 290,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "thicknessMm": {
+        "value": 0.27,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2MolPct": {
+        "value": 22.1,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-SAF-IIII"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2PartialKPa": {
+        "value": 22.39,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 20,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-SAF-IIII"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-SAF-IIII"
+      },
+      "ductSize": {
+        "value": "Saffire flow duct",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [],
+      "status": "imported"
+    },
+    {
+      "id": "SAF-II-9",
+      "psiId": "PSI-99",
+      "material": {
+        "value": "PMMA (acrylic)",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "flat slab, 5 cm wide",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sizeMm": {
+        "value": 290,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "thicknessMm": {
+        "value": 10.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2MolPct": {
+        "value": 22.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-SAF-IIII"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2PartialKPa": {
+        "value": 22.29,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 20,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-SAF-IIII"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-SAF-IIII"
+      },
+      "ductSize": {
+        "value": "Saffire flow duct",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [],
+      "status": "imported"
+    },
+    {
+      "id": "SAF-III-1",
+      "psiId": "PSI-100",
+      "material": {
+        "value": "Cotton-fiberglass fabric (SIBAL)",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet, 40.6 cm wide",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sizeMm": {
+        "value": 940,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "thicknessMm": {
+        "value": 0.37,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2MolPct": {
+        "value": 21.2,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-SAF-IIII"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2PartialKPa": {
+        "value": 21.48,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 25,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-SAF-IIII"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-SAF-IIII"
+      },
+      "ductSize": {
+        "value": "Saffire large flow duct",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [],
+      "status": "imported"
+    },
+    {
+      "id": "SAF-III-2",
+      "psiId": "PSI-100",
+      "material": {
+        "value": "Cotton-fiberglass fabric (SIBAL)",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet, 40.6 cm wide",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sizeMm": {
+        "value": 100,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "thicknessMm": {
+        "value": 0.37,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2MolPct": {
+        "value": 21.2,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-SAF-IIII"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII"
+      },
+      "o2PartialKPa": {
+        "value": 21.48,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IIII",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 25,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-SAF-IIII"
+      },
+      "flowDirection": {
+        "value": "opposed",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-SAF-IIII"
+      },
+      "ductSize": {
+        "value": "Saffire large flow duct",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IIII"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [],
+      "status": "imported"
+    },
+    {
+      "id": "SAF-IV-1",
+      "psiId": "SAFFIRE-IVVI",
+      "material": {
+        "value": "Cotton-fiberglass fabric (SIBAL)",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "cloth",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "sizeMm": {
+        "value": 500,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "thicknessMm": {
+        "value": 0.37,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "o2MolPct": {
+        "value": 22.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "pressureKPa": {
+        "value": 100.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "o2PartialKPa": {
+        "value": 22.0,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IVVI",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 20,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "ductSize": {
+        "value": "Saffire flow duct",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [],
+      "status": "imported"
+    },
+    {
+      "id": "SAF-V-2",
+      "psiId": "SAFFIRE-IVVI",
+      "material": {
+        "value": "Cotton jersey fabric",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "cloth",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "sizeMm": {
+        "value": 500,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "thicknessMm": {
+        "value": null,
+        "unit": "mm",
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "claude-research (unverified)"
+      },
+      "o2MolPct": {
+        "value": 26.2,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "pressureKPa": {
+        "value": 70.7,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "o2PartialKPa": {
+        "value": 18.52,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IVVI",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 20,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "ductSize": {
+        "value": "Saffire flow duct",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [],
+      "status": "imported"
+    },
+    {
+      "id": "SAF-VI-2",
+      "psiId": "SAFFIRE-IVVI",
+      "material": {
+        "value": "Cotton-fiberglass fabric (SIBAL)",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "cloth",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "sizeMm": {
+        "value": 500,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "thicknessMm": {
+        "value": 0.37,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "o2MolPct": {
+        "value": 31.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "pressureKPa": {
+        "value": 54.1,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "o2PartialKPa": {
+        "value": 16.77,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IVVI",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 20,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "ductSize": {
+        "value": "Saffire flow duct",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [],
+      "status": "imported"
+    },
+    {
+      "id": "SAF-VI-3",
+      "psiId": "SAFFIRE-IVVI",
+      "material": {
+        "value": "PMMA (acrylic), two-sided",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "slab",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "sizeMm": {
+        "value": 180,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "thicknessMm": {
+        "value": 10.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "o2MolPct": {
+        "value": 30.3,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "pressureKPa": {
+        "value": 54.6,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "o2PartialKPa": {
+        "value": 16.54,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IVVI",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 20,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "ductSize": {
+        "value": "Saffire flow duct",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [],
+      "status": "imported"
+    },
+    {
+      "id": "SAF-VI-4",
+      "psiId": "SAFFIRE-IVVI",
+      "material": {
+        "value": "PMMA (acrylic), one-sided",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "slab",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "sizeMm": {
+        "value": 180,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "thicknessMm": {
+        "value": 5.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "o2MolPct": {
+        "value": 28.8,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "pressureKPa": {
+        "value": 55.2,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "o2PartialKPa": {
+        "value": 15.9,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-SAF-IVVI",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 20,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "ductSize": {
+        "value": "Saffire flow duct",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "apparatus": {
+        "value": "Cygnus Saffire module",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-SAF-IVVI"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [],
+      "status": "imported"
+    },
+    {
+      "id": "BASS2-CF-conc",
+      "psiId": "PSI-25",
+      "material": {
+        "value": "Cotton-fiberglass fabric (SIBAL)",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet, 2.2 cm wide",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "sizeMm": {
+        "value": 100,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-BASS2"
+      },
+      "thicknessMm": {
+        "value": null,
+        "unit": "mm",
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "claude-research (unverified)"
+      },
+      "o2MolPct": {
+        "value": 21.0,
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-BASS2"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-BASS2"
+      },
+      "o2PartialKPa": {
+        "value": 21.27,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-BASS2",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 10,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-BASS2"
+      },
+      "flowDirection": {
+        "value": "concurrent",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-BASS2"
+      },
+      "ductSize": {
+        "value": "76 x 76 mm",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "apparatus": {
+        "value": "Microgravity Science Glovebox (BASS-II duct)",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [
+        {
+          "label": "flame spread rate",
+          "value": {
+            "value": 2.55,
+            "type": "MEASURED",
+            "collectedBy": "claude-research (unverified)",
+            "unit": "mm/s",
+            "sourceId": "S-BASS-SR"
+          }
+        }
+      ],
+      "status": "imported"
+    },
+    {
+      "id": "BASS2-CF-opp",
+      "psiId": "PSI-25",
+      "material": {
+        "value": "Cotton-fiberglass fabric (SIBAL)",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "fuelPhase": "solid",
+      "geometry": {
+        "value": "sheet, 2.2 cm wide",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "sizeMm": {
+        "value": 100,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mm",
+        "sourceId": "S-BASS2"
+      },
+      "thicknessMm": {
+        "value": null,
+        "unit": "mm",
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "claude-research (unverified)"
+      },
+      "o2MolPct": {
+        "value": 21.0,
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "mol%",
+        "sourceId": "S-BASS2"
+      },
+      "pressureKPa": {
+        "value": 101.3,
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-BASS2"
+      },
+      "o2PartialKPa": {
+        "value": 21.27,
+        "type": "COMPUTED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "kPa",
+        "sourceId": "S-BASS2",
+        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+      },
+      "flowCmS": {
+        "value": 10,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "cm/s",
+        "sourceId": "S-BASS2"
+      },
+      "flowDirection": {
+        "value": "opposed",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "gravityG": {
+        "value": 0.0,
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "unit": "g",
+        "sourceId": "S-BASS2"
+      },
+      "ductSize": {
+        "value": "76 x 76 mm",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "diluent": {
+        "value": "nitrogen",
+        "type": "INFERRED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "apparatus": {
+        "value": "Microgravity Science Glovebox (BASS-II duct)",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "method": {
+        "value": "cameras / video",
+        "type": "MEASURED",
+        "collectedBy": "claude-research (unverified)",
+        "sourceId": "S-BASS2"
+      },
+      "sensors": [
+        "cameras",
+        "thermocouples"
+      ],
+      "outcomes": [
+        {
+          "label": "flame spread rate",
+          "value": {
+            "value": 1.21,
+            "type": "MEASURED",
+            "collectedBy": "claude-research (unverified)",
+            "unit": "mm/s",
+            "sourceId": "S-BASS-SR"
+          }
+        }
+      ],
+      "status": "imported"
+    }
+  ],
+  "edges": [
+    {
+      "from": "PSI-98",
+      "to": "PSI-99",
+      "kind": "nasa_related",
+      "sourceId": "S-SAF-IIII"
+    },
+    {
+      "from": "PSI-99",
+      "to": "PSI-100",
+      "kind": "nasa_related",
+      "sourceId": "S-SAF-IIII"
+    },
+    {
+      "from": "PSI-98",
+      "to": "PSI-100",
+      "kind": "nasa_related",
+      "sourceId": "S-SAF-IIII"
+    },
+    {
+      "from": "SAFFIRE-IVVI",
+      "to": "PSI-100",
+      "kind": "nasa_related",
+      "sourceId": "S-SAF-IVVI"
+    },
+    {
+      "from": "PSI-26",
+      "to": "PSI-25",
+      "kind": "nasa_related",
+      "sourceId": "S-BASS2"
+    },
+    {
+      "from": "PSI-102",
+      "to": "PSI-47",
+      "kind": "shared_hardware",
+      "sourceId": "S-BASS2b"
+    }
+  ],
+  "sources": [
+    {
+      "id": "S-SAF-IIII",
+      "ntrsId": "20180005168",
+      "title": "Saffire I-III Objectives and Results (NASA GRC)",
+      "url": "https://ntrs.nasa.gov/citations/20180005168",
+      "page": "Table 1 (p.31)"
+    },
+    {
+      "id": "S-SAF-IVVI",
+      "ntrsId": "20240007488",
+      "title": "Preliminary Results from the Saffire VI Experiment (ICES 2024)",
+      "url": "https://ntrs.nasa.gov/citations/20240002981",
+      "page": "Test Matrix (slide ~11)"
+    },
+    {
+      "id": "S-SAF-IVV",
+      "ntrsId": "20210017780",
+      "title": "Fire Safety Implications of Preliminary Results from Saffire IV and V (ICES 2021)",
+      "url": "https://ntrs.nasa.gov/citations/20210017780",
+      "page": "Test Matrix (slide 5)"
+    },
+    {
+      "id": "S-BASS2",
+      "ntrsId": "20150008962",
+      "title": "Flame growth, spread and extinction over cotton-fiberglass, BASS/BASS-II",
+      "url": "https://ntrs.nasa.gov/citations/20150008962",
+      "page": "Abstract (p.1), Sec.2 (p.2-3)"
+    },
+    {
+      "id": "S-BASS2b",
+      "ntrsId": "20160000593",
+      "title": "Combustion of Solids in Microgravity: Results from the BASS-II Experiment",
+      "url": "https://ntrs.nasa.gov/citations/20160000593",
+      "page": "Approach / Hardware slides"
+    },
+    {
+      "id": "S-BASS-SR",
+      "ntrsId": "20140011099",
+      "title": "BASS/BASS-II thin-fuel flame spread and extinction results",
+      "url": "https://ntrs.nasa.gov/citations/20140011099",
+      "page": "Thin Fuel Flame Spread slide"
+    },
+    {
+      "id": "S-SAF-CMP",
+      "ntrsId": "20170002628",
+      "title": "Saffire I-III Overview (sample-size comparison)",
+      "url": "https://ntrs.nasa.gov/citations/20170002628",
+      "page": "p.13"
+    },
+    {
+      "id": "S-FM2",
+      "ntrsId": "20240015307",
+      "title": "Flammability of Materials on the Moon (FM2), Zayac et al.",
+      "url": "https://ntrs.nasa.gov/citations/20240015307"
+    },
+    {
+      "id": "S-PMMA",
+      "ntrsId": null,
+      "title": "Flame spread over PMMA in microgravity, opposed low-speed flow (Scientific Reports)",
+      "url": "https://www.nature.com/articles/s41598-017-18398-4",
+      "doi": "10.1038/s41598-017-18398-4"
+    }
+  ]
+}
