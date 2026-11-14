@@ -13,37 +13,39 @@ import { dataset } from "./lib/data";
 
 const NAV = [
   ["/", "Home"],
-  ["/atlas", "Research Atlas"],
+  ["/atlas", "Research atlas"],
   ["/ask", "Ask"],
-  ["/mission-lab", "Mission Lab"],
+  ["/mission-lab", "Mission lab"],
   ["/referee", "Referee"],
-  ["/missing-experiment", "Missing Experiment"],
+  ["/missing-experiment", "Missing experiment"],
   ["/limits", "Limits"],
 ] as const;
+
+const NAV_LINK = "border-b-2 py-2";
 
 export default function App() {
   return (
     <ScenarioProvider>
-      <header className="border-b border-line bg-white">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3">
-          <span className="font-display text-lg font-bold">FlameAtlas</span>
-          <nav className="flex flex-wrap gap-3 text-sm">
+      <header className="border-b border-rule bg-panel">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 pt-3">
+            <span className="display text-lg">FlameAtlas</span>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+              <ScenarioPicker />
+              <span className="text-sm text-ink/70">Data version {dataset.version}{dataset.fixture ? " (fixture)" : ""}</span>
+            </div>
+          </div>
+          <nav aria-label="Main" className="mt-1 flex flex-wrap gap-x-5">
             {NAV.map(([to, label]) => (
               <NavLink key={to} to={to} end={to === "/"}
-                className={({ isActive }) => (isActive ? "font-bold text-measured" : "text-ink/70 hover:text-ink")}>
+                className={({ isActive }) => (isActive ? `${NAV_LINK} border-ch-blue font-semibold` : `${NAV_LINK} border-transparent text-ink/70 hover:text-ink`)}>
                 {label}
               </NavLink>
             ))}
           </nav>
-          <div className="ml-auto flex items-center gap-3">
-            <ScenarioPicker />
-            <span className="rounded border border-line px-2 py-0.5 font-mono text-xs">
-              data {dataset.version}{dataset.fixture ? " · FIXTURE" : ""}
-            </span>
-          </div>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-6">
+      <main className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 sm:py-12">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/atlas" element={<Atlas />} />

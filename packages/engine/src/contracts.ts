@@ -30,7 +30,9 @@ export type AskRequest = z.infer<typeof AskRequest>;
 
 export const AskSentence = z.object({
   text: z.string(),
-  recordIds: z.array(z.string()), // run/investigation/source ids; empty only for non-factual sentences
+  // run/investigation/source ids; empty only for non-factual sentences. May also include
+  // "SCENARIO:<id>" (the request's scenario): ASSUMED scenario inputs, never evidence.
+  recordIds: z.array(z.string()),
 });
 
 export const AskResponse = z.object({
