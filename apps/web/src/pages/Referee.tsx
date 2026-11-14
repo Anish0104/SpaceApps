@@ -1,5 +1,6 @@
 import { useState, type CSSProperties, type ReactNode } from "react";
 import { referee, TRACKED, type Tracked } from "@flameatlas/engine";
+import demoPairs from "../../../../data/demo-pairs.json";
 import { dataset } from "../lib/data";
 import { fieldLabel } from "../lib/labels";
 import { VerdictLight, type Light } from "../components/Badge";
@@ -18,6 +19,17 @@ const ROLE = {
   confound: { words: "Confound", mark: "var(--verdict-red)" },
 } as const;
 
+const isTracked = (f: string): f is Tracked => (TRACKED as readonly string[]).includes(f);
+
+/**
+ * The locked demo comparisons (data/demo-pairs.json). A pair is offered only if both runs are in
+ * the loaded dataset. The verdict is whatever the engine returns; it is never read from the file.
+ */
+const QUICK_PAIRS = demoPairs.pairs.flatMap((p) => {
+  const has = (id: string) => dataset.runs.some((r) => r.id === id);
+  return has(p.a) && has(p.b) && isTracked(p.target) ? [{ id: p.id, label: p.label, a: p.a, b: p.b, target: p.target }] : [];
+});
+
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="flex flex-col gap-1 text-sm">
@@ -29,9 +41,10 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 
 export default function Referee() {
   const runs = dataset.runs;
-  const [a, setA] = useState(runs[0]?.id ?? "");
-  const [b, setB] = useState(runs[1]?.id ?? "");
-  const [target, setTarget] = useState<Tracked>("geometry");
+  const first = QUICK_PAIRS[0];
+  const [a, setA] = useState(first?.a ?? runs[0]?.id ?? "");
+  const [b, setB] = useState(first?.b ?? runs[1]?.id ?? "");
+  const [target, setTarget] = useState<Tracked>(first?.target ?? "geometry");
   const ra = runs.find((r) => r.id === a);
   const rb = runs.find((r) => r.id === b);
   const res = ra && rb ? referee(ra, rb, target) : null;
@@ -42,6 +55,21 @@ export default function Referee() {
         <h1 className="display text-2xl sm:text-3xl">Referee</h1>
         <p className="measure mt-2">Can a difference between two runs be attributed to one variable? The referee checks documented metadata only and never claims causal proof.</p>
       </div>
+
+      {QUICK_PAIRS.length > 0 && (
+        <div role="group" aria-labelledby="quick-pairs" className="space-y-2">
+          <p id="quick-pairs" className="text-sm text-ink/70">Compare a demo pair</p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+            {QUICK_PAIRS.map((p) => (
+              <button key={p.id} type="button" className="btn btn-secondary btn-sm"
+                aria-pressed={a === p.a && b === p.b && target === p.target}
+                onClick={() => { setA(p.a); setB(p.b); setTarget(p.target); }}>
+                {p.label}, {fieldLabel(p.target).toLowerCase()}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-x-6 gap-y-3">
         <Field label="Run A">

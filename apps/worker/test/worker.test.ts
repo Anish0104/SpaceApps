@@ -43,6 +43,19 @@ describe("validator", () => {
   });
 });
 
+describe("served dataset", () => {
+  it("is the released dataset, not the fixtures", async () => {
+    const res = await worker.fetch(new Request("http://x/api/health"), env);
+    expect(await res.json()).toMatchObject({ ok: true, dataVersion: "1.0.0-seed", fixture: false, gemini: false });
+  });
+  it("never ranks or cites a fixture record", async () => {
+    const ranked = (await (await post("/api/search", { query: "fabric flame spread", scenarioId: "moon-challenge" })).json()) as { psiId: string }[];
+    const answer = await (await post("/api/ask", { question: "fabric fire on the Moon", scenarioId: "moon-challenge", dataVersion: "1.0.0-seed" })).text();
+    expect(ranked.map((r) => r.psiId).filter((id) => id.startsWith("FIX-"))).toEqual([]);
+    expect(answer).not.toMatch(/FIX-/);
+  });
+});
+
 describe("/api/ask", () => {
   it("returns a valid six-beat answer", async () => {
     const res = await post("/api/ask", { question: "fabric fire on the Moon", scenarioId: "moon-challenge", dataVersion: "fixture-0.1" });

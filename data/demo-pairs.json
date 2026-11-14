@@ -1,0 +1,8 @@
+{
+  "_note": "The three locked Referee demo pairs (data/go_no_go.md). Run ids are ids in data/dataset-v1.0.json; target is a tracked Referee field. expected is the verdict the team locked for the demo: the Referee page shows whatever the engine returns, and packages/engine/test/dataset.test.ts checks the two against each other.",
+  "pairs": [
+    { "id": "A", "label": "BASS-II vs Saffire-I", "a": "BASS2-CF-conc", "b": "SAF-I-1", "target": "sizeMm", "expected": "CANNOT_ISOLATE" },
+    { "id": "B", "label": "Saffire I-1 vs III-1", "a": "SAF-I-1", "b": "SAF-III-1", "target": "flowCmS", "expected": "CAN_ISOLATE" },
+    { "id": "C", "label": "Saffire IV-1 vs VI-2", "a": "SAF-IV-1", "b": "SAF-VI-2", "target": "o2MolPct", "expected": "CANNOT_ISOLATE" }
+  ]
+}

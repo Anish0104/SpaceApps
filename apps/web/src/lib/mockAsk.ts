@@ -14,7 +14,10 @@ const MOCK_DELAY_MS = 1500;
  * (scenario moon-fm2, "Would fabric burn differently in a lunar habitat?"). The capture itself has
  * status "cannot_confirm"; it is overridden to "answered" here so this state can be previewed.
  */
-const MOCK_ANSWERED = AskResponse.parse({ ...captured, status: "answered", source: "cache", dataVersion: dataset.version });
+/** Never stamped with the loaded release version: the capture cites FIX-* fixture ids, not NASA records. */
+const MOCK_VERSION = `mock (fixture capture; app data ${dataset.version})`;
+
+const MOCK_ANSWERED = AskResponse.parse({ ...captured, status: "answered", source: "cache", dataVersion: MOCK_VERSION });
 
 /** MOCK "cannot_confirm" example: hand-made, returned when the question contains "PMMA". Not from any record. */
 const MOCK_CANNOT_CONFIRM = AskResponse.parse({
@@ -29,7 +32,7 @@ const MOCK_CANNOT_CONFIRM = AskResponse.parse({
   scope: "In our curated dataset; illustrative, not an approved NASA plan.",
   missingFields: ["o2MolPct at 25-35%", "gravityG 0.165"],
   source: "template",
-  dataVersion: dataset.version,
+  dataVersion: MOCK_VERSION,
 });
 
 export async function mockAsk(question: string): Promise<AskResponse> {

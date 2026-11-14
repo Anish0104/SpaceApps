@@ -7,7 +7,7 @@
  *   POST /api/dev/warm-cache   localhost only, used by `pnpm warm-cache` (spends Gemini quota)
  */
 import { AskRequest, AskResponse, Dataset, Scenario, SearchRequest } from "@flameatlas/engine";
-import fixtures from "../../../data/fixtures.json";
+import datasetJson from "../../../data/dataset-v1.0.json";
 import scenariosJson from "../../../data/scenarios.json";
 import demoAnswersJson from "../../../data/cache/demo-answers.json";
 import { buildIndex, search } from "./search";
@@ -25,8 +25,9 @@ export interface Env {
   ANSWERS?: KVNamespace;
 }
 
-// TODO(data release): load dataset-vX.Y.json from R2 instead of fixtures.
-const DS = Dataset.parse(fixtures);
+// The released dataset, bundled with the worker. data/fixtures.json (FAKE values) is for unit tests only.
+// TODO(data release): load dataset-vX.Y.json from R2 instead of bundling it.
+const DS = Dataset.parse(datasetJson);
 const SCENARIOS = scenariosJson.map((s) => Scenario.parse(s));
 const INDEX = buildIndex(DS);
 // Committed demo answers (filled by `pnpm warm-cache`); served offline with source "cache".

@@ -6,13 +6,16 @@ Everyone builds against these. Change them only together, in one PR, and tell th
 
 - TypeScript (source of truth): `packages/engine/src/schema.ts` (Zod)
 - Python mirror: `ingest/schema.py` (Pydantic)
-- Example: `data/fixtures.json` (FAKE values, `"fixture": true`; never cite)
+- Release: `data/dataset-v1.0.json` (what the worker and the web app load)
+- Example: `data/fixtures.json` (FAKE values, `"fixture": true`; never cite; unit tests only)
 
 Key rules:
 
 - Every numeric field is a `Value`: `{ value, unit, type, sourceId, page via source, missingReason? }`
 - `type` is one of `MEASURED | COMPUTED | ASSUMED | INFERRED | UNKNOWN`. Never show `ASSUMED` as evidence.
 - Missing = `value: null` + `missingReason: "not_documented" | "not_applicable"`. Never 0.
+- Optional fields are left out when empty. The one exception Zod accepts is `Source.ntrsId: null`
+  (Pydantic writes `None` as `null`); it is read as absent.
 - `o2PartialKPa` is always `COMPUTED` with its formula.
 - `collectedBy` and `verifiedBy` must be different people. `status: "verified"` only after the cross-check.
 
