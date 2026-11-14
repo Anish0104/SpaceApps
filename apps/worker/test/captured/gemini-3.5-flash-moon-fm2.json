@@ -1,0 +1,22 @@
+{
+  "status": "cannot_confirm",
+  "verdict": "yellow",
+  "sentences": [
+    {
+      "text": "For the SIBAL fabric material, microgravity (0 g) tests recorded flame spread rates of 1 mm/s across various oxygen concentrations, flows, and pressures.",
+      "recordIds": ["FIX-BASS-1", "FIX-BASS-3", "FIX-BASS-4", "FIX-SAFF1-1", "FIX-BASS2-1"]
+    },
+    {
+      "text": "However, none of the available records were conducted under the assumed scenario inputs of 0.165 g lunar gravity, 34 mol% O2, or 56.5 kPa pressure.",
+      "recordIds": ["SCENARIO:moon-fm2"]
+    }
+  ],
+  "differs": ["gravity", "oxygen", "pressure"],
+  "limit": "The dataset contains microgravity (0 g) and normal Earth gravity tests, but no tests conducted in 0.165 g lunar gravity. Earth (1 g) and orbit (~0 g) results do not bound lunar or Martian behavior; flammability in partial gravity like lunar gravity may be higher than in 0 g.",
+  "next": {
+    "kind": "missing_experiment",
+    "target": "Flames spread testing of SIBAL fabric in partial gravity (0.165 g) under 34 mol% O2 and 56.5 kPa pressure."
+  },
+  "scope": "In our curated dataset; illustrative, not an approved NASA plan.",
+  "missingFields": ["solid fuel burning data at 0.165 g"]
+}

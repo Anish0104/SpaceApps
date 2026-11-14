@@ -59,6 +59,13 @@ Response (`AskResponse`), the six beats:
 
 - `verdict` = evidence strength (green / yellow / red), never safety.
 - Every number in `sentences[].text` must match a stored value on a cited record, or the validator drops the sentence.
+- `recordIds` holds run / investigation / source ids. It may also include `"SCENARIO:<id>"` (only the
+  request's own scenario): that marks ASSUMED scenario inputs (O2 as percent or fraction, pressure in
+  kPa / psi / atm, gravity, and the COMPUTED O2 partial pressure), never evidence. The UI must not style
+  it as a measured source.
+- Numbers in `limit`, `differs[]` and `next.target` must match a value on a record sent to the LLM or an
+  ASSUMED value of the request's scenario. Otherwise `limit` becomes "Among tracked conditions only.",
+  the `differs` item is dropped, and `next.target` is dropped (`next.kind` is kept).
 - `source` tells the UI whether the answer came from the LLM, the template fallback, or the cache.
 
 ## Scenario ids

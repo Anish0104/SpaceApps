@@ -15,5 +15,7 @@ ingest/.venv/
 # Large / regenerable data
 data/raw/
 data/staging/
-data/cache/
+data/cache/*
+# committed on purpose: validated demo answers so the demo works offline (pnpm warm-cache)
+!data/cache/demo-answers.json
 *.pdf

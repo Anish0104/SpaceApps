@@ -10,6 +10,7 @@
     "typecheck": "pnpm -r --if-present typecheck",
     "dev:worker": "pnpm --filter @flameatlas/worker dev",
     "dev:web": "pnpm --filter @flameatlas/web dev",
-    "fixtures": "python3 ingest/make_fixtures.py"
+    "fixtures": "python3 ingest/make_fixtures.py",
+    "warm-cache": "pnpm --filter @flameatlas/worker warm-cache"
   }
 }

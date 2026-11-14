@@ -7,7 +7,8 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "warm-cache": "node scripts/warm-cache.mjs"
   },
   "dependencies": {
     "@flameatlas/engine": "workspace:*",

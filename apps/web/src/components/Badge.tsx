@@ -12,7 +12,7 @@ export function EvidenceBadge({ type }: { type: EvidenceType }) {
   return <span className={`rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold ${STYLE[type]}`}>{type}</span>;
 }
 
-export function Tag({ children, tone = "ink" }: { children: React.ReactNode; tone?: "ink" | "gap" | "match" | "measured" }) {
-  const t = { ink: "border-line text-ink/70", gap: "border-gap/40 text-gap", match: "border-match/40 text-match", measured: "border-measured/40 text-measured" }[tone];
+export function Tag({ children, tone = "ink" }: { children: React.ReactNode; tone?: "ink" | "gap" | "match" | "measured" | "assumed" }) {
+  const t = { ink: "border-line text-ink/70", gap: "border-gap/40 text-gap", match: "border-match/40 text-match", measured: "border-measured/40 text-measured", assumed: "border-assumed/40 text-assumed" }[tone];
   return <span className={`rounded border px-1.5 py-0.5 font-mono text-[10px] ${t}`}>{children}</span>;
 }

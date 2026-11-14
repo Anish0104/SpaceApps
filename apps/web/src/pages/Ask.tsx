@@ -25,6 +25,7 @@ export default function Ask() {
         <input value={q} onChange={(e) => setQ(e.target.value)} className="flex-1 rounded border border-line bg-white px-3 py-2 text-sm" />
         <button onClick={submit} disabled={busy} className="rounded bg-ink px-4 py-2 text-sm font-semibold text-white">{busy ? "…" : "Ask"}</button>
       </div>
+      {busy && <p className="text-sm text-ink/60">Checking NASA records… this can take up to a minute.</p>}
       {err && <p className="text-sm text-gap">{err} (is the worker running? pnpm dev:worker)</p>}
 
       {a && (
@@ -39,7 +40,7 @@ export default function Ask() {
           {/* Beat 2: receipts */}
           <ul className="list-disc pl-5 text-sm">
             {a.sentences.map((s, i) => (
-              <li key={i}>{s.text} {s.recordIds.map((id) => <Tag key={id} tone="measured">{id}</Tag>)}</li>
+              <li key={i}>{s.text} {s.recordIds.map((id) => <Tag key={id} tone={id.startsWith("SCENARIO:") ? "assumed" : "measured"}>{id}</Tag>)}</li>
             ))}
           </ul>
           {/* Beat 3: what differs / missing */}
