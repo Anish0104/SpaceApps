@@ -480,6 +480,41 @@ describe("template answer on the released dataset (dataset.json)", () => {
     expect(saffire1?.text).not.toMatch(/101\.3/); // Saffire-I pressure is INFERRED, so it is not quoted
   });
 
+  it("never prints \"PSI-xx (PSI-xx)\": a record without a real acronym is named by its short title", () => {
+    const moon = Scenario.parse(scenarios.find((s) => s.id === "moon-challenge"));
+    const relabel = (acronym: string, name: string) => {
+      const ds = structuredClone(release);
+      Object.assign(ds.investigations.find((i) => i.psiId === "PSI-98")!, { acronym, name });
+      const ranked = search(ds, buildIndex(ds), moon, SearchRequest.parse({ query: QUESTIONS[0], scenarioId: moon.id }));
+      const t = templateAnswer(ds, moon, ranked);
+      const s = t.sentences.find((x) => x.recordIds[0] === "PSI-98")!;
+      expect(validateSentences(ds, [s], moon).dropped).toEqual([]);
+      return s.text;
+    };
+    expect(relabel("PSI-98", "Spacecraft Fire Safety Experiment-I")).toMatch(/^Spacecraft Fire Safety Experiment-I \(PSI-98\) matches/);
+    expect(relabel("", "A Very Long Investigation Title About Flame Spread Over Fabric")).toMatch(/^A Very Long Investigation Title About… \(PSI-98\) matches/);
+    // A short title with a digit would add a number the validator counts: the sentence uses the id alone.
+    expect(relabel("PSI-98", "Flame Test 7 Experiment")).toMatch(/^PSI-98 matches/);
+  });
+
+  it("no template sentence on the released dataset repeats the PSI id as its name", () => {
+    for (const sc of scenarios.map((s) => Scenario.parse(s))) {
+      for (const q of QUESTIONS) {
+        const ranked = search(release, releaseIndex, sc, SearchRequest.parse({ query: q, scenarioId: sc.id }));
+        for (const s of templateAnswer(release, sc, ranked).sentences) expect(s.text).not.toMatch(/\b(PSI-\d+) \(\1\)/);
+      }
+    }
+  });
+
+  it("records sent to Gemini name a record without an acronym by its title only", () => {
+    const sc = Scenario.parse(scenarios.find((s) => s.id === "moon-challenge"));
+    const ranked = search(release, releaseIndex, sc, SearchRequest.parse({ query: "flamelet tomography BASS modeling", scenarioId: sc.id }));
+    const all = buildRecords(release, ranked, release.investigations.length);
+    expect(all).toContain("[PSI-62] Concurrent Flame Spread Modeling");
+    expect(all).not.toMatch(/\[(PSI-\d+)\] \1 /);
+    expect(all).toContain("[PSI-98] SAFFIRE-I (Spacecraft Fire Safety Experiment-I)");
+  });
+
   it("the no-key pipeline returns those sentences for every scenario", async () => {
     for (const sc of scenarios.map((s) => Scenario.parse(s))) {
       const a = await ask(QUESTIONS[0], sc, { ds: release, index: releaseIndex });

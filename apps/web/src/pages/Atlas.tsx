@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { rankInvestigations, type RankedResult, type SafetyRole } from "@flameatlas/engine";
 import { dataset, isPsiRecord, releaseCoverage, runsFor } from "../lib/data";
-import { fieldLabel, investigationLabel, reasonLabel, sentenceCase } from "../lib/labels";
+import { fieldLabel, hasAcronym, investigationLabel, reasonLabel, sentenceCase } from "../lib/labels";
 import { useScenario } from "../lib/scenario";
 import { Tag } from "../components/Badge";
 
@@ -104,7 +104,8 @@ export default function Atlas() {
               <div className="min-w-0">
                 <Link to={`/investigation/${inv.psiId}`} title={inv.name} className="font-semibold hover:underline">{investigationLabel(inv)}</Link>
                 <span className="dense ml-2 text-sm text-ink/70">{isPsiRecord(inv) ? inv.psiId : "From NASA report, not PSI"}</span>
-                <p className="truncate text-sm text-ink/70">{inv.name}</p>
+                {/* Without a real acronym the label already is the (short) title; the full name is on hover. */}
+                {hasAcronym(inv) && <p className="truncate text-sm text-ink/70">{inv.name}</p>}
               </div>
               <span className="col-start-2 text-sm lg:col-start-auto">{sentenceCase(inv.safetyRole)}</span>
               <div className="col-start-2 lg:col-start-auto"><ContributionBar r={r} /></div>

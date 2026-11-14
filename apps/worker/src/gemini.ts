@@ -2,7 +2,7 @@
  * Gemini call for /api/ask. Gemini only PROPOSES the six-beat answer; the caller then
  * Zod-checks it, runs the citation validator, and falls back to the template if needed.
  */
-import { KPA_PER_ATM, O2_PARTIAL_FORMULA, kPaToPsi, o2PartialKPa, type Dataset, type Investigation, type RankedResult, type Run, type Scenario } from "@flameatlas/engine";
+import { KPA_PER_ATM, O2_PARTIAL_FORMULA, hasAcronym, kPaToPsi, o2PartialKPa, type Dataset, type Investigation, type RankedResult, type Run, type Scenario } from "@flameatlas/engine";
 import { scenarioRecordId } from "./validator";
 
 /** Tried in order; ask() moves to the next one when a model is gone, out of quota, overloaded or slow. */
@@ -96,7 +96,7 @@ function recordLines(inv: Investigation, runs: Run[], r?: RankedResult): string[
   {
     const rg = inv.ranges;
     lines.push(
-      `[${inv.psiId}] ${inv.acronym} (${inv.name}); type ${inv.projectType}; role ${inv.safetyRole}; fuel ${inv.fuelPhase ?? "unknown"}; ` +
+      `[${inv.psiId}] ${hasAcronym(inv) ? `${inv.acronym.trim()} (${inv.name})` : inv.name}; type ${inv.projectType}; role ${inv.safetyRole}; fuel ${inv.fuelPhase ?? "unknown"}; ` +
       `hardware ${inv.hardware ?? "unknown"}; objectives: ${inv.objectives}` +
       (rg ? `; documented ranges: ${JSON.stringify({ o2MolPct: rg.o2MolPct, pressureKPa: rg.pressureKPa, flowCmS: rg.flowCmS, gravityG: rg.gravityG })}` : "") +
       (r ? `; ranking reasons: ${r.reasons.join(", ") || "none"}; not documented: ${r.notDocumented.join(", ") || "none"}` : ""),
