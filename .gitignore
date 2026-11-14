@@ -17,3 +17,4 @@ data/raw/
 data/staging/
 data/cache/
 *.pdf
+.venv/
