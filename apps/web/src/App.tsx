@@ -114,7 +114,7 @@ function Brand({ compact = false }: { compact?: boolean }) {
   return (
     <Link to="/" className="flex shrink-0 items-center gap-2.5 rounded-[4px] text-[var(--text)]">
       <FlameMark size={16} />
-      <span className={`text-[1.2rem] font-semibold tracking-tight ${compact ? "max-[359px]:sr-only" : ""}`}>FlameAtlas</span>
+      <span className={`text-[1.2rem] font-semibold tracking-tight ${compact ? "max-[359px]:sr-only" : ""}`}>Oxyflame</span>
     </Link>
   );
 }
@@ -273,7 +273,7 @@ function Footer() {
       <div className="content-container grid gap-10 py-14 text-sm text-[var(--text-muted)] md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.5fr)_minmax(0,1.4fr)]">
         <div className="space-y-3">
           <p className="flex items-center gap-2 text-lg font-semibold tracking-tight text-[var(--text)]">
-            <FlameMark size={14} /> FlameAtlas
+            <FlameMark size={14} /> Oxyflame
           </p>
           <p>
             Data version <span className="font-mono text-[var(--text)]">{dataset.version}</span>

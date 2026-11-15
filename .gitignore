@@ -20,5 +20,8 @@ data/cache/*
 !data/cache/demo-answers.json
 # committed on purpose: validated investigation summaries (pnpm summaries), so pages never call Gemini
 !data/cache/summaries.json
+# committed on purpose: bge-m3 vectors (pnpm index:vectors, pnpm eval:embed) so tests and the eval never need the network
+!data/cache/embeddings-*.json
+!data/cache/eval-query-embeddings-*.json
 *.pdf
 .venv/

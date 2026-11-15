@@ -28,6 +28,13 @@ describe("topK", () => {
   it("a missing label never counts as a hit", () => {
     expect(topK([entry("g", ["P9", "P1"], ["P9"], ["P9"])], "flameatlas", 3).hits).toBe(0);
   });
+  it("scores the hybrid column the same way, and treats a missing hybrid list as a miss", () => {
+    const withHybrid = { ...entry("h", ["P1"], [], ["P2"]), hybrid: ["P1", "P2"] };
+    const without = entry("i", ["P1"], [], ["P1"]);
+    expect(topK([withHybrid], "hybrid", 1)).toMatchObject({ hits: 1, n: 1 });
+    expect(topK([withHybrid], "flameatlas", 1)).toMatchObject({ hits: 0, misses: ["h"] });
+    expect(topK([without], "hybrid", 3)).toMatchObject({ hits: 0, misses: ["i"] });
+  });
 });
 
 describe("scoreReferee", () => {
@@ -73,7 +80,7 @@ describe("scoreAnswers", () => {
     expect(s.abstention).toEqual({ expected: 1, correct: 0, wrong: ["q1"] });
     expect(s.citationPrecision).toBeCloseTo(2 / 3, 5);
   });
-  it("FlameAtlas: counts what the validator caught, correct and excessive abstentions", () => {
+  it("Oxyflame: counts what the validator caught, correct and excessive abstentions", () => {
     const s = scoreAnswers(ds, scenarios, questions, records, "flameatlas");
     expect(s).toMatchObject({ n: 2, caughtByValidator: 1, overAbstained: ["q2"], citationPrecision: null });
     expect(s.abstention).toEqual({ expected: 1, correct: 1, wrong: [] });

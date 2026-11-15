@@ -1,4 +1,4 @@
-/* FlameAtlas phoneSpaceApp service worker: an offline-first app shell.
+/* Oxyflame phoneSpaceApp service worker: an offline-first app shell.
  * The app shell and bundled dataset are precached on install; navigations fall back to the cached
  * shell when the network is unavailable, so the whole evidence browser works on a plane. Bump
  * CACHE when assets change. Only same-origin GETs are cached; API calls are never cached here. */

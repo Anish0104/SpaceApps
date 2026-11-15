@@ -1,9 +1,9 @@
-# FlameAtlas
+# Oxyflame
 
 Mission-aware fire-safety intelligence from NASA's microgravity combustion data.
 NASA Space Apps Challenge 2026: Flame in Freefall.
 
-FlameAtlas ranks NASA's 24 PSI combustion investigations for a chosen crew environment
+Oxyflame ranks NASA's 24 PSI combustion investigations for a chosen crew environment
 (spacecraft, station, Moon, Mars, rover), shows which results can fairly be compared, and
 names the experiment that would close the gap. Every number links to its NASA source.
 
@@ -48,17 +48,18 @@ python scrape_psi.py --all                   # all 24
 
 ## Evaluation
 
-`pnpm eval:rank` then `pnpm eval:score` (offline, no AI calls). Data 1.2.0, 24 questions, 18 with
+`pnpm eval:rank` then `pnpm eval:score` (offline, no AI calls). Data 1.3.0, 24 questions, 18 with
 labelled investigations. Full method, history and failures: [eval/README.md](eval/README.md).
 
 | Measure | Result |
 |---|---|
 | Keyword search (BM25 + synonyms), Top-1 / Top-3 | 8/18 / 12/18 |
-| FlameAtlas before reading the role from the question | 6/18 / 10/18 |
-| FlameAtlas now | 8/18 / 16/18 (misses q14, q15) |
-| Referee: verdict / named reason on hand-built pairs | 10/10 / 5/5 |
+| Oxyflame before reading the role from the question | 6/18 / 10/18 |
+| Oxyflame now | 9/18 / 15/18 (Top-3 misses q14, q15, q22) |
+| Hybrid (keyword + bge-m3 semantic, fused by `rrf`, into the engine); measured on data 1.2.0, not shipped; 1.3.0 re-run pending | 4/18 / 10/18 |
+| Referee: verdict / named reason on hand-built pairs | 9/9 / 5/5 |
 | Adversarial traps caught | 5/5 |
-| Runs verified against their NASA source | 3 of 13 ([eval/verification.md](eval/verification.md)) |
+| Runs verified against their NASA source | 12 of 12 ([eval/verification.md](eval/verification.md)) |
 
 Read with care: the ranking rule was adjusted after seeing which of these questions failed, so the
 current row is a fit to this set, not an independent test. The Referee pairs and traps were written
@@ -67,7 +68,7 @@ claims, abstention) are not recorded yet.
 
 ## Non-claims
 
-FlameAtlas never rates a material safe or unsafe, never assumes the Moon falls between Earth
+Oxyflame never rates a material safe or unsafe, never assumes the Moon falls between Earth
 and orbit, never transfers results across materials without evidence, and never predicts FM2 results.
 
 ## Sources

@@ -3,7 +3,8 @@ import { Dataset } from "@flameatlas/engine";
 import fixtures from "../../../data/fixtures.json";
 import { expandQuery, rrf } from "../src/search";
 import { validateSentences } from "../src/validator";
-import worker, { corsHeaders } from "../src/index";
+import worker from "../src/index";
+import { corsHeaders } from "../src/cors";
 
 const ds = Dataset.parse(fixtures);
 const env = { DATA_VERSION: "fixture-0.1" };
@@ -50,7 +51,7 @@ describe("served dataset", () => {
   });
   it("never ranks or cites a fixture record", async () => {
     const ranked = (await (await post("/api/search", { query: "fabric flame spread", scenarioId: "moon-challenge" })).json()) as { psiId: string }[];
-    const answer = await (await post("/api/ask", { question: "fabric fire on the Moon", scenarioId: "moon-challenge", dataVersion: "1.2.0" })).text();
+    const answer = await (await post("/api/ask", { question: "fabric fire on the Moon", scenarioId: "moon-challenge", dataVersion: "1.3.0" })).text();
     expect(ranked.map((r) => r.psiId).filter((id) => id.startsWith("FIX-"))).toEqual([]);
     expect(answer).not.toMatch(/FIX-/);
   });
@@ -67,10 +68,10 @@ describe("/api/ask", () => {
 });
 
 describe("CORS", () => {
-  const PAGES = "https://flameatlas.pages.dev";
+  const PAGES = "https://oxyflame.pages.dev";
   const deployed = { DATA_VERSION: "x", ALLOWED_ORIGIN: PAGES };
   const health = (origin: string | null, e: typeof deployed | typeof env = deployed, method = "GET") =>
-    worker.fetch(new Request("https://flameatlas-api.example.workers.dev/api/health", { method, headers: origin ? { Origin: origin } : {} }), e);
+    worker.fetch(new Request("https://oxyflame.example.workers.dev/api/health", { method, headers: origin ? { Origin: origin } : {} }), e);
 
   it("allows the deployed web app and the local Vite server", async () => {
     expect((await health(PAGES)).headers.get("Access-Control-Allow-Origin")).toBe(PAGES);
@@ -80,7 +81,7 @@ describe("CORS", () => {
     expect(pre.headers.get("Access-Control-Allow-Methods")).toContain("POST");
   });
   it("gives any other origin no allow header (the browser refuses it)", async () => {
-    for (const o of ["https://evil.example", "https://preview.flameatlas.pages.dev", "http://localhost:3000"]) {
+    for (const o of ["https://evil.example", "https://preview.oxyflame.pages.dev", "http://localhost:3000"]) {
       expect((await health(o)).headers.get("Access-Control-Allow-Origin"), o).toBeNull();
     }
     expect((await health(PAGES, env)).headers.get("Access-Control-Allow-Origin")).toBeNull(); // ALLOWED_ORIGIN unset
@@ -98,7 +99,7 @@ describe("CORS", () => {
 describe("/api/dev/* is localhost only", () => {
   const routes = ["/api/dev/warm-cache", "/api/dev/eval", "/api/dev/summaries", "/api/dev/anything"];
   it.each(routes)("%s is 404 on a deployed host, before the body is read", async (path) => {
-    const res = await worker.fetch(new Request(`https://flameatlas-api.example.workers.dev${path}`, { method: "POST", body: "not json" }), env);
+    const res = await worker.fetch(new Request(`https://oxyflame.example.workers.dev${path}`, { method: "POST", body: "not json" }), env);
     expect(res.status).toBe(404);
   });
   it("is reachable on localhost (a bad body gets 400, not 404)", async () => {

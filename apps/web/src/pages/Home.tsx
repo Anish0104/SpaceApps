@@ -15,7 +15,7 @@ const TOOLS: { to: string; title: string; body: string; icon: ComponentType<{ si
   { to: "/mission-lab", title: "Mission lab", body: "Condition by condition, what the evidence supports for this environment, with the nearest tested runs.", icon: IconLab },
   { to: "/referee", title: "Referee", body: "Can a difference between two runs be put on one variable, or did something else change too?", icon: IconReferee },
   { to: "/missing-experiment", title: "Missing experiment", body: "The run that would close the biggest gap, proposed by rules and checked against the data. Illustrative only.", icon: IconExperiment },
-  { to: "/limits", title: "Limits", body: "What FlameAtlas never claims: no safety ratings, no bounds from Earth and orbit, no invented numbers.", icon: IconLimits },
+  { to: "/limits", title: "Limits", body: "What Oxyflame never claims: no safety ratings, no bounds from Earth and orbit, no invented numbers.", icon: IconLimits },
 ];
 
 const STEPS = [
@@ -90,7 +90,7 @@ export default function Home() {
           <div>
             <h2 id="live-heading" className="section-title">Live from the dataset</h2>
             <p className="mt-2 max-w-[52ch] text-[var(--text-muted)]">
-              FlameAtlas ranks NASA's combustion experiments for your crew environment, shows which results can fairly be compared, and
+              Oxyflame ranks NASA's combustion experiments for your crew environment, shows which results can fairly be compared, and
               marks exactly where the evidence ends. Every number links to its NASA source.
             </p>
             <dl className="mt-8 grid max-w-xl grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4">

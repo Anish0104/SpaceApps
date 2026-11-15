@@ -107,7 +107,7 @@ describe("/api/dev/eval runner", () => {
     expect(plain).toMatchObject({ system: "plain_rag", recorded: true, model: "model-a", callsUsed: 1, systemPrompt: PLAIN_PROMPT, output: ANSWER });
     expect(fa.records).toBe(plain.records);
     expect(fa.recordIds.length).toBeGreaterThan(0);
-    // FlameAtlas validated its answer: the invented 99 mol% sentence was dropped and logged; plain RAG kept it.
+    // Oxyflame validated its answer: the invented 99 mol% sentence was dropped and logged; plain RAG kept it.
     expect(JSON.stringify(fa.output)).not.toContain("99 mol%");
     expect(fa.log.join("\n")).toMatch(/number 99 not in cited records/);
   });
@@ -278,6 +278,16 @@ describe("offline ranking (pnpm eval:rank)", () => {
         expect(list.every((id) => known.has(id))).toBe(true);
       }
       expect(q.flameatlas).toHaveLength(RANK_K);
+    }
+  });
+
+  it("adds a hybrid top-5 only when semantic scores are given, ranked by the same engine", () => {
+    expect(out.questions.every((q) => q.hybrid === undefined)).toBe(true);
+    const target = ds.investigations.at(-1)!.psiId;
+    const withSem = rankingFor(ds, index, questions.slice(0, 2), (q) => scenarios.find((s) => s.id === scenarioIdFor(q, null))!, () => new Map([[target, 1]]));
+    for (const q of withSem.questions) {
+      expect(q.hybrid).toHaveLength(RANK_K);
+      expect(q.hybrid!.every((id) => known.has(id))).toBe(true);
     }
   });
 

@@ -15,7 +15,7 @@ export function parseModels(csv?: string): string[] {
 const ENDPOINT = (model: string) =>
   `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
-export const SYSTEM_PROMPT = `You are FlameAtlas, an assistant that interprets NASA microgravity combustion data for fire-safety research.
+export const SYSTEM_PROMPT = `You are Oxyflame, an assistant that interprets NASA microgravity combustion data for fire-safety research.
 
 Rules (all mandatory):
 1. Use ONLY the RECORDS provided. Never use outside knowledge for facts or numbers.

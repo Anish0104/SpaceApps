@@ -1,13 +1,19 @@
 /**
  * Contract 2: search(query, scenario, filters) -> RankedResult[]
- * Keyword (MiniSearch + synonyms) ships first. Semantic (bge-small via Workers AI) is fused in
- * with reciprocal rank fusion only if the benchmark shows it helps.
+ *
+ * The question score fed into the rules engine comes from one of:
+ *   keyword            MiniSearch + synonyms (the shipped default; see eval/README.md)
+ *   semantic-fallback  keyword found nothing: bge-m3 / Vectorize results, by normalised cosine
+ *   hybrid             keyword + semantic fused by rrf (measured on data 1.2.0: worse, not used)
+ *   hybrid-cosine      keyword + semantic fused by normalised cosine scores (built, off; to be judged on a held-out set)
+ * The engine (scenario match, Cannot assess, safety role) is the same in every mode.
  */
 import MiniSearch from "minisearch";
 import {
   inferSafetyRole, rankInvestigations, type Dataset, type Investigation, type RankedResult, type Scenario, type SearchRequest,
 } from "@flameatlas/engine";
 import synonyms from "../../../data/synonyms.json";
+import { semanticScores, type SemanticDeps } from "./semantic";
 
 const SYN: Record<string, string[]> = synonyms;
 
@@ -57,12 +63,33 @@ export function rrf(maps: Map<string, number>[], k = 60): Map<string, number> {
   return new Map([...fused].map(([id, v]) => [id, v / max]));
 }
 
+/** Min-max normalise to 0..1 (all equal -> 1), so cosine scores keep their spread. */
+export function normalise(m: Map<string, number>): Map<string, number> {
+  if (!m.size) return new Map();
+  const vals = [...m.values()];
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  return new Map([...m].map(([id, v]) => [id, hi > lo ? (v - lo) / (hi - lo) : 1]));
+}
+
+/**
+ * Cosine fusion: the mean of the keyword score and the normalised cosine score (an id missing from a list
+ * counts 0 there). With no keyword hits it is just the normalised cosine score. No weights to tune.
+ */
+export function fuseCosine(kw: Map<string, number>, semantic: Map<string, number>): Map<string, number> {
+  const sem = normalise(semantic);
+  if (!kw.size) return sem;
+  const ids = new Set([...kw.keys(), ...sem.keys()]);
+  return new Map([...ids].map((id) => [id, ((kw.get(id) ?? 0) + (sem.get(id) ?? 0)) / 2]));
+}
+
+export type Fusion = "rrf" | "cosine";
+
 export function search(
   ds: Dataset, ms: MiniSearch, scenario: Scenario, req: SearchRequest,
-  semantic?: Map<string, number>,
+  semantic?: Map<string, number>, fusion: Fusion = "rrf",
 ): RankedResult[] {
   const kw = keywordScores(ms, req.query);
-  const q = semantic ? rrf([kw, semantic]) : kw;
+  const q = !semantic ? kw : fusion === "cosine" ? fuseCosine(kw, semantic) : rrf([kw, semantic]);
   let invs = ds.investigations;
   if (req.filters.fuelPhase) invs = invs.filter((i) => i.fuelPhase === req.filters.fuelPhase);
   if (req.filters.hardware) invs = invs.filter((i) => i.hardware?.includes(req.filters.hardware!));
@@ -74,4 +101,35 @@ export function search(
   // an explicit filter wins; otherwise take the safety role the question itself names, if it names exactly one
   const role = req.filters.safetyRole ?? inferSafetyRole(req.query);
   return rankInvestigations(inputs, scenario, role).slice(0, req.limit);
+}
+
+// ---------- retrieval mode per question ----------
+
+export type SearchModeSetting = "keyword" | "hybrid" | "hybrid-cosine";
+export type RetrievalLabel = "keyword" | "semantic-fallback" | "hybrid" | "hybrid-cosine";
+
+export interface RetrievalPlan {
+  label: RetrievalLabel;
+  semantic?: Map<string, number>;
+  fusion: Fusion;
+  /** why it is keyword-only, when it is */
+  reason?: string;
+}
+
+export const searchModeOf = (v?: string): SearchModeSetting => (v === "hybrid" || v === "hybrid-cosine" ? v : "keyword");
+
+/**
+ * Which scores to rank with. Keyword when it has hits and SEARCH_MODE is keyword (no AI call at all).
+ * When keyword finds nothing, the Vectorize results are used instead (semantic-fallback). SEARCH_MODE
+ * hybrid / hybrid-cosine always ask Vectorize. Any AI/Vectorize failure or the 1.5 s timeout -> keyword.
+ */
+export async function planRetrieval(ds: Dataset, ms: MiniSearch, question: string, mode: SearchModeSetting, deps: SemanticDeps): Promise<RetrievalPlan> {
+  const keywordEmpty = keywordScores(ms, question).size === 0;
+  if (mode === "keyword" && !keywordEmpty) return { label: "keyword", fusion: "rrf", reason: "SEARCH_MODE is keyword" };
+  const r = await semanticScores(ds, question, deps);
+  if (r.mode === "keyword") return { label: "keyword", fusion: "rrf", reason: r.reason };
+  if (keywordEmpty) return { label: "semantic-fallback", semantic: r.scores, fusion: "cosine" };
+  return mode === "hybrid-cosine"
+    ? { label: "hybrid-cosine", semantic: r.scores, fusion: "cosine" }
+    : { label: "hybrid", semantic: r.scores, fusion: "rrf" };
 }

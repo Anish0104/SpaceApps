@@ -1,4 +1,4 @@
-/** The FlameAtlas mark: a thin copper flame in two strokes. Brand only; copper never encodes data. */
+/** The Oxyflame mark: a thin copper flame in two strokes. Brand only; copper never encodes data. */
 export function FlameMark({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size * 1.6} viewBox="0 0 20 32" aria-hidden="true" className="shrink-0" fill="none" stroke="var(--brand)" strokeLinecap="round">

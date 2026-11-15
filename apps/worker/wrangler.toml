@@ -1,28 +1,62 @@
-name = "flameatlas-api"
+# One Worker serves the website (static assets) and the API (/api/*).
+# URL: https://oxyflame.<your-subdomain>.workers.dev
+name = "oxyflame"
 main = "src/index.ts"
-compatibility_date = "2024-11-06"
+compatibility_date = "2026-04-20"
+
+# The built web app (`pnpm --filter @flameatlas/web build`, done by `pnpm run deploy`). Only /api/* runs this
+# Worker's code; every other path is a static file, and unknown paths get index.html so deep links such as
+# /investigation/PSI-98 work. Asset requests are free and do not count against the Workers request limit.
+[assets]
+directory = "../web/dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+run_worker_first = ["/api/*"]
+
+# Custom domain, for when one is connected to this Cloudflare account (uncomment and set the hostname):
+# routes = [{ pattern = "oxyflame.example.org", custom_domain = true }]
 
 [dev]
 port = 8787
 
 [vars]
-DATA_VERSION = "1.2.0"
-# The deployed web app's origin, e.g. "https://flameatlas.pages.dev" (no trailing slash; comma-separate
-# several). http://localhost:5173 is always allowed. Empty = only local dev may call the API from a browser.
-ALLOWED_ORIGIN = ""
+DATA_VERSION = "1.3.0"
+# Other browser origins allowed to call the API (comma-separate several, no trailing slash). The website is
+# served by this Worker and calls /api/... on its own origin, so it needs no entry; the Oxyflame mobile app
+# on Pages does (docs/DEPLOY-APP.md step 3). http://localhost:5173 (pnpm dev:web) is always allowed.
+ALLOWED_ORIGIN = "https://oxyflame.pages.dev"
 # Tried in order: one request per model, next one only on 404/429/503 or timeout.
 GEMINI_MODELS = "gemini-3.8-flash,gemini-3.5-flash,gemini-3.1-flash-lite"
+# Retrieval mode (src/search.ts):
+#   "keyword"        default. If keyword search finds nothing for a question, the bge-m3/Vectorize results are
+#                    used instead (semantic fallback).
+#   "hybrid"         keyword + semantic fused by rrf. On data 1.2.0: Top-1 4/18, Top-3 10/18 against keyword's
+#                    8/18, 16/18 (eval/README.md), so not used.
+#   "hybrid-cosine"  keyword + normalised cosine scores. Built but off: it will be judged on a held-out
+#                    question set (data/eval/heldout.json) before it can be switched on.
+# Every semantic path falls back to keyword if Workers AI or Vectorize fails or takes longer than 1.5 s.
+SEARCH_MODE = "keyword"
 
-# Workers AI: query embeddings with @cf/baai/bge-small-en-v1.5
+# Workers AI: @cf/baai/bge-m3 embeddings (1024-d) for hybrid search. Free daily Neurons; stops, never bills.
 [ai]
 binding = "AI"
 
-# Answer cache keyed by (prompt, data version). Create with:
+# Vectorize: one vector per investigation and per run, metadata { psiId, kind, dataVersion }. Create once
+# (both commands, in this order, before the first `pnpm index:vectors`):
+#   npx wrangler vectorize create flameatlas-records --dimensions=1024 --metric=cosine
+#   npx wrangler vectorize create-metadata-index flameatlas-records --property-name=dataVersion --type=string
+# Local dev has no Vectorize, so `pnpm dev:worker` falls back to keyword for semantic paths. To query the real
+# index from local dev, add `remote = true` below (needs a registered workers.dev subdomain, i.e. after the
+# first deploy).
+[[vectorize]]
+binding = "VECTORS"
+index_name = "flameatlas-records"
+
+# Answer cache keyed by (prompt, data version), and query-vector cache (keys qemb:..., 7 days). Create with:
 #   npx wrangler kv namespace create ANSWERS
-# then paste the id below.
-# [[kv_namespaces]]
-# binding = "ANSWERS"
-# id = "<paste id>"
+[[kv_namespaces]]
+binding = "ANSWERS"
+id = "6b996bf870284d1780d716abaf58c4a3"
 
 # Gemini key: npx wrangler secret put GEMINI_API_KEY   (local dev: GEMINI_API_KEY=... in .dev.vars)
 
@@ -30,6 +64,6 @@ binding = "AI"
 # X-Twilio-Signature on every request:
 #   npx wrangler secret put TWILIO_AUTH_TOKEN     (local dev: TWILIO_AUTH_TOKEN=... in .dev.vars)
 # Then in the Twilio console, point the number's "A message comes in" webhook (HTTP POST) at
-#   https://<your-worker-subdomain>.workers.dev/api/sms
+#   https://oxyflame.<your-subdomain>.workers.dev/api/sms
 # The reply is built by the citation-validated rules engine (no Gemini). Without the token the
 # endpoint returns 503, so it never answers an unverifiable request.

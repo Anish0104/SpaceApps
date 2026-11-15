@@ -9,7 +9,7 @@ It shares the **same worker API** as the website. Only the **Ask** chat calls th
 Home, Atlas, Lab, Settings and Saved all run offline from the bundled dataset.
 
 > Prerequisite: the worker must be deployed and you need its URL. If you haven't deployed it yet, do
-> steps 0–2 of [DEPLOY.md](DEPLOY.md) first (Cloudflare login, Gemini secret, `pnpm deploy:worker`).
+> steps 0–2 of [DEPLOY.md](DEPLOY.md) first (Cloudflare login, Gemini secret, `pnpm run deploy`).
 > All commands below run from the **repo root** and stay on Cloudflare/Gemini **free tiers**.
 
 | Step | Cloudflare login | Gemini calls |
@@ -25,10 +25,10 @@ Home, Atlas, Lab, Settings and Saved all run offline from the bundled dataset.
 ## 1. Point the app at the worker
 
 Edit [`apps/mobile/.env.production`](../apps/mobile/.env.production) and set `VITE_API_BASE` to your
-worker URL from `pnpm deploy:worker` (no trailing slash):
+worker URL from `pnpm run deploy` (no trailing slash):
 
 ```
-VITE_API_BASE=https://flameatlas-api.<your-subdomain>.workers.dev
+VITE_API_BASE=https://oxyflame.<your-subdomain>.workers.dev
 ```
 
 This is **not a secret** — it ends up in the public JavaScript. (`http://localhost:5173` is always
@@ -47,17 +47,18 @@ root `deploy:app` script to match.
 ## 3. Allow the app's origin on the worker
 
 The worker refuses browser calls from any origin not in `ALLOWED_ORIGIN` (that's why Ask would otherwise
-fail). Add the app's URL **next to** the website's, comma-separated, in
-[`apps/worker/wrangler.toml`](../apps/worker/wrangler.toml):
+fail). The website is served by the worker itself (same origin, no CORS needed), so only the app's URL goes
+in. It is already set in [`apps/worker/wrangler.toml`](../apps/worker/wrangler.toml):
 
 ```toml
-ALLOWED_ORIGIN = "https://flameatlas.pages.dev,https://oxyflame.pages.dev"
+ALLOWED_ORIGIN = "https://oxyflame.pages.dev"
 ```
 
-Then redeploy the worker so it picks up the new value (vars are fixed at deploy time):
+If step 2 gave the Pages project a different URL, change it there and redeploy the worker (vars are fixed
+at deploy time):
 
 ```bash
-pnpm deploy:worker
+pnpm run deploy
 ```
 
 ## 4. Deploy the app
@@ -73,7 +74,7 @@ future update.
 ## 5. Smoke test, then open on your phone
 
 ```bash
-WORKER=https://flameatlas-api.<your-subdomain>.workers.dev
+WORKER=https://oxyflame.<your-subdomain>.workers.dev
 APP=https://oxyflame.pages.dev
 
 # worker healthy — expect {"ok":true,...}

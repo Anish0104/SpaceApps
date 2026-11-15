@@ -1,5 +1,5 @@
 /**
- * Plain-RAG baseline for the benchmark (eval/README.md). It shares FlameAtlas's retrieval (same
+ * Plain-RAG baseline for the benchmark (eval/README.md). It shares Oxyflame's retrieval (same
  * top-k records, same record text) and model list/fallback, and asks for the same JSON shape, but
  * has NO rule prompt, NO scenario block, NO citation validator and NO template fallback.
  * Its output is recorded raw, exactly as Gemini returned it. Never served to users.

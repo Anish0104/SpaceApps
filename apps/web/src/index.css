@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * FlameAtlas design system.
+ * Oxyflame design system.
  * Paper-and-ink light theme, deep-space dark theme. Solid surfaces for evidence; scene photos only set
  * the context. The accent follows the active crew environment (set on <html> as --accent by
  * ScenarioProvider), so the whole UI shifts colour with the scenario while verdict colours never do.

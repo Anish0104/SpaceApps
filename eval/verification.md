@@ -739,7 +739,7 @@ evidence until the run identity is resolved.
 6. **Referee evaluation:** verdicts 10/10, named confounders 5/5 on the hand-built pairs (self-authored).
 7. **Planner evaluation:** control checks, duplicate detection and scoring tested; proposals carry
    provenance badges and never claim a scientist approved them.
-8. **Ranking benchmark:** FlameAtlas Top-1 8/18, Top-3 16/18; keyword 8/18, 12/18 (18 labelled of 24).
+8. **Ranking benchmark:** Oxyflame Top-1 8/18, Top-3 16/18; keyword 8/18, 12/18 (18 labelled of 24).
 9. **Citation validation:** run identifiers (e.g. "SAF-IV-1", "Saffire VI-2") are no longer misread as
    numbers; real measurements are still checked. Grounded-answer metrics vs plain RAG not recorded (no
    AI calls made).
@@ -794,5 +794,5 @@ cited page; COMPUTED pO₂ left unverified):
   **coverage `runsVerified` rises 3 → 12** when the maintainer regenerates with the raw pull.
 
 **Checks** — `pnpm -r test` green (engine 83, worker 135, web 35). `eval:score` (data 1.3.0): keyword
-Top-1 8/18, Top-3 12/18; flameatlas Top-1 9/18, Top-3 15/18 (misses q14, q15, q22); Referee verdict 9/9,
+Top-1 8/18, Top-3 12/18; Engine-only Top-1 9/18, Top-3 15/18 (misses q14, q15, q22); Referee verdict 9/9,
 named reason 5/5; adversarial 5/5. **VERSION unchanged** (verification pass within 1.3.0; no bump).

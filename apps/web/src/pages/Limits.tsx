@@ -1,8 +1,8 @@
 import { coverage, dataset, releaseCoverage } from "../lib/data";
 
-/** The product claims FlameAtlas holds itself to (keep in sync with CLAUDE.md "Product claims"). */
+/** The product claims Oxyflame holds itself to (keep in sync with CLAUDE.md "Product claims"). */
 const LIMITS = [
-  ["Not a safety rating", "FlameAtlas never says a material is safe or unsafe. Lights and verdicts rate evidence coverage and strength."],
+  ["Not a safety rating", "Oxyflame never says a material is safe or unsafe. Lights and verdicts rate evidence coverage and strength."],
   ["No bounds from endpoints", "Earth (1 g) and orbit (~0 g) are reference points, not limits for the Moon or Mars; lunar gravity may be more flammable than either."],
   ["No transfer without evidence", "No cross-material or cross-apparatus transfer: burner gas is not a cabin atmosphere, and liquid droplets are not solid fabric."],
   ["Gaps are dataset gaps", "\"Not in our curated data\", never \"nobody has studied it\"."],
@@ -22,7 +22,7 @@ export default function Limits() {
   return (
     <div className="space-y-14">
       <header>
-        <h1 className="page-title">What FlameAtlas does not claim</h1>
+        <h1 className="page-title">What Oxyflame does not claim</h1>
         <p className="page-lede">
           The boundaries of what the curated data supports. Everything shown in the app links to its NASA source; when a value is not
           in a source, it is marked "not documented".
@@ -93,7 +93,7 @@ export default function Limits() {
       </section>
 
       <p className="border-t border-[var(--border)] pt-6 text-xs text-[var(--text-muted)]">
-        FlameAtlas is an independent tool built for the NASA Space Apps Challenge 2026. It is not endorsed by NASA and is not a
+        Oxyflame is an independent tool built for the NASA Space Apps Challenge 2026. It is not endorsed by NASA and is not a
         flight-certification system.
       </p>
     </div>

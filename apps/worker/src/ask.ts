@@ -5,7 +5,7 @@
  */
 import { AskResponse, SearchRequest, fieldLabel, gravityRegime, investigationLabel, matchPhrase, type Dataset, type GravityRegime, type Investigation, type RankedResult, type Run, type Scenario } from "@flameatlas/engine";
 import type MiniSearch from "minisearch";
-import { search } from "./search";
+import { search, type Fusion } from "./search";
 import { numbersIn, validateFields, validateSentences } from "./validator";
 import { SYSTEM_PROMPT, buildRecords, buildUserPrompt, cacheKey, callModels, sentRecordIds, DEFAULT_MODELS } from "./gemini";
 import type { DemoAnswers } from "./demoCache";
@@ -23,14 +23,18 @@ export interface AskDeps {
   log?: (msg: string) => void;
   /** Skip every cache read (demo, memory, KV): the eval recorder wants a fresh answer each time. */
   skipCache?: boolean;
+  /** Semantic scores per psiId (from planRetrieval), fused with keyword scores. Absent = keyword only. */
+  semantic?: Map<string, number>;
+  /** How `semantic` is fused with keyword scores (rrf or cosine). */
+  fusion?: Fusion;
 }
 
 /**
  * Retrieval shared by ask() and the plain-RAG baseline: the ranked investigations, the record text
  * sent to Gemini (top 5, up to 6 runs each) and the ids of those records.
  */
-export function retrieve(ds: Dataset, index: MiniSearch, sc: Scenario, question: string) {
-  const ranked = search(ds, index, sc, SearchRequest.parse({ query: question, scenarioId: sc.id }));
+export function retrieve(ds: Dataset, index: MiniSearch, sc: Scenario, question: string, semantic?: Map<string, number>, fusion: Fusion = "rrf") {
+  const ranked = search(ds, index, sc, SearchRequest.parse({ query: question, scenarioId: sc.id }), semantic, fusion);
   return { ranked, records: buildRecords(ds, ranked), recordIds: sentRecordIds(ds, ranked) };
 }
 
@@ -184,7 +188,7 @@ function validateAnswer(ds: Dataset, sc: Scenario, answer: AskResponse, sentIds:
 
 export async function ask(question: string, sc: Scenario, deps: AskDeps): Promise<AskResponse> {
   const { ds, index, log = () => {} } = deps;
-  const { ranked, records, recordIds: sentIds } = retrieve(ds, index, sc, question);
+  const { ranked, records, recordIds: sentIds } = retrieve(ds, index, sc, question, deps.semantic, deps.fusion);
   const key = await cacheKey(question, sc.id, ds.version);
 
   // 0. committed demo answers (work offline). Re-validated against the current data, so a stale

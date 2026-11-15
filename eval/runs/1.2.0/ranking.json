@@ -21,6 +21,13 @@
         "PSI-26",
         "SAFFIRE-IVVI",
         "PSI-98"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-20",
+        "PSI-100",
+        "PSI-26"
       ]
     },
     {
@@ -46,6 +53,13 @@
         "PSI-68",
         "PSI-100",
         "PSI-98"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-20",
+        "PSI-25",
+        "PSI-100",
+        "PSI-68"
       ]
     },
     {
@@ -70,6 +84,13 @@
         "PSI-98",
         "SAFFIRE-IVVI",
         "PSI-25",
+        "PSI-100",
+        "PSI-26"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-98",
         "PSI-100",
         "PSI-26"
       ]
@@ -97,6 +118,13 @@
         "PSI-25",
         "PSI-26",
         "SAFFIRE-IVVI"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-20",
+        "PSI-25",
+        "PSI-98",
+        "PSI-68"
       ]
     },
     {
@@ -118,6 +146,13 @@
         "PSI-26",
         "SAFFIRE-IVVI",
         "PSI-98"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-20",
+        "PSI-98",
+        "PSI-100"
       ]
     },
     {
@@ -143,6 +178,13 @@
         "PSI-20",
         "PSI-25",
         "SAFFIRE-IVVI"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-68",
+        "PSI-25",
+        "PSI-20",
+        "PSI-69"
       ]
     },
     {
@@ -168,6 +210,13 @@
         "SAFFIRE-IVVI",
         "PSI-25",
         "PSI-20"
+      ],
+      "hybrid": [
+        "PSI-25",
+        "PSI-20",
+        "SAFFIRE-IVVI",
+        "PSI-102",
+        "PSI-101"
       ]
     },
     {
@@ -190,6 +239,13 @@
         "SAFFIRE-IVVI",
         "PSI-98",
         "PSI-25",
+        "PSI-100"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-20",
+        "PSI-25",
+        "PSI-98",
         "PSI-100"
       ]
     },
@@ -216,6 +272,13 @@
         "SAFFIRE-IVVI",
         "PSI-98",
         "PSI-20"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-98",
+        "PSI-100",
+        "PSI-26"
       ]
     },
     {
@@ -237,6 +300,13 @@
         "PSI-25",
         "PSI-98",
         "PSI-20"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-20",
+        "PSI-98",
+        "PSI-100"
       ]
     },
     {
@@ -261,6 +331,13 @@
         "SAFFIRE-IVVI",
         "PSI-47",
         "PSI-20"
+      ],
+      "hybrid": [
+        "PSI-25",
+        "PSI-20",
+        "SAFFIRE-IVVI",
+        "PSI-102",
+        "PSI-98"
       ]
     },
     {
@@ -285,6 +362,13 @@
         "SAFFIRE-IVVI",
         "PSI-102",
         "PSI-25"
+      ],
+      "hybrid": [
+        "PSI-25",
+        "PSI-20",
+        "SAFFIRE-IVVI",
+        "PSI-47",
+        "PSI-102"
       ]
     },
     {
@@ -310,6 +394,13 @@
         "PSI-20",
         "SAFFIRE-IVVI",
         "PSI-39"
+      ],
+      "hybrid": [
+        "PSI-68",
+        "PSI-39",
+        "PSI-20",
+        "PSI-25",
+        "SAFFIRE-IVVI"
       ]
     },
     {
@@ -334,6 +425,13 @@
         "PSI-25",
         "PSI-69",
         "PSI-98"
+      ],
+      "hybrid": [
+        "PSI-20",
+        "PSI-25",
+        "SAFFIRE-IVVI",
+        "PSI-100",
+        "PSI-98"
       ]
     },
     {
@@ -357,6 +455,13 @@
         "PSI-20",
         "PSI-22",
         "PSI-25"
+      ],
+      "hybrid": [
+        "PSI-25",
+        "PSI-20",
+        "SAFFIRE-IVVI",
+        "PSI-22",
+        "PSI-98"
       ]
     },
     {
@@ -381,6 +486,13 @@
         "PSI-107",
         "SAFFIRE-IVVI",
         "PSI-20"
+      ],
+      "hybrid": [
+        "PSI-20",
+        "PSI-25",
+        "SAFFIRE-IVVI",
+        "PSI-107",
+        "PSI-22"
       ]
     },
     {
@@ -404,6 +516,13 @@
         "PSI-20",
         "SAFFIRE-IVVI",
         "PSI-25"
+      ],
+      "hybrid": [
+        "PSI-20",
+        "PSI-25",
+        "SAFFIRE-IVVI",
+        "PSI-159",
+        "PSI-23"
       ]
     },
     {
@@ -423,6 +542,13 @@
         "PSI-20",
         "SAFFIRE-IVVI",
         "PSI-25",
+        "PSI-98",
+        "PSI-100"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-20",
         "PSI-98",
         "PSI-100"
       ]
@@ -449,6 +575,13 @@
         "PSI-25",
         "PSI-68",
         "PSI-98"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-20",
+        "PSI-98",
+        "PSI-100"
       ]
     },
     {
@@ -470,6 +603,13 @@
         "PSI-68",
         "PSI-25",
         "PSI-26"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-20",
+        "PSI-25",
+        "PSI-98",
+        "PSI-100"
       ]
     },
     {
@@ -495,6 +635,13 @@
         "SAFFIRE-IVVI",
         "PSI-20",
         "PSI-25"
+      ],
+      "hybrid": [
+        "PSI-20",
+        "PSI-25",
+        "SAFFIRE-IVVI",
+        "PSI-115",
+        "PSI-47"
       ]
     },
     {
@@ -519,6 +666,13 @@
         "PSI-20",
         "SAFFIRE-IVVI",
         "PSI-26"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-20",
+        "PSI-62",
+        "PSI-98"
       ]
     },
     {
@@ -540,6 +694,13 @@
         "PSI-25",
         "PSI-20",
         "PSI-26"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-20",
+        "PSI-98",
+        "PSI-100"
       ]
     },
     {
@@ -564,6 +725,13 @@
         "SAFFIRE-IVVI",
         "PSI-68",
         "PSI-98"
+      ],
+      "hybrid": [
+        "SAFFIRE-IVVI",
+        "PSI-25",
+        "PSI-20",
+        "PSI-98",
+        "PSI-100"
       ]
     }
   ]

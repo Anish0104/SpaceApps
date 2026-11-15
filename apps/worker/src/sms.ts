@@ -1,5 +1,5 @@
 /**
- * Twilio SMS webhook: text FlameAtlas a crew environment (and optionally a question) and get a
+ * Twilio SMS webhook: text Oxyflame a crew environment (and optionally a question) and get a
  * short, source-cited answer built by the SAME deterministic, citation-validated engine the web app
  * uses. No Gemini call: SMS replies come only from the rules engine and template answer, so a reply
  * is reproducible and never invents a number or a safety claim.
@@ -90,7 +90,7 @@ export interface SmsDeps { ds: Dataset; index: MiniSearch; scenarios: Scenario[]
 
 const VERDICT_WORD: Record<string, string> = { green: "Evidence: good", yellow: "Evidence: partial", red: "Evidence: thin" };
 const HELP =
-  "FlameAtlas: text a crew environment (MOON, ISS, MARS, ROVER, SUIT, FM2) and an optional question. " +
+  "Oxyflame: text a crew environment (MOON, ISS, MARS, ROVER, SUIT, FM2) and an optional question. " +
   "Reply gives the top NASA investigation, what it matches, and the honest limit. We never rate a material safe. Reply HELP for this.";
 
 /** Keeps an SMS within two 160-char segments, cutting on a sentence or space, never mid-word. */
