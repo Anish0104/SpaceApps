@@ -10,7 +10,7 @@ How to deploy: [DEPLOY.md](DEPLOY.md).
 |---|---|---|
 | **Workers** | The whole answer pipeline: `/api/search` and `/api/ask` (keyword retrieval, the rules engine, Gemini proposal, Zod + citation validator, template fallback) | — (this is the app) |
 | **Workers static assets** | The website (`apps/web/dist`) on the same URL; deep links get `index.html` | — |
-| **Workers AI** (`@cf/baai/bge-m3`) | Embeds the 38 records (offline, once per data version) and a question (only when keyword search finds nothing) | Keyword results only |
+| **Workers AI** (`@cf/baai/bge-m3`) | Embeds one vector per investigation and run in the current data release (offline, once per data version) and a question (only when keyword search finds nothing) | Keyword results only |
 | **Vectorize** (`flameatlas-records`, 1024-d cosine) | Semantic fallback for questions with no keyword hits. Hybrid fusion was measured honestly: `rrf` scored 4/18 Top-1 vs 8/18 for keyword, so it is off; a cosine fusion is built and off, to be judged on held-out questions | Keyword results only |
 | **KV** (`ANSWERS`) | Cache of validated answers and of question vectors (7 days) | Recomputed each time |
 | **Free plan** | 100k Worker requests/day, 10 ms CPU each; static assets free; Workers AI 10k Neurons/day; KV 100k reads, 1k writes/day | Stops, never bills |
@@ -49,8 +49,8 @@ Figures are Cloudflare's published free allocations at the time of writing; chec
 |---|---|---|
 | Workers | 100,000 requests/day; 10 ms CPU per request (time waiting on Gemini, Workers AI or Vectorize is not CPU) | One request per search or question; the site's pages do not call the API |
 | Static assets | Requests are free and unlimited; up to 20,000 files, 25 MiB each | 57 files, about 90 KiB gzipped |
-| Workers AI | 10,000 Neurons/day | Indexing a data version takes 2 calls (38 documents on 1.2.0); benchmark questions 2 calls; live only on a keyword miss, once per question per 7 days |
-| Vectorize | Free tier covers millions of stored and queried dimensions per month | 38 vectors × 1024 dimensions per data version |
+| Workers AI | 10,000 Neurons/day | Indexing a data version takes one call per 20 documents (one per investigation and run; counts in `data/coverage.json`); benchmark questions 2 calls; live only on a keyword miss, once per question per 7 days |
+| Vectorize | Free tier covers millions of stored and queried dimensions per month | One 1024-dimension vector per investigation and run, per data version |
 | KV | 100,000 reads/day, 1,000 writes/day, 1 GB | One read per question; writes only for new answers and new question vectors |
 
 Gemini (Google AI Studio free tier, about 20 requests per day per model on this key) is outside Cloudflare;
