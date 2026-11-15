@@ -3,7 +3,7 @@
   "short_name": "FlameAtlas",
   "description": "NASA microgravity combustion evidence, ranked for crew environments. Evidence strength describes the archive, never a safety approval.",
   "id": "/",
-  "start_url": "/dashboard",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

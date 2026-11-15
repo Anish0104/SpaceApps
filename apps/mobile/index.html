@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
-    <meta name="theme-color" content="#080D18" />
+    <meta name="theme-color" content="#090C13" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F6F5F1" media="(prefers-color-scheme: light)" />
     <meta name="description" content="FlameAtlas — explore NASA microgravity combustion evidence across crew environments. Evidence strength describes the archive; it is never a safety approval." />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
@@ -15,6 +16,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <title>FlameAtlas</title>
+    <script>
+      /* Apply the saved (or system) theme before first paint, so the UI never flashes. Keep the key
+         in sync with src/theme.ts. */
+      (function () {
+        try {
+          var k = "flameatlas-theme", v = localStorage.getItem(k);
+          var t = v === "light" || v === "dark" ? v : (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) { document.documentElement.setAttribute("data-theme", "dark"); }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
