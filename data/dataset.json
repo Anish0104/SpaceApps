@@ -1511,19 +1511,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 21.98,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 20,
@@ -1614,19 +1613,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 21.78,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 20,
@@ -1717,19 +1715,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 22.39,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 20,
@@ -1820,19 +1817,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 22.29,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 20,
@@ -1923,19 +1919,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 21.48,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 25,
@@ -2026,19 +2021,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 21.48,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 25,
@@ -2115,11 +2109,11 @@
         "sourceId": "S-SAF-IVVI"
       },
       "thicknessMm": {
-        "value": 0.37,
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "mm",
-        "sourceId": "S-SAF-IVVI"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2MolPct": {
         "value": 22.0,
@@ -2321,11 +2315,11 @@
         "sourceId": "S-SAF-IVVI"
       },
       "thicknessMm": {
-        "value": 0.37,
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "mm",
-        "sourceId": "S-SAF-IVVI"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2MolPct": {
         "value": 31.0,
@@ -2630,11 +2624,11 @@
         "sourceId": "S-BASS2"
       },
       "thicknessMm": {
-        "value": null,
+        "value": 0.32,
+        "type": "MEASURED",
+        "collectedBy": "Navneet",
         "unit": "mm",
-        "type": "UNKNOWN",
-        "missingReason": "not_documented",
-        "collectedBy": "Navneet"
+        "sourceId": "S-BASS2"
       },
       "o2MolPct": {
         "value": 21.0,
@@ -2706,18 +2700,7 @@
         "cameras",
         "thermocouples"
       ],
-      "outcomes": [
-        {
-          "label": "flame spread rate",
-          "value": {
-            "value": 2.55,
-            "type": "MEASURED",
-            "collectedBy": "Navneet",
-            "unit": "mm/s",
-            "sourceId": "S-BASS-SR"
-          }
-        }
-      ],
+      "outcomes": [],
       "status": "imported"
     },
     {
@@ -2744,11 +2727,11 @@
         "sourceId": "S-BASS2"
       },
       "thicknessMm": {
-        "value": null,
+        "value": 0.32,
+        "type": "MEASURED",
+        "collectedBy": "Navneet",
         "unit": "mm",
-        "type": "UNKNOWN",
-        "missingReason": "not_documented",
-        "collectedBy": "Navneet"
+        "sourceId": "S-BASS2"
       },
       "o2MolPct": {
         "value": 21.0,
@@ -2820,18 +2803,7 @@
         "cameras",
         "thermocouples"
       ],
-      "outcomes": [
-        {
-          "label": "flame spread rate",
-          "value": {
-            "value": 1.21,
-            "type": "MEASURED",
-            "collectedBy": "Navneet",
-            "unit": "mm/s",
-            "sourceId": "S-BASS-SR"
-          }
-        }
-      ],
+      "outcomes": [],
       "status": "imported"
     }
   ],

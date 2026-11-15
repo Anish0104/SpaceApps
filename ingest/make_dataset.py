@@ -6,8 +6,10 @@ Every value is sourced to an NTRS report (see SOURCES). Evidence types:
   INFERRED  - not stated per-run but implied (microgravity = 0 g; Saffire I-III cabin air ~101.3 kPa)
   UNKNOWN   - not documented in the cited source -> value null + missingReason
 
-status is "imported" for every run: these are collector-entered and NOT yet verified.
-Per the cross-check rule, Juvana sets status -> "verified" after confirming against the PDF page.
+New runs are written status "imported" (collector-entered, not yet verified). Juvana sets
+status -> "verified" after confirming against the PDF page; preserve_verified() re-applies any
+such verified statuses (and verifiedBy marks) from the existing file so regeneration doesn't
+reset them. A value whose number changes drops back to "imported" for a fresh check.
 
 Run:  python ingest/make_dataset.py
 """
@@ -68,6 +70,38 @@ def run(rid, psi, material, geometry, length_mm, thick_mm, o2, p, flow, directio
     }
     return r
 
+def preserve_verified(runs_list, out_path: Path) -> None:
+    """Keep the verifier's confirmations across regenerations.
+
+    Every run is rebuilt as status 'imported'. If an earlier data/dataset-v1.0.json
+    already marked a run 'verified' (set by Juvana after cross-checking the source),
+    re-apply that status and copy each value's verifiedBy onto the matching, UNCHANGED
+    value. A value whose number changed is treated as edited and is not carried over as
+    verified, so a correction always drops back to 'imported' for a fresh check.
+    """
+    if not out_path.exists():
+        return
+    try:
+        old_runs = {r["id"]: r for r in json.loads(out_path.read_text()).get("runs", [])}
+    except (ValueError, OSError):
+        return
+    for r in runs_list:
+        old = old_runs.get(r["id"])
+        if not old or old.get("status") != "verified":
+            continue
+        r["status"] = "verified"
+        for key, val in r.items():
+            oldv = old.get(key)
+            if isinstance(val, dict) and "value" in val and isinstance(oldv, dict) \
+                    and oldv.get("verifiedBy") and oldv.get("value") == val.get("value"):
+                val["verifiedBy"] = oldv["verifiedBy"]
+        old_oc = old.get("outcomes", [])
+        for i, oc in enumerate(r.get("outcomes", [])):
+            if i < len(old_oc) and isinstance(oc.get("value"), dict) and isinstance(old_oc[i].get("value"), dict) \
+                    and old_oc[i]["value"].get("verifiedBy") \
+                    and old_oc[i]["value"].get("value") == oc["value"].get("value"):
+                oc["value"]["verifiedBy"] = old_oc[i]["value"]["verifiedBy"]
+
 # ---------- SOURCES (all primary NASA / journal) ----------
 def source(sid, ntrs, title, url, page=None, doi=None):
     s = {"id": sid, "ntrsId": ntrs, "title": title, "url": url}
@@ -101,39 +135,45 @@ sources = [
 # ---------- RUNS (Layer B) ----------
 SIBAL = "Cotton-fiberglass fabric (SIBAL)"
 runs = [
-    # Saffire I-III (NTRS 20180005168, Table 1 p.31). Pressure ~cabin air -> INFERRED.
-    run("SAF-I-1",  "PSI-98",  SIBAL, "sheet, 40.6 cm wide", 940, 0.37, 21.7, 101.3, 20, "concurrent",
-        "S-SAF-IIII", p_t="INFERRED", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
-    run("SAF-I-2",  "PSI-98",  SIBAL, "sheet, 40.6 cm wide", 100, 0.37, 21.5, 101.3, 20, "opposed",
-        "S-SAF-IIII", p_t="INFERRED", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
-    run("SAF-II-1", "PSI-99",  "Silicone", "sheet, 5 cm wide", 290, 0.27, 22.1, 101.3, 20, "concurrent",
-        "S-SAF-IIII", p_t="INFERRED", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
-    run("SAF-II-9", "PSI-99",  "PMMA (acrylic)", "flat slab, 5 cm wide", 290, 10.0, 22.0, 101.3, 20, "concurrent",
-        "S-SAF-IIII", p_t="INFERRED", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
-    run("SAF-III-1","PSI-100", SIBAL, "sheet, 40.6 cm wide", 940, 0.37, 21.2, 101.3, 25, "concurrent",
-        "S-SAF-IIII", p_t="INFERRED", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
-    run("SAF-III-2","PSI-100", SIBAL, "sheet, 40.6 cm wide", 100, 0.37, 21.2, 101.3, 25, "opposed",
-        "S-SAF-IIII", p_t="INFERRED", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
+    # Saffire I-III (NTRS 20180005168, Table 1 p.31). The cited table reports NO pressure,
+    # so pressure is recorded as not documented (UNKNOWN); O2 partial pressure follows (uncomputable).
+    run("SAF-I-1",  "PSI-98",  SIBAL, "sheet, 40.6 cm wide", 940, 0.37, 21.7, None, 20, "concurrent",
+        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
+    run("SAF-I-2",  "PSI-98",  SIBAL, "sheet, 40.6 cm wide", 100, 0.37, 21.5, None, 20, "opposed",
+        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
+    run("SAF-II-1", "PSI-99",  "Silicone", "sheet, 5 cm wide", 290, 0.27, 22.1, None, 20, "concurrent",
+        "S-SAF-IIII", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
+    run("SAF-II-9", "PSI-99",  "PMMA (acrylic)", "flat slab, 5 cm wide", 290, 10.0, 22.0, None, 20, "concurrent",
+        "S-SAF-IIII", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
+    run("SAF-III-1","PSI-100", SIBAL, "sheet, 40.6 cm wide", 940, 0.37, 21.2, None, 25, "concurrent",
+        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
+    run("SAF-III-2","PSI-100", SIBAL, "sheet, 40.6 cm wide", 100, 0.37, 21.2, None, 25, "opposed",
+        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
 
     # Saffire IV-VI (NTRS 20240007488 matrix). Pressure + O2 MEASURED. Not a PSI investigation.
-    run("SAF-IV-1", "SAFFIRE-IVVI", SIBAL, "cloth", 500, 0.37, 22.0, 100.0, 20, "concurrent",
+    # SAF-IV-1 thickness: 0.37 mm not run-specific in the cited 2024 paper -> not documented.
+    run("SAF-IV-1", "SAFFIRE-IVVI", SIBAL, "cloth", 500, None, 22.0, 100.0, 20, "concurrent",
         "S-SAF-IVVI", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
     run("SAF-V-2",  "SAFFIRE-IVVI", "Cotton jersey fabric", "cloth", 500, None, 26.2, 70.7, 20, "concurrent",
         "S-SAF-IVVI", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
-    run("SAF-VI-2", "SAFFIRE-IVVI", SIBAL, "cloth", 500, 0.37, 31.0, 54.1, 20, "concurrent",
+    # SAF-VI-2 thickness: 0.37 mm not run-specific in the cited 2024 paper -> not documented.
+    run("SAF-VI-2", "SAFFIRE-IVVI", SIBAL, "cloth", 500, None, 31.0, 54.1, 20, "concurrent",
         "S-SAF-IVVI", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
     run("SAF-VI-3", "SAFFIRE-IVVI", "PMMA (acrylic), two-sided", "slab", 180, 10.0, 30.3, 54.6, 20, "concurrent",
         "S-SAF-IVVI", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
     run("SAF-VI-4", "SAFFIRE-IVVI", "PMMA (acrylic), one-sided", "slab", 180, 5.0, 28.8, 55.2, 20, "concurrent",
         "S-SAF-IVVI", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
 
-    # BASS-II cotton-fiberglass (NTRS 20150008962). O2 = cabin air -> INFERRED; spread from 20140011099.
-    run("BASS2-CF-conc", "PSI-25", SIBAL, "sheet, 2.2 cm wide", 100, None, 21.0, 101.3, 10, "concurrent",
+    # BASS-II cotton-fiberglass (NTRS 20150008962). O2 = cabin air -> INFERRED.
+    # Thickness ~0.32 mm is explicitly stated in the 2015 paper (Sec.2, p.2-3).
+    # Spread rates removed: the 2.55 / 1.21 mm/s figures are from the 2014 BASS presentation
+    # and are not tied to these BASS-II runs (per verification).
+    run("BASS2-CF-conc", "PSI-25", SIBAL, "sheet, 2.2 cm wide", 100, 0.32, 21.0, 101.3, 10, "concurrent",
         "S-BASS2", o2_t="INFERRED", p_t="INFERRED", duct="76 x 76 mm",
-        apparatus="Microgravity Science Glovebox (BASS-II duct)", spread=2.55, spread_src="S-BASS-SR"),
-    run("BASS2-CF-opp",  "PSI-25", SIBAL, "sheet, 2.2 cm wide", 100, None, 21.0, 101.3, 10, "opposed",
+        apparatus="Microgravity Science Glovebox (BASS-II duct)"),
+    run("BASS2-CF-opp",  "PSI-25", SIBAL, "sheet, 2.2 cm wide", 100, 0.32, 21.0, 101.3, 10, "opposed",
         "S-BASS2", o2_t="INFERRED", p_t="INFERRED", duct="76 x 76 mm",
-        apparatus="Microgravity Science Glovebox (BASS-II duct)", spread=1.21, spread_src="S-BASS-SR"),
+        apparatus="Microgravity Science Glovebox (BASS-II duct)"),
 ]
 
 # ---------- INVESTIGATIONS ----------
@@ -202,8 +242,12 @@ edges = [
     {"from": "PSI-102", "to": "PSI-47", "kind": "shared_hardware", "sourceId": "S-BASS2b"},
 ]
 
+# Carry over any verified statuses the verifier already recorded in the existing file.
+preserve_verified(runs, OUT)
+
 dataset = {
-    "_note": "Layer B seed: real NASA runs, every value sourced. status=imported (awaiting cross-check). "
+    "_note": "Layer B seed: real NASA runs, every value sourced. New runs start status=imported; "
+             "runs already marked verified in the existing file keep that status (see preserve_verified). "
              "Saffire IV-VI are NASA-report (NTRS) data, not PSI. Expand with the full PSI pull via release.py.",
     "version": "1.0.0-seed",
     "generatedAt": "2026-11-14",
