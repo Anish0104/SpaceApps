@@ -1,7 +1,7 @@
 {
   "_note": "The three locked Referee demo pairs (data/go_no_go.md). Run ids are ids in data/dataset.json; target is a tracked Referee field. expected is the verdict the team locked for the demo: the Referee page shows whatever the engine returns, and packages/engine/test/dataset.test.ts checks the two against each other. Pair B was CAN_ISOLATE until verification found the Saffire I-III pressure was not in the cited table; with pressure not documented it is the honest Can't confirm example. No pair among the three verified runs (SAF-V-2, SAF-VI-3, SAF-VI-4) differs in only one variable, so there is no verified Can isolate pair",
   "pairs": [
-    { "id": "A", "label": "BASS-II vs Saffire-I", "a": "BASS2-CF-conc", "b": "SAF-I-1", "target": "sizeMm", "expected": "CANNOT_ISOLATE" },
+    { "id": "A", "label": "BASS vs Saffire-I", "a": "GMT96-T7", "b": "SAF-I-1", "target": "sizeMm", "expected": "CANNOT_ISOLATE" },
     { "id": "B", "label": "Saffire I-1 vs III-1", "a": "SAF-I-1", "b": "SAF-III-1", "target": "flowCmS", "expected": "CANT_CONFIRM" },
     { "id": "C", "label": "Saffire IV-1 vs VI-2", "a": "SAF-IV-1", "b": "SAF-VI-2", "target": "o2MolPct", "expected": "CANNOT_ISOLATE" }
   ]

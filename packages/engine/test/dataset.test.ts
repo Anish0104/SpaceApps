@@ -108,7 +108,7 @@ describe("locked Referee demo pairs", () => {
   };
   const expected = (id: string) => demoPairs.pairs.find((x) => x.id === id)!.expected;
 
-  it("A: BASS-II vs Saffire-I on sample size cannot be isolated", () => {
+  it("A: BASS vs Saffire-I on sample size cannot be isolated", () => {
     const r = judge("A");
     expect(r.verdict).toBe(expected("A"));
     expect(r.verdict).toBe("CANNOT_ISOLATE");
