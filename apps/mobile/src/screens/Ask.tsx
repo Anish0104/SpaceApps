@@ -81,7 +81,7 @@ export function Ask() {
           evidence strength, the archive limit and a citation. The number appears here once configured.
         </p>
       </div>
-      <p className="small faint" style={{ marginTop: 12 }}>Evidence strength describes the archive. Safety approval needs separate evidence and review.</p>
+
     </>
   );
 }

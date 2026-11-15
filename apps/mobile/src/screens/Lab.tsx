@@ -83,9 +83,7 @@ export function Lab() {
           <span className="ev assumed" style={{ position: "absolute", top: 8, left: 8 }}>Illustration — not measured</span>
           <span className="mono small faint" style={{ position: "absolute", bottom: 8, right: 10 }}>{gravityRegime(sc.gravityG)} · {fmt(sc.gravityG, 3)} g</span>
         </div>
-        <p className="small faint" style={{ marginTop: 8 }}>
-          Qualitative buoyancy shape only. Lunar gravity has no sustained spacecraft flame-spread data in the archive — a real gap, not a safe midpoint.
-        </p>
+        <p className="small faint" style={{ marginTop: 8 }}>Qualitative buoyancy shape only — not a measurement.</p>
       </div>
 
       <h2 className="sec">Evidence vs this scenario</h2>

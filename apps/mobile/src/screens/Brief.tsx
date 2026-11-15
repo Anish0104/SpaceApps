@@ -15,8 +15,10 @@ export function Brief({ onOpenLab, onFlight }: { onOpenLab: () => void; onFlight
 
   return (
     <>
-      <div className="eyebrow">Mission Brief</div>
-      <h1 className="h-xl">Choose a destination</h1>
+      <div className="row between" style={{ marginBottom: 6 }}>
+        <div className="brand" style={{ fontSize: 18 }}><img src="/icon.svg" alt="" aria-hidden="true" style={{ width: 26, height: 26 }} />Flame<b>Atlas</b></div>
+      </div>
+      <h1 className="h-xl" style={{ marginTop: 2 }}>Choose a destination</h1>
 
       <div style={{ marginTop: 4 }}>
         <Window scenario={sc} height={290} sizes="min(540px, 94vw)">
