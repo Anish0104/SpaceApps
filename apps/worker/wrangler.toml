@@ -25,3 +25,11 @@ binding = "AI"
 # id = "<paste id>"
 
 # Gemini key: npx wrangler secret put GEMINI_API_KEY   (local dev: GEMINI_API_KEY=... in .dev.vars)
+
+# Twilio SMS webhook (/api/sms): set the account auth token so the worker can verify Twilio's
+# X-Twilio-Signature on every request:
+#   npx wrangler secret put TWILIO_AUTH_TOKEN     (local dev: TWILIO_AUTH_TOKEN=... in .dev.vars)
+# Then in the Twilio console, point the number's "A message comes in" webhook (HTTP POST) at
+#   https://<your-worker-subdomain>.workers.dev/api/sms
+# The reply is built by the citation-validated rules engine (no Gemini). Without the token the
+# endpoint returns 503, so it never answers an unverifiable request.

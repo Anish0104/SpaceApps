@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="FlameAtlas">
+  <defs>
+    <radialGradient id="mbg" cx="50%" cy="42%" r="80%">
+      <stop offset="0%" stop-color="#132244"/>
+      <stop offset="100%" stop-color="#070b16"/>
+    </radialGradient>
+    <radialGradient id="mflame" cx="50%" cy="60%" r="55%">
+      <stop offset="0%" stop-color="#cfe3ff"/>
+      <stop offset="45%" stop-color="#5a8bff"/>
+      <stop offset="100%" stop-color="#2b4ea8"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#mbg)"/>
+  <circle cx="256" cy="262" r="92" fill="url(#mflame)"/>
+  <circle cx="256" cy="258" r="40" fill="#eaf2ff" opacity="0.85"/>
+  <circle cx="256" cy="262" r="132" fill="none" stroke="#7f9bdb" stroke-width="5" opacity="0.5"/>
+</svg>
