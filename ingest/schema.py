@@ -29,6 +29,8 @@ class _ValueBase(BaseModel):
     missingReason: Optional[MissingReason] = None
     collectedBy: Optional[str] = None
     verifiedBy: Optional[str] = None  # must differ from collectedBy
+    page: Optional[str] = None  # where in the source this value is stated
+    note: Optional[str] = None  # qualifier, e.g. value is approximate
 
 
 class NumValue(_ValueBase):

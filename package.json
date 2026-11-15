@@ -26,6 +26,7 @@
     "eval:embed": "pnpm --filter @flameatlas/worker eval:embed",
     "eval:record": "pnpm --filter @flameatlas/worker eval:record",
     "eval:rank": "pnpm --filter @flameatlas/worker eval:rank",
-    "eval:score": "pnpm --filter @flameatlas/worker eval:score"
+    "eval:score": "pnpm --filter @flameatlas/worker eval:score",
+    "deploy:app": "pnpm --filter @flameatlas/mobile build && pnpm --filter @flameatlas/worker exec wrangler pages deploy ../mobile/dist --project-name oxyflame --branch main"
   }
 }

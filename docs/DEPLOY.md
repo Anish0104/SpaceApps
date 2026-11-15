@@ -24,7 +24,8 @@ worker package, so it is called as `pnpm --filter @flameatlas/worker exec wrangl
 | 2. Store the Gemini key | once | 0 | 0 |
 | 3. Build and deploy | every release | 0 | 0 |
 | 4. Smoke test | after each deploy | 0 | 0 to 1 |
-| 5. Re-index after a data release | each new data version | 0 | 2 + 2 |
+| 5. Warm the demo-answer cache (optional) | each data version | 3, at most 9 | 0 |
+| 6. Re-index after a data release | each new data version | 0 | 2 + 2 |
 
 ## 0. Log in to Cloudflare (once)
 
@@ -45,7 +46,7 @@ pnpm --filter @flameatlas/worker exec wrangler vectorize create-metadata-index f
 # KV namespace for the answer cache and the query-vector cache; paste the printed id into wrangler.toml [[kv_namespaces]]
 pnpm --filter @flameatlas/worker exec wrangler kv namespace create ANSWERS
 
-# Embed the corpus and upsert it (needs `pnpm dev:worker` running; 2 Workers AI calls for data 1.2.0)
+# Embed the corpus and upsert it (needs `pnpm dev:worker` running; 2 Workers AI calls for data 1.3.0)
 pnpm index:vectors
 ```
 
@@ -77,9 +78,13 @@ How requests are routed (all in `apps/worker/wrangler.toml`):
   and the app's router takes over.
 - Static asset requests are free and do not count against the Workers request limit.
 
-The site calls the API on its own origin (`/api/...`), so production needs no CORS setup: `VITE_API_BASE` in
-`apps/web/.env.production` stays empty and `ALLOWED_ORIGIN` stays `""`. Both still work for local
-development (`pnpm dev:web` on `http://localhost:5173` is always allowed).
+The site calls the API on its own origin (`/api/...`), so it needs no CORS setup: `VITE_API_BASE` in
+`apps/web/.env.production` stays empty. `ALLOWED_ORIGIN` is only for other browser origins: the Oxyflame
+mobile app on Pages ([DEPLOY-APP.md](DEPLOY-APP.md), step 3). `pnpm dev:web` on `http://localhost:5173` is
+always allowed.
+
+Optional, for the SMS route (`/api/sms`, no Gemini): `pnpm --filter @flameatlas/worker exec wrangler secret put
+TWILIO_AUTH_TOKEN`. Without it the route answers 503.
 
 To redeploy the Worker without rebuilding the site (for example after changing a var): `pnpm deploy:worker`.
 
@@ -97,7 +102,7 @@ routes = [{ pattern = "flameatlas.example.org", custom_domain = true }]
 ```bash
 SITE=https://flameatlas.<your-subdomain>.workers.dev
 
-# API: expect {"ok":true,"dataVersion":"1.2.0","fixture":false,"gemini":true,...}
+# API: expect {"ok":true,"dataVersion":"1.3.0","fixture":false,"gemini":true,...}
 curl -s $SITE/api/health
 
 # Site and a deep link: expect 200 and text/html for both
@@ -118,10 +123,28 @@ curl -s -D - -o /dev/null -X POST -H "Content-Type: application/json" \
 ```
 
 Then open `$SITE` in a browser. The landing page, dashboard, Research atlas, Mission lab, Referee and the
-investigation pages make **no** Gemini calls (they use the dataset bundled into the site). On the Ask page,
-a demo question that is in `data/cache/demo-answers.json` for data version `1.2.0` is served from the cache
-(0 calls). Any other question costs one Gemini request per model tried (1, or up to 3 if models are out of
-quota); validated answers are cached in KV for 7 days.
+investigation pages make **no** Gemini calls (they use the dataset bundled into the site).
+
+**The Ask page does spend Gemini calls, including the demo buttons, until step 5 has run.**
+`data/cache/demo-answers.json` is empty for data 1.3.0, so every question on Ask, demo or not, costs one
+Gemini request per model tried (1, or up to 3 if models are out of quota; the free tier is about 20 per
+day per model). A validated answer is then cached in KV for 7 days, so asking the same question again on
+the live site is free. If Gemini fails or is out of quota, Ask shows the template answer instead.
+
+## 5. Warm the demo-answer cache (optional, spends Gemini quota)
+
+This makes the three demo questions on Ask free and instant, also offline, by committing their validated
+answers to `data/cache/demo-answers.json` (bundled into the Worker).
+
+```bash
+pnpm dev:worker      # another terminal; needs GEMINI_API_KEY in apps/worker/.dev.vars
+pnpm warm-cache      # 3 questions, one request per model tried: normally 3 Gemini calls, at most 9
+pnpm run deploy      # ship the filled cache
+```
+
+Questions already in the file are not asked again. A question that falls back to the template is skipped,
+not cached. Cached answers carry the data version, so the cache has to be warmed again after each data
+release.
 
 Logs from the live Worker (retrieval mode, fallbacks, Gemini failures):
 
@@ -129,7 +152,7 @@ Logs from the live Worker (retrieval mode, fallbacks, Gemini failures):
 pnpm --filter @flameatlas/worker exec wrangler tail
 ```
 
-## 5. After a data release (for example 1.3.0)
+## 6. After a data release (for example 1.4.0)
 
 The scripts read the version from `data/dataset.json`; nothing else needs editing except `DATA_VERSION` in
 `wrangler.toml`.
@@ -140,6 +163,7 @@ pnpm index:vectors --dry-run    # shows the Workers AI calls it will make
 pnpm index:vectors              # embeds new/changed documents, upserts them into Vectorize for the new version
 pnpm eval:embed                 # embeds the eval questions for the new version
 pnpm eval:rank && pnpm eval:score
+pnpm warm-cache                 # optional, spends Gemini quota (step 5)
 pnpm run deploy
 ```
 

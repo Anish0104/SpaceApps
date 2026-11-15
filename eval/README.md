@@ -222,5 +222,9 @@ switched on.
   `pnpm eval:score [file]` scores any question file in the same format; with no argument it scores the
   development set and also reports the recorded answers.
 
-**These numbers are for data 1.2.0. They will be re-run on 1.3.0** (`pnpm index:vectors`, `pnpm eval:embed`,
+**Data 1.3.0 (12 of 12 runs verified):** Keyword 8/18 Top-1, 12/18 Top-3 (unchanged); Engine-only 9/18,
+15/18 (q4 now first; q22 drops out of the top 3); Referee 9/9, named reason 5/5; traps 5/5. The semantic rows
+are not re-run yet: they need the 1.3.0 corpus re-indexed (`pnpm index:vectors`) and `pnpm eval:embed`.
+
+**The hybrid numbers above are for data 1.2.0. They will be re-run on 1.3.0** (`pnpm index:vectors`, `pnpm eval:embed`,
 `pnpm eval:rank`, `pnpm eval:score`; the scripts read the version from `data/dataset.json`).

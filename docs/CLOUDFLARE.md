@@ -49,7 +49,7 @@ Figures are Cloudflare's published free allocations at the time of writing; chec
 |---|---|---|
 | Workers | 100,000 requests/day; 10 ms CPU per request (time waiting on Gemini, Workers AI or Vectorize is not CPU) | One request per search or question; the site's pages do not call the API |
 | Static assets | Requests are free and unlimited; up to 20,000 files, 25 MiB each | 57 files, about 90 KiB gzipped |
-| Workers AI | 10,000 Neurons/day | Indexing data 1.2.0 took 2 calls; benchmark questions 2 calls; live only on a keyword miss, once per question per 7 days |
+| Workers AI | 10,000 Neurons/day | Indexing a data version takes 2 calls (38 documents on 1.2.0); benchmark questions 2 calls; live only on a keyword miss, once per question per 7 days |
 | Vectorize | Free tier covers millions of stored and queried dimensions per month | 38 vectors × 1024 dimensions per data version |
 | KV | 100,000 reads/day, 1,000 writes/day, 1 GB | One read per question; writes only for new answers and new question vectors |
 

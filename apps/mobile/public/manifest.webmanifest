@@ -1,0 +1,17 @@
+{
+  "name": "Oxyflame — Microgravity Fire Evidence",
+  "short_name": "Oxyflame",
+  "description": "NASA microgravity combustion evidence, ranked for crew environments. Evidence strength describes the archive, never a safety approval.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0a0e",
+  "theme_color": "#0b0a0e",
+  "categories": ["education", "science", "utilities"],
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

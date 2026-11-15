@@ -18,7 +18,7 @@ const MOCK_RESPONSE: AskResponse = {
   scope: "In our curated dataset.",
   missingFields: [],
   source: "llm",
-  dataVersion: "1.2.0",
+  dataVersion: "1.3.0",
 };
 
 // Component helper to switch scenarios externally

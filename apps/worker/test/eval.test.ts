@@ -103,7 +103,7 @@ describe("/api/dev/eval runner", () => {
     const { results, callsUsed } = await runEval(req(), moon, deps(g.fetchImpl));
     expect(callsUsed).toBe(2);
     const [fa, plain] = results;
-    expect(fa).toMatchObject({ system: "flameatlas", recorded: true, model: "model-a", callsUsed: 1, dataVersion: "1.2.0" });
+    expect(fa).toMatchObject({ system: "flameatlas", recorded: true, model: "model-a", callsUsed: 1, dataVersion: "1.3.0" });
     expect(plain).toMatchObject({ system: "plain_rag", recorded: true, model: "model-a", callsUsed: 1, systemPrompt: PLAIN_PROMPT, output: ANSWER });
     expect(fa.records).toBe(plain.records);
     expect(fa.recordIds.length).toBeGreaterThan(0);
@@ -225,10 +225,10 @@ describe("pnpm eval:record end to end (script tasks -> runEval, fake Gemini, in-
     const first = await runBudgeted(tasks, { maxCalls: 4, dryRun: false, log: quiet });
     expect(first.callsUsed).toBe(4);
     expect([...files.keys()]).toEqual([
-      "eval/runs/1.2.0/flameatlas/q1.json", "eval/runs/1.2.0/plain_rag/q1.json",
-      "eval/runs/1.2.0/flameatlas/q2.json", "eval/runs/1.2.0/plain_rag/q2.json",
+      "eval/runs/1.3.0/flameatlas/q1.json", "eval/runs/1.3.0/plain_rag/q1.json",
+      "eval/runs/1.3.0/flameatlas/q2.json", "eval/runs/1.3.0/plain_rag/q2.json",
     ]);
-    expect(files.get("eval/runs/1.2.0/plain_rag/q1.json")).toMatchObject({ qid: "q1", scenarioId: "moon-challenge", recordIds: expect.any(Array), records: expect.any(String) });
+    expect(files.get("eval/runs/1.3.0/plain_rag/q1.json")).toMatchObject({ qid: "q1", scenarioId: "moon-challenge", recordIds: expect.any(Array), records: expect.any(String) });
 
     const before = g.calls.length;
     const second = await runBudgeted(tasks, { maxCalls: 4, dryRun: false, log: quiet });

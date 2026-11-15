@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Oxyflame">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="36%" r="80%"><stop offset="0%" stop-color="#101a2b"/><stop offset="100%" stop-color="#080d18"/></radialGradient>
+    <radialGradient id="fl" cx="50%" cy="62%" r="60%"><stop offset="0%" stop-color="#ffe6d2"/><stop offset="45%" stop-color="#e48a54"/><stop offset="100%" stop-color="#8a3f1c"/></radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="262" r="150" fill="none" stroke="#94d6ff" stroke-width="5" opacity="0.4"/>
+  <path d="M256 120 C 196 196, 150 232, 150 300 a106 106 0 0 0 212 0 C 362 232, 316 196, 256 120 Z" fill="url(#fl)"/>
+  <circle cx="256" cy="300" r="46" fill="#fff4ea" opacity="0.9"/>
+  <circle cx="392" cy="150" r="9" fill="#94d6ff"/>
+</svg>

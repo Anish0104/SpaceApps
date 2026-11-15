@@ -48,18 +48,18 @@ python scrape_psi.py --all                   # all 24
 
 ## Evaluation
 
-`pnpm eval:rank` then `pnpm eval:score` (offline, no AI calls). Data 1.2.0, 24 questions, 18 with
+`pnpm eval:rank` then `pnpm eval:score` (offline, no AI calls). Data 1.3.0, 24 questions, 18 with
 labelled investigations. Full method, history and failures: [eval/README.md](eval/README.md).
 
 | Measure | Result |
 |---|---|
 | Keyword search (BM25 + synonyms), Top-1 / Top-3 | 8/18 / 12/18 |
 | FlameAtlas before reading the role from the question | 6/18 / 10/18 |
-| FlameAtlas now | 8/18 / 16/18 (misses q14, q15) |
-| Hybrid (keyword + bge-m3 semantic, fused by `rrf`, into the engine); measured, not shipped | 4/18 / 10/18 |
-| Referee: verdict / named reason on hand-built pairs | 10/10 / 5/5 |
+| FlameAtlas now | 9/18 / 15/18 (Top-3 misses q14, q15, q22) |
+| Hybrid (keyword + bge-m3 semantic, fused by `rrf`, into the engine); measured on data 1.2.0, not shipped; 1.3.0 re-run pending | 4/18 / 10/18 |
+| Referee: verdict / named reason on hand-built pairs | 9/9 / 5/5 |
 | Adversarial traps caught | 5/5 |
-| Runs verified against their NASA source | 3 of 13 ([eval/verification.md](eval/verification.md)) |
+| Runs verified against their NASA source | 12 of 12 ([eval/verification.md](eval/verification.md)) |
 
 Read with care: the ranking rule was adjusted after seeing which of these questions failed, so the
 current row is a fit to this set, not an independent test. The Referee pairs and traps were written
