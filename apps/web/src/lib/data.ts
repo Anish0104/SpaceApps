@@ -1,5 +1,5 @@
 /**
- * Data access. Loads the released dataset (data/dataset.json, version 1.1.0). data/fixtures.json holds FAKE
+ * Data access. Loads the released dataset (data/dataset.json, version 1.2.0). data/fixtures.json holds FAKE
  * values and is for unit tests only. For a new release, change the import below (or fetch
  * /api/data/:version); no other code changes needed.
  */

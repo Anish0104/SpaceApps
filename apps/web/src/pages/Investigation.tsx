@@ -5,27 +5,47 @@ import { invById, isPsiRecord, runsFor, summaryFor } from "../lib/data";
 import { MOCK_ASK } from "../lib/api";
 import { mockSummary } from "../lib/mockSummary";
 import { RecordTag } from "../components/RecordTag";
-import { hasAcronym, sentenceCase } from "../lib/labels";
+import { hasAcronym, investigationLabel, sentenceCase } from "../lib/labels";
 import { ValueCell } from "../components/ValueCell";
 import { RegimeMark } from "../components/Badge";
 
-const COLUMNS = ["Run", "Material", "Geometry", "Oxygen", "Pressure", "O2 partial pressure", "Flow", "Gravity", "Status"];
+const COLUMNS = [
+  "Run",
+  "Test #",
+  "Material",
+  "Geometry",
+  "Thickness",
+  "Oxygen",
+  "Pressure",
+  "O₂ partial pressure",
+  "Flow",
+  "Flow direction",
+  "Gravity",
+  "Key outcome",
+  "Status",
+];
 
 /** A precomputed summary: each sentence with its receipts. Every number in it was checked against the records it cites. */
 function Summary({ s }: { s: SummaryEntry }) {
   const mock = s.model === "MOCK";
   return (
-    <section aria-labelledby="summary-heading">
-      <h2 id="summary-heading" className="text-lg font-semibold">Summary</h2>
-      <ul className="measure mt-1 space-y-2">
-        {s.sentences.map((x) => (
-          <li key={x.text}>
+    <section aria-labelledby="summary-heading" className="panel p-6 sm:p-8">
+      <h2 id="summary-heading" className="panel-title">
+        Summary
+      </h2>
+      <ul className="measure mt-4 space-y-3 leading-relaxed text-[var(--text)]">
+        {s.sentences.map((x, i) => (
+          <li key={i}>
             {x.text}{" "}
-            <span className="inline-flex flex-wrap gap-1 align-middle">{x.recordIds.map((id) => <RecordTag key={id} id={id} />)}</span>
+            <span className="inline-flex flex-wrap gap-1 align-middle">
+              {x.recordIds.map((id) => (
+                <RecordTag key={id} id={id} />
+              ))}
+            </span>
           </li>
         ))}
       </ul>
-      <p className="mt-2 text-sm text-ink/70">
+      <p className="mt-5 border-t border-[var(--border)] pt-3 text-xs text-[var(--text-muted)]">
         {mock
           ? "Mock mode: placeholder summary for UI development, not from any record."
           : `Written by AI from the records on this page${s.generatedAt ? ` on ${s.generatedAt}` : ""}. Each number was checked against the record it cites.`}
@@ -36,9 +56,9 @@ function Summary({ s }: { s: SummaryEntry }) {
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div>
-      <dt className="text-sm text-ink/70">{label}</dt>
-      <dd className="font-semibold">{children}</dd>
+    <div className="min-w-0">
+      <dt className="text-xs text-[var(--text-muted)]">{label}</dt>
+      <dd className="mt-0.5 break-words text-sm font-medium text-[var(--text)]">{children}</dd>
     </div>
   );
 }
@@ -46,15 +66,21 @@ function Fact({ label, children }: { label: string; children: ReactNode }) {
 export default function Investigation() {
   const { psiId = "" } = useParams();
   const inv = invById(psiId);
+
   if (!inv) {
     return (
-      <div className="space-y-4">
-        <h1 className="display text-2xl">Investigation not found</h1>
-        <p className="measure">No investigation with the id "{psiId}" is in this dataset. Check the id, or pick one from the research atlas.</p>
-        <Link to="/atlas" className="btn btn-secondary">Open the research atlas</Link>
+      <div className="panel mx-auto max-w-xl space-y-4 p-10 text-center">
+        <h1 className="page-title">Investigation not found</h1>
+        <p className="text-sm text-[var(--text-muted)]">
+          No investigation with the id "{psiId}" is in this dataset. Check the id, or pick one from the research atlas.
+        </p>
+        <Link to="/atlas" className="btn btn-primary">
+          Open the research atlas
+        </Link>
       </div>
     );
   }
+
   const runs = runsFor(psiId);
   const fromPsi = isPsiRecord(inv);
   const fromNtrs = inv.url.includes("ntrs.nasa.gov");
@@ -63,84 +89,186 @@ export default function Investigation() {
 
   return (
     <div className="space-y-10">
-      <div className="space-y-5">
-        <h1 className="display text-2xl sm:text-3xl">{inv.name}{hasAcronym(inv) && ` (${inv.acronym.trim()})`}</h1>
-        <dl className="flex flex-wrap gap-x-10 gap-y-3">
-          {fromPsi
-            ? <Fact label="PSI id">{inv.psiId}</Fact>
-            : <Fact label="Record">{fromNtrs ? "From NASA report (NTRS), not PSI" : "Not a PSI record"}</Fact>}
-          <Fact label="Project type">{inv.projectType}</Fact>
-          <Fact label="Safety role">{sentenceCase(inv.safetyRole)}</Fact>
-          {inv.hardware && <Fact label="Hardware">{inv.hardware}</Fact>}
-          {inv.doi && <Fact label="DOI">{inv.doi}</Fact>}
-          <Fact label="Source"><a href={inv.url} target="_blank" rel="noreferrer" className="link">{fromPsi ? "NASA PSI page" : fromNtrs ? "NASA report on NTRS" : "Source document"}</a></Fact>
-        </dl>
-      </div>
+      <Link to="/atlas" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text)]">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11.5 7h-9M6 3.5 2.5 7 6 10.5" />
+        </svg>
+        Research atlas
+      </Link>
 
-      <section>
-        <h2 className="text-lg font-semibold">Objectives</h2>
-        <p className="measure mt-1">{inv.objectives}</p>
-      </section>
+      <header className="space-y-6">
+        <div>
+          <p className="eyebrow">
+            {fromPsi ? inv.psiId : fromNtrs ? "NASA report (NTRS), not PSI" : "Not a PSI record"} · {sentenceCase(inv.safetyRole)}
+          </p>
+          <h1 className="page-title max-w-[28ch]">
+            {inv.name}
+            {hasAcronym(inv) && <span className="ml-3 font-mono text-[0.55em] font-normal text-[var(--accent)]">{inv.acronym.trim()}</span>}
+          </h1>
+        </div>
+
+        <dl className="panel grid grid-cols-2 gap-x-6 gap-y-4 p-5 sm:grid-cols-3 lg:grid-cols-6">
+          {fromPsi ? <Fact label="PSI id">{inv.psiId}</Fact> : <Fact label="Record">{fromNtrs ? "NASA report (NTRS)" : "Source document"}</Fact>}
+          <Fact label="Project type">{inv.projectType}</Fact>
+          <Fact label="Fuel phase">{sentenceCase(inv.fuelPhase ?? runs[0]?.fuelPhase ?? "not documented")}</Fact>
+          {inv.hardware && <Fact label="Hardware">{inv.hardware}</Fact>}
+          {inv.platform && <Fact label="Platform">{inv.platform}</Fact>}
+          {inv.doi && <Fact label="DOI">{inv.doi}</Fact>}
+          <Fact label="Source">
+            <a href={inv.url} target="_blank" rel="noreferrer" className="link inline-flex items-center gap-1">
+              {fromPsi ? "NASA PSI page" : fromNtrs ? "NASA report on NTRS" : "Source document"}
+              <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+                <path d="M2 1h7v7H7.5V3.56L2.53 8.53 1.47 7.47 6.44 2.5H2V1z" />
+              </svg>
+            </a>
+          </Fact>
+        </dl>
+      </header>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section aria-labelledby="objectives-heading" className="panel p-6 sm:p-8">
+          <h2 id="objectives-heading" className="panel-title">
+            Objectives
+          </h2>
+          <p className="mt-4 leading-relaxed text-[var(--text)]">{inv.objectives}</p>
+        </section>
+        {inv.earthBenefits ? (
+          <section aria-labelledby="benefits-heading" className="panel p-6 sm:p-8">
+            <h2 id="benefits-heading" className="panel-title">
+              Earth benefits
+            </h2>
+            <p className="mt-4 leading-relaxed text-[var(--text)]">{inv.earthBenefits}</p>
+          </section>
+        ) : (
+          inv.relatedIds.length > 0 && <Related ids={inv.relatedIds} />
+        )}
+      </div>
 
       {summary && <Summary s={summary} />}
 
-      {inv.relatedIds.length > 0 && (
-        <section>
-          <h2 className="text-lg font-semibold">Related investigations</h2>
-          <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
-            {inv.relatedIds.map((id) => (
-              <li key={id}>
-                {invById(id)
-                  ? <Link to={`/investigation/${id}`} className="link">{id}</Link>
-                  : <span>{id} <span className="text-sm text-ink/70">(not in this dataset)</span></span>}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {inv.earthBenefits && inv.relatedIds.length > 0 && <Related ids={inv.relatedIds} />}
 
-      <section>
-        <h2 className="text-lg font-semibold">Experimental runs ({runs.length})</h2>
+      <section aria-labelledby="runs-heading" className="space-y-4">
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <h2 id="runs-heading" className="section-title">
+              Experimental runs <span className="font-mono text-lg text-[var(--text-muted)]">{runs.length}</span>
+            </h2>
+          </div>
+          {runs.length > 0 && <span className="text-xs text-[var(--text-muted)]">Scroll sideways for every condition. Hover a value for its source.</span>}
+        </div>
+
         {runs.length === 0 ? (
-          <p className="hatch mt-3 rounded-[6px] border border-regolith p-4">
-            <span className="bg-panel px-1">No run-level data in our curated dataset.</span>
-          </p>
+          <div className="hatch rounded-xl border border-[var(--border)] p-8 text-center">
+            <span className="rounded bg-[var(--surface)] px-3 py-1 text-sm text-[var(--text-muted)]">No run-level data in our curated dataset.</span>
+          </div>
         ) : (
           <>
-            <div className="panel mt-3 overflow-x-auto">
-              <table className="dense w-full text-left text-base">
-                <thead className="border-b border-rule text-sm text-ink/70">
-                  <tr>{COLUMNS.map((h) => <th key={h} scope="col" className="whitespace-nowrap px-3 py-2 font-semibold">{h}</th>)}</tr>
+            <div className="panel overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="border-b border-[var(--border)] bg-[var(--surface-2)] text-xs text-[var(--text-muted)]">
+                  <tr>
+                    {COLUMNS.map((col) => (
+                      <th key={col} scope="col" className="whitespace-nowrap px-3.5 py-3 font-medium">
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
                 </thead>
-                <tbody className="divide-y divide-rule">
-                  {runs.map((r) => (
-                    <tr key={r.id} className="hover:bg-module/60">
-                      <th scope="row" className="whitespace-nowrap px-3 py-2 font-semibold">{r.id}</th>
-                      <td className="px-3 py-2"><ValueCell v={r.material} /></td>
-                      <td className="px-3 py-2"><ValueCell v={r.geometry} /></td>
-                      <td className="px-3 py-2"><ValueCell v={r.o2MolPct} /></td>
-                      <td className="px-3 py-2"><ValueCell v={r.pressureKPa} /></td>
-                      <td className="px-3 py-2"><ValueCell v={r.o2PartialKPa} /></td>
-                      <td className="px-3 py-2"><ValueCell v={r.flowCmS} /></td>
-                      <td className="px-3 py-2">
-                        <ValueCell v={r.gravityG} />
-                        {r.gravityG.value !== null && <span className="block text-sm"><RegimeMark g={r.gravityG.value} /></span>}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-2">{sentenceCase(r.status)}</td>
-                    </tr>
-                  ))}
+                <tbody className="divide-y divide-[var(--border)]">
+                  {runs.map((r) => {
+                    const outcome = r.outcomes[0];
+                    return (
+                      <tr key={r.id} className="align-top transition-colors hover:bg-[var(--surface-2)]">
+                        <th scope="row" className="whitespace-nowrap px-3.5 py-3 font-mono text-xs font-medium text-[var(--text)]">
+                          {r.id}
+                        </th>
+                        <td className="whitespace-nowrap px-3.5 py-3 font-mono text-xs text-[var(--text-muted)]">{r.testNumber ?? "—"}</td>
+                        <td className="px-3.5 py-3"><ValueCell v={r.material} /></td>
+                        <td className="px-3.5 py-3"><ValueCell v={r.geometry} /></td>
+                        <td className="px-3.5 py-3"><ValueCell v={r.thicknessMm} /></td>
+                        <td className="px-3.5 py-3"><ValueCell v={r.o2MolPct} /></td>
+                        <td className="px-3.5 py-3"><ValueCell v={r.pressureKPa} /></td>
+                        <td className="px-3.5 py-3"><ValueCell v={r.o2PartialKPa} /></td>
+                        <td className="px-3.5 py-3"><ValueCell v={r.flowCmS} /></td>
+                        <td className="px-3.5 py-3"><ValueCell v={r.flowDirection} /></td>
+                        <td className="px-3.5 py-3">
+                          <ValueCell v={r.gravityG} />
+                          {r.gravityG.value !== null && (
+                            <span className="mt-1 block text-xs text-[var(--text-muted)]">
+                              <RegimeMark g={r.gravityG.value} />
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-3.5 py-3">
+                          {outcome ? (
+                            <span className="block min-w-[10rem]">
+                              <span className="block text-xs text-[var(--text-muted)]">{outcome.label}</span>
+                              <ValueCell v={outcome.value} />
+                            </span>
+                          ) : (
+                            <span className="text-xs text-[var(--text-muted)]">—</span>
+                          )}
+                        </td>
+                        <td className="whitespace-nowrap px-3.5 py-3">
+                          <span
+                            className={`chip ${r.status === "verified" ? "chip-outline" : "chip-quiet"}`}
+                            title={r.status === "verified" ? "Checked by a second person" : "Collected, not yet checked by a second person"}
+                          >
+                            {sentenceCase(r.status)}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
-            <p className="mt-2 text-sm text-ink/70">
-              Solid fill is measured, solid outline is computed, dotted outline is inferred, dashed outline is assumed, hatch is not documented. Hover a value for its source.
-            </p>
-            {runs.some((r) => r.status === "imported") && (
-              <p className="mt-1 text-sm text-ink/70">Imported runs were collected from the source and have not yet been verified by a second person.</p>
-            )}
+            <div className="space-y-1 text-xs text-[var(--text-muted)]">
+              <p>
+                Solid fill is measured, solid outline is computed, dotted outline is inferred, dashed outline is assumed, hatch is
+                not documented.
+              </p>
+              {runs.some((r) => r.status === "imported") && (
+                <p>Imported runs were collected from the source and have not yet been verified by a second person.</p>
+              )}
+            </div>
           </>
         )}
       </section>
     </div>
+  );
+}
+
+function Related({ ids }: { ids: string[] }) {
+  return (
+    <section aria-labelledby="related-heading" className="panel p-6 sm:p-8">
+      <h2 id="related-heading" className="panel-title">
+        Related investigations
+      </h2>
+      <ul className="mt-4 flex flex-wrap gap-2">
+        {ids.map((id) => {
+          const rel = invById(id);
+          return (
+            <li key={id}>
+              {rel ? (
+                <Link
+                  to={`/investigation/${id}`}
+                  title={rel.name}
+                  className="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1.5 text-sm text-[var(--text)] transition-colors hover:border-[var(--accent)]"
+                >
+                  {investigationLabel(rel)}
+                  <span className="font-mono text-[11px] text-[var(--text-muted)]">{id}</span>
+                </Link>
+              ) : (
+                <span className="inline-flex rounded-lg border border-dashed border-[var(--border)] px-3 py-1.5 text-sm text-[var(--text-muted)]">
+                  {id} (not in this dataset)
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }

@@ -1,77 +1,163 @@
 import { Link } from "react-router-dom";
-import { coverage, dataset, earthApplications, invById } from "../lib/data";
+import { O2_PARTIAL_FORMULA, kPaToPsi, o2PartialKPa } from "@flameatlas/engine";
+import { dataset, earthApplications, invById, isPsiRecord } from "../lib/data";
 import { FlameInstrument } from "../components/FlameInstrument";
 import { investigationLabel } from "../lib/labels";
+import { useScenario } from "../lib/scenario";
+import { PhotoCredit, SceneBackdrop } from "../components/SceneBackdrop";
+import { sceneFor } from "../lib/scenes";
+import { EnvironmentSelector } from "../components/EnvironmentSelector";
+import { CoveragePreview } from "../components/CoveragePreview";
+
+const fmt = (x: number, digits = 1) => String(Number(x.toFixed(digits)));
 
 export default function Home() {
-  const counters = [
-    ["Investigations indexed", coverage.investigations],
-    ["Runs imported", coverage.runsImported],
-    ["Runs verified", coverage.runsVerified],
-    ["Relationships mapped", coverage.relationships],
-    ["Documents linked", coverage.documents],
-  ] as const;
+  const { scenario } = useScenario();
+  const scene = sceneFor(scenario);
+  const pO2 = o2PartialKPa(scenario.o2MolPct, scenario.pressureKPa);
 
   return (
-    <div className="space-y-10 sm:space-y-12">
-      <div className="grid grid-cols-12">
-        <h1 className="display col-span-12 text-2xl sm:text-3xl lg:col-span-10 lg:text-4xl">
-          Would Earth testing tell us enough about a fire on the Moon?
-        </h1>
-      </div>
+    <div>
+      <section aria-labelledby="hero-title" className="home-hero relative isolate overflow-hidden">
+        <SceneBackdrop scene={scene} variant="home" drift />
 
-      <FlameInstrument />
-
-      <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:flex sm:flex-wrap sm:gap-x-12">
-        {counters.map(([label, n]) => (
-          <div key={label} className="flex flex-col-reverse">
-            <dt className="text-sm text-ink/70">{label}</dt>
-            <dd className="text-xl font-semibold">{n}</dd>
+        <div className="content-container relative z-10 grid items-center gap-10 pb-10 pt-14 sm:pt-20 lg:grid-cols-[minmax(0,1fr)_360px] lg:pb-14 lg:pt-24">
+          <div>
+            <h1 id="hero-title" className="page-title max-w-[14ch]">
+              How does fire behave in space?
+            </h1>
+            <p className="page-lede max-w-[46ch]">
+              Explore {dataset.investigations.filter(isPsiRecord).length} NASA combustion investigations, see which results can
+              fairly be compared, and find where the evidence ends for each crew environment.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link to="/ask" className="btn btn-primary">
+                Ask about this scenario
+              </Link>
+              <Link to="/atlas" className="btn btn-secondary">
+                Explore the atlas
+              </Link>
+            </div>
           </div>
-        ))}
-      </dl>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        <Link to="/mission-lab" className="btn btn-primary">Check a habitat design</Link>
-        <Link to="/missing-experiment" className="btn btn-secondary">Find the next experiment</Link>
-      </div>
+          {/* Scenario inputs for the active environment: assumed values, never evidence */}
+          <aside aria-label={`Scenario inputs for ${scenario.name}`} className="panel p-5">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="panel-title">Scenario inputs</h2>
+              <span className="chip chip-dashed">Assumed</span>
+            </div>
+            <p key={scenario.id} className="route-enter mt-2 text-xl font-semibold leading-snug tracking-tight text-[var(--text)]">
+              {scenario.name}
+            </p>
+            <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-[var(--border)] pt-4 text-sm">
+              <Readout label="Gravity" value={`${fmt(scenario.gravityG, 3)} g`} />
+              <Readout label="Oxygen" value={`${fmt(scenario.o2MolPct)} mol%`} />
+              <Readout label="Pressure" value={`${fmt(scenario.pressureKPa, 1)} kPa`} sub={`${fmt(kPaToPsi(scenario.pressureKPa))} psi`} />
+              <Readout label="O₂ partial pressure" value={`${fmt(pO2)} kPa`} title={`Computed: ${O2_PARTIAL_FORMULA}`} computed />
+            </dl>
+            <p className="mt-4 text-xs leading-relaxed text-[var(--text-muted)]">
+              Source: {scenario.source}. Dashed: assumed input. Solid: computed.
+            </p>
+          </aside>
+        </div>
 
-      {earthApplications.length > 0 && (
-        <section aria-labelledby="space-to-earth" className="panel p-4 sm:p-6">
-          <h2 id="space-to-earth" className="display text-xl">From space to Earth</h2>
-          <p className="measure mt-1 text-sm text-ink/70">NASA fire research for spacecraft that led to technology used on Earth. Each item links to its source.</p>
-          <ul className="mt-4 grid gap-x-8 gap-y-5 md:grid-cols-2">
-            {earthApplications.map((a) => {
-              const related = a.relatedPsiIds.map((id) => invById(id)).filter((inv) => inv !== undefined);
-              return (
-                <li key={a.id} className="min-w-0 border-t border-rule pt-3">
-                  <h3 className="font-semibold">{a.title}</h3>
-                  <p className="mt-1 text-sm"><span className="text-ink/70">In space: </span>{a.space}</p>
-                  <p className="mt-1 text-sm"><span className="text-ink/70">On Earth: </span>{a.earth}</p>
-                  <p className="mt-2 text-sm">
-                    <span className="text-ink/70">Source: </span>
-                    <a href={a.url} target="_blank" rel="noreferrer" className="link break-words underline">{a.source}</a>
-                  </p>
-                  {related.length > 0 && (
-                    <p className="mt-1 text-sm">
-                      <span className="text-ink/70">Related: </span>
-                      {related.map((inv, i) => (
-                        <span key={inv.psiId}>{i > 0 && ", "}<Link to={`/investigation/${inv.psiId}`} title={inv.name} className="link underline">{investigationLabel(inv)} ({inv.psiId})</Link></span>
-                      ))}
-                    </p>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+        <div className="content-container relative z-10 pb-10">
+          <EnvironmentSelector />
+          <div className="mt-3 flex justify-end">
+            <PhotoCredit scene={scene} className="text-[var(--text-muted)]" />
+          </div>
+        </div>
+      </section>
+
+      <CoveragePreview />
+
+      <div className="content-container space-y-20 py-20 sm:space-y-28 sm:py-28">
+        <section aria-labelledby="flame-heading" className="space-y-6">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 id="flame-heading" className="section-title">
+                See the flame change
+              </h2>
+            </div>
+            <span className="text-xs italic text-[var(--text-muted)]">Illustrative, not a simulation</span>
+          </div>
+          <FlameInstrument />
         </section>
-      )}
 
-      {dataset.fixture && (
-        <p className="measure text-sm text-ink/70">
-          Showing fixture data: fake values for development, not NASA data. The counts above describe the fixture set.
-        </p>
-      )}
+        {earthApplications.length > 0 && (
+          <section aria-labelledby="earth-apps-heading" className="space-y-6">
+            <div>
+              <h2 id="earth-apps-heading" className="section-title">
+                From space to Earth
+              </h2>
+              <p className="measure mt-2 text-[var(--text-muted)]">
+                NASA fire research for spacecraft that led to technology used on Earth. Each item links to its source.
+              </p>
+            </div>
+
+            <div className="grid gap-5 md:grid-cols-2">
+              {earthApplications.map((a) => {
+                const related = a.relatedPsiIds.map((id) => invById(id)).filter((inv) => inv !== undefined);
+                return (
+                  <article key={a.id} className="panel panel-hover flex flex-col justify-between p-6">
+                    <div>
+                      <h3 className="font-semibold tracking-tight text-xl text-[var(--text)]">{a.title}</h3>
+                      <dl className="mt-4 space-y-3 text-sm leading-relaxed">
+                        <div>
+                          <dt className="eyebrow">In space</dt>
+                          <dd className="mt-1 text-[var(--text)]">{a.space}</dd>
+                        </div>
+                        <div>
+                          <dt className="eyebrow">On Earth</dt>
+                          <dd className="mt-1 text-[var(--text)]">{a.earth}</dd>
+                        </div>
+                      </dl>
+                    </div>
+
+                    <div className="mt-5 space-y-1 border-t border-[var(--border)] pt-3 text-xs text-[var(--text-muted)]">
+                      <p>
+                        Source:{" "}
+                        <a href={a.url} target="_blank" rel="noreferrer" className="link">
+                          {a.source}
+                        </a>
+                      </p>
+                      {related.length > 0 && (
+                        <p>
+                          Related:{" "}
+                          {related.map((inv, i) => (
+                            <span key={inv.psiId}>
+                              {i > 0 && ", "}
+                              <Link to={`/investigation/${inv.psiId}`} title={inv.name} className="link">
+                                {investigationLabel(inv)} ({inv.psiId})
+                              </Link>
+                            </span>
+                          ))}
+                        </p>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {dataset.fixture && (
+          <p className="measure text-xs text-[var(--text-muted)]">Showing fixture data: fake values for development, not NASA data.</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Readout({ label, value, sub, title, computed = false }: { label: string; value: string; sub?: string; title?: string; computed?: boolean }) {
+  return (
+    <div title={title ?? (computed ? undefined : "Assumed scenario input, not evidence")}>
+      <dt className="text-xs text-[var(--text-muted)]">{label}</dt>
+      <dd className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+        <span className={`value ${computed ? "value-computed" : "value-assumed"}`}>{value}</span>
+        {sub && <span className="text-xs text-[var(--text-muted)]">{sub}</span>}
+      </dd>
     </div>
   );
 }

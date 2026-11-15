@@ -282,7 +282,7 @@ describe("offline ranking (pnpm eval:rank)", () => {
   });
 
   it("flags labelled ids that no system can rank because they are not in the dataset", () => {
-    // 1.1.0 indexes PSI-69, PSI-101 and PSI-47 (missing in 1.0.0-seed), so every labelled id is rankable.
+    // Since 1.1.0 the dataset indexes PSI-69, PSI-101 and PSI-47 (missing in 1.0.0-seed), so every labelled id is rankable.
     for (const q of out.questions) expect(q.relevantNotInDataset, q.qid).toEqual([]);
     const missing = rankingFor(ds, index, [{ ...questions[0], id: "qx", relevantPsiIds: ["PSI-102", "PSI-9999"] }], () => scenarios[0]);
     expect(missing.questions[0].relevantNotInDataset).toEqual(["PSI-9999"]);

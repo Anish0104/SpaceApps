@@ -48,7 +48,7 @@ python scrape_psi.py --all                   # all 24
 
 ## Evaluation
 
-`pnpm eval:rank` then `pnpm eval:score` (offline, no AI calls). Data 1.1.0, 24 questions, 18 with
+`pnpm eval:rank` then `pnpm eval:score` (offline, no AI calls). Data 1.2.0, 24 questions, 18 with
 labelled investigations. Full method, history and failures: [eval/README.md](eval/README.md).
 
 | Measure | Result |

@@ -1,29 +1,107 @@
 @import "tailwindcss";
 
 /*
- * Design system: "Flame in freefall".
- *
- * Colour carries one meaning each:
- *   gravity regime   orbit = ch-blue, Moon = regolith, Mars = warm regolith, Earth = soot
- *   verdict lights   green / amber / red (evidence strength, never safety). Amber is not soot: soot means Earth / 1 g
- * Missing or undocumented evidence is the diagonal hatch, never a fill colour.
- * Evidence type is a line style: MEASURED solid fill, COMPUTED solid outline, ASSUMED dashed
- * outline, INFERRED dotted outline, UNKNOWN hatch. A text label always goes with it.
+ * FlameAtlas design system.
+ * Paper-and-ink light theme, deep-space dark theme. Solid surfaces for evidence; scene photos only set
+ * the context. The accent follows the active crew environment (set on <html> as --accent by
+ * ScenarioProvider), so the whole UI shifts colour with the scenario while verdict colours never do.
  */
 :root {
-  --module: #edf1f5; /* page background: cool station-module white */
-  --panel: #ffffff; /* raised surfaces */
-  --ink: #16233b; /* text: deep navy */
-  --ch-blue: #3d57f2; /* microgravity / orbit; links and focus. 5.5:1 on white */
-  --soot: #e3a21a; /* Earth / 1 g. 2.2:1 on white: never text on white; ink on soot is 7:1 */
-  --regolith: #8b929b; /* lunar gravity; neutral structure lines. Non-text only */
-  --mars: #9c8b7e; /* regolith with a warm tint */
-  --verdict-green: #1e8a5a;
-  --verdict-yellow: #d98e04; /* amber light, its own colour: soot is reserved for Earth / 1 g */
-  --verdict-yellow-edge: #8a5a00; /* darker amber outline, 5.9:1 on white, so the light's edge meets 3:1 */
-  --verdict-red: #c8402f;
-  --rule: color-mix(in srgb, var(--regolith) 30%, transparent);
-  --hatch: repeating-linear-gradient(45deg, color-mix(in srgb, var(--regolith) 60%, transparent) 0 1px, transparent 1px 6px);
+  color-scheme: light;
+
+  --bg: #f6f5f1;
+  --bg-elev: #fbfaf7;
+  --surface: #ffffff;
+  --surface-2: #f0eee8;
+  --text: #15171e;
+  --text-muted: #5a5f6c;
+  --text-faint: #8a8e99;
+  --border: #e0ddd5;
+  --border-strong: #c9c5bb;
+  --brand: #b4572b;
+  --focus: #2f5bd8;
+  --shadow: 0 1px 2px rgb(20 22 30 / 0.04), 0 4px 16px -6px rgb(20 22 30 / 0.08);
+  --shadow-lift: 0 2px 4px rgb(20 22 30 / 0.05), 0 16px 32px -12px rgb(20 22 30 / 0.18);
+
+  /* Environment accents (light): dark enough for white text on a filled button. */
+  --env-earth: #8a5a12;
+  --env-orbit: #2556c4;
+  --env-moon: #4a5a86;
+  --env-mars: #a4472a;
+  --accent: var(--env-moon);
+  --accent-ink: #ffffff;
+
+  /* Flame illustration */
+  --flame-soot-a: #ffd27a;
+  --flame-soot-b: #e8742c;
+  --flame-blue: #3d6fe0;
+
+  /* Verdict colours: evidence strength, never safety */
+  --verdict-green: #1e7a50;
+  --verdict-yellow: #9a6400;
+  --verdict-red: #b23a2b;
+
+  /* Scene photo treatment on the page backdrop */
+  --scene-opacity: 0.3;
+  --home-scene-opacity: 1;
+  --scene-filter: saturate(0.9);
+
+  --hatch-line: color-mix(in srgb, var(--text-muted) 38%, transparent);
+  --hatch: repeating-linear-gradient(45deg, var(--hatch-line) 0 1.5px, transparent 1.5px 6px);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-std: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #090c13;
+  --bg-elev: #0d111a;
+  --surface: #10141e;
+  --surface-2: #171c28;
+  --text: #e9ebf1;
+  --text-muted: #a0a6b6;
+  --text-faint: #6f7586;
+  --border: #232937;
+  --border-strong: #343b4c;
+  --brand: #e48a54;
+  --focus: #8ab4ff;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -10px rgb(0 0 0 / 0.5);
+  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 20px 40px -14px rgb(0 0 0 / 0.65);
+
+  --env-earth: #e3b26b;
+  --env-orbit: #7fb0ff;
+  --env-moon: #c3cce4;
+  --env-mars: #f0936a;
+  --accent-ink: #090c13;
+
+  --flame-blue: #6f9bff;
+
+  --verdict-green: #4cc38a;
+  --verdict-yellow: #e8a93b;
+  --verdict-red: #f07a6a;
+
+  --scene-opacity: 0.42;
+  --home-scene-opacity: 0.75;
+  --scene-filter: saturate(0.9);
+}
+
+:root {
+  /* Aliases for teammate components written against the earlier theme (Mission lab, Missing experiment,
+     evidence map). They follow the current tokens, so both themes keep working. */
+  --ink: var(--text);
+  --canvas: var(--bg);
+  --panel: var(--surface);
+  --module: var(--surface-2);
+  --raised: var(--surface-2);
+  --rule: var(--border);
+  --rule-strong: var(--border-strong);
+  --regolith: var(--text-muted);
+  --soot: var(--env-earth);
+  --ch-blue: var(--env-orbit);
+  --mars: var(--env-mars);
+  --moon: var(--env-moon);
 }
 
 @theme {
@@ -34,305 +112,663 @@
 
 @theme inline {
   --color-white: #fff;
-  --color-module: var(--module);
-  --color-panel: var(--panel);
-  --color-ink: var(--ink);
-  --color-ch-blue: var(--ch-blue);
-  --color-soot: var(--soot);
-  --color-regolith: var(--regolith);
-  --color-mars: var(--mars);
+  --color-black: #000;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-accent: var(--accent);
+  --color-focus: var(--focus);
   --color-verdict-green: var(--verdict-green);
+  --color-verdict-yellow: var(--verdict-yellow);
   --color-verdict-red: var(--verdict-red);
-  --color-rule: var(--rule);
+  --color-ink: var(--text);
+  --color-canvas: var(--bg);
+  --color-panel: var(--surface);
+  --color-module: var(--surface-2);
+  --color-raised: var(--surface-2);
+  --color-rule: var(--border);
+  --color-rule-strong: var(--border-strong);
+  --color-regolith: var(--text-muted);
+  --color-soot: var(--env-earth);
+  --color-ch-blue: var(--env-orbit);
+  --color-mars: var(--env-mars);
+  --color-moon: var(--env-moon);
 
-  --font-sans: "Archivo", system-ui, sans-serif;
+  --font-sans: "Space Grotesk Variable", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Space Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-  /* Type scale, ratio 1.25: 13 / 16 / 20 / 25 / 31 / 39 / 49 px */
-  --text-sm: 0.8125rem;
-  --text-sm--line-height: 1.45;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.55;
   --text-base: 1rem;
-  --text-base--line-height: 1.55;
-  --text-lg: 1.25rem;
-  --text-lg--line-height: 1.35;
-  --text-xl: 1.5625rem;
-  --text-xl--line-height: 1.25;
-  --text-2xl: 1.9375rem;
+  --text-base--line-height: 1.6;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.45;
+  --text-xl: 1.375rem;
+  --text-xl--line-height: 1.3;
+  --text-2xl: 1.75rem;
   --text-2xl--line-height: 1.2;
-  --text-3xl: 2.4375rem;
-  --text-3xl--line-height: 1.12;
-  --text-4xl: 3.0625rem;
+  --text-3xl: 2.25rem;
+  --text-3xl--line-height: 1.15;
+  --text-4xl: 3rem;
   --text-4xl--line-height: 1.08;
 }
 
 @layer base {
   html {
-    font-size: 16px;
+    background: var(--bg);
+    color: var(--text);
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
   body {
-    background: var(--module);
-    color: var(--ink);
-    font-family: "Archivo", system-ui, sans-serif;
-    font-stretch: 100%;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
     font-size: 1rem;
-    line-height: 1.55;
-    font-variant-numeric: tabular-nums;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 300ms var(--ease-std), color 300ms var(--ease-std);
+  }
+  h1, h2 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  h3 {
+    text-wrap: balance;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 28%, transparent);
   }
   :focus-visible {
-    outline: 2px solid var(--ch-blue);
+    outline: 2px solid var(--focus);
     outline-offset: 2px;
+    border-radius: 4px;
+  }
+  select {
+    cursor: pointer;
+  }
+  table {
+    font-variant-numeric: tabular-nums;
   }
 }
 
 @layer components {
-  /* Type */
-  .display {
-    font-stretch: 125%;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+  .content-container {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 1rem;
   }
+  .page {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: 2.25rem 1rem 5rem;
+  }
+  @media (min-width: 640px) {
+    .content-container { padding-inline: 1.5rem; }
+    .page { padding: 3rem 1.5rem 6rem; }
+  }
+
+  /* Route enter: a short fade and rise */
+  .route-enter {
+    animation: route-enter 420ms var(--ease-out) both;
+  }
+
+  /* Typography */
+  /* Small label above a value or list (form labels, footer headings, record meta) */
+  .eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--text-muted);
+  }
+  .page-title {
+    font-size: clamp(2rem, 3.6vw, 2.75rem);
+    font-weight: 650;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+  .page-lede {
+    max-width: 66ch;
+    margin-top: 0.75rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+  .panel-title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .section-title {
+    font-size: clamp(1.5rem, 2.4vw, 1.875rem);
+    font-weight: 620;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: var(--text);
+  }
+  .num,
   .dense {
-    font-stretch: 75%;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Legacy heading class used by teammate pages */
+  .display {
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
   }
   .measure {
-    max-width: 70ch;
+    max-width: 68ch;
   }
   .link {
-    color: var(--ch-blue);
+    color: inherit;
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 150ms ease, color 150ms ease;
   }
   .link:hover {
-    color: var(--ink);
+    color: var(--text);
+    text-decoration-color: var(--accent);
   }
 
   /* Surfaces */
   .panel {
-    background: var(--panel);
-    border: 1px solid var(--rule);
-    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    transition: background-color 300ms var(--ease-std), border-color 200ms var(--ease-std), box-shadow 250ms var(--ease-std), transform 250ms var(--ease-out);
+  }
+  .panel-hover:hover,
+  .panel-hover:focus-within {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    box-shadow: var(--shadow-lift);
+    transform: translateY(-2px);
   }
   .hatch {
     background-image: var(--hatch);
   }
 
-  /* Buttons: the label says the action */
+  /* Buttons */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 2.5rem;
-    padding: 0 1rem;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1.25rem;
     border: 1px solid transparent;
-    border-radius: 6px;
-    font-weight: 600;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9375rem;
     line-height: 1.2;
+    white-space: nowrap;
     cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
   }
   .btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
   .btn-primary {
-    background: var(--ch-blue);
-    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
   }
   .btn-primary:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--ch-blue) 85%, var(--ink));
+    background: color-mix(in srgb, var(--accent) 88%, var(--text));
+    box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--accent) 70%, transparent);
   }
   .btn-secondary {
-    border-color: var(--ink);
-    color: var(--ink);
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text);
   }
   .btn-secondary:hover:not(:disabled),
   .btn-secondary[aria-pressed="true"] {
-    background: color-mix(in srgb, var(--ink) 8%, transparent);
-  }
-  .btn-secondary[aria-pressed="true"] {
-    box-shadow: inset 0 0 0 1px var(--ink);
+    background: var(--surface-2);
+    border-color: var(--border-strong);
   }
   .btn-sm {
-    min-height: 2rem;
-    padding: 0 0.75rem;
-    font-size: 0.8125rem;
+    min-height: 2.25rem;
+    padding: 0 0.875rem;
+    font-size: 0.875rem;
+  }
+  @media (max-width: 479px) {
+    .btn {
+      max-width: 100%;
+      white-space: normal;
+      text-align: center;
+    }
+  }
+  .btn-icon {
+    width: 2.25rem;
+    min-height: 2.25rem;
+    padding: 0;
   }
 
-  /* Text inputs and selects */
+  /* Fields */
   .field {
-    min-height: 2.5rem;
-    padding: 0 0.75rem;
-    background: var(--panel);
-    border: 1px solid var(--regolith);
-    border-radius: 6px;
-    color: var(--ink);
+    min-height: 2.75rem;
+    padding: 0 0.875rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+  .field:hover {
+    border-color: var(--border-strong);
+  }
+  .field:focus,
+  .field:focus-visible {
+    border-color: var(--focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 20%, transparent);
+    outline: none;
+  }
+  .field::placeholder {
+    color: var(--text-faint);
   }
   .field-sm {
-    min-height: 2rem;
-    padding: 0 0.5rem;
-    font-size: 0.8125rem;
+    min-height: 2.25rem;
+    padding: 0 0.625rem;
+    font-size: 0.875rem;
   }
 
-  /* Chips. The line style is the evidence type. */
+  /* Chips: for evidence, the line style IS the type */
   .chip {
     display: inline-flex;
     align-items: center;
-    padding: 1px 6px;
+    gap: 0.25rem;
+    padding: 1px 7px;
     border: 1px solid transparent;
-    border-radius: 2px;
-    font-size: 0.8125rem;
-    font-stretch: 75%;
-    line-height: 1.4;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    line-height: 1.5;
     white-space: nowrap;
   }
   .chip-quiet {
-    border-color: var(--regolith);
+    border-color: var(--border);
+    color: var(--text-muted);
   }
   .chip-solid {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: #fff;
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--bg);
   }
   .chip-outline {
-    border-color: var(--ink);
+    border-color: var(--text);
+    color: var(--text);
   }
   .chip-dashed {
-    border: 1px dashed var(--ink);
+    border: 1px dashed var(--text);
+    color: var(--text);
   }
   .chip-dotted {
-    border: 1px dotted var(--ink);
+    border: 1px dotted var(--text);
+    color: var(--text);
   }
   .chip-link {
-    border-color: var(--ch-blue);
-    color: var(--ch-blue);
+    border-color: var(--border-strong);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    transition: background-color 150ms ease, border-color 150ms ease;
   }
-  a:hover > .chip-link {
-    background: color-mix(in srgb, var(--ch-blue) 10%, transparent);
+  a:hover > .chip-link,
+  button:hover > .chip-link {
+    background: var(--surface-2);
+    border-color: var(--accent);
   }
   .chip-hatch {
-    padding: 2px 8px;
+    max-width: 100%;
     background-image: var(--hatch);
-    border-color: var(--regolith);
+    border-color: var(--text-muted);
+    white-space: normal; /* "not documented" notes can be full sentences; let them wrap */
   }
   .chip-hatch > span {
     padding: 0 4px;
-    background: var(--panel);
+    background: var(--surface);
+    color: var(--text-muted);
   }
 
-  /* Scenario and other standalone values: same line styles at body size */
+  /* Standalone values: the border IS the evidence type (dashed = assumed input, solid = computed) */
   .value {
     display: inline-block;
     padding: 1px 8px;
-    border-radius: 2px;
-    font-weight: 600;
+    border-radius: 6px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
   .value-assumed {
-    border: 1px dashed var(--ink);
+    border: 1px dashed var(--text);
   }
   .value-computed {
-    border: 1px solid var(--ink);
+    border: 1px solid var(--text);
   }
 
-  /* Verdict lights: evidence strength, never safety. Always shown with words. */
+  /* Verdict lights (evidence strength, never safety) */
   .light {
     display: inline-block;
     flex: none;
-    width: 20px;
-    height: 20px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
   }
-  .light-green {
-    background: var(--verdict-green);
+  .light-green { background: var(--verdict-green); box-shadow: 0 0 0 3px color-mix(in srgb, var(--verdict-green) 20%, transparent); }
+  .light-yellow { background: var(--verdict-yellow); box-shadow: 0 0 0 3px color-mix(in srgb, var(--verdict-yellow) 20%, transparent); }
+  .light-red { background: var(--verdict-red); box-shadow: 0 0 0 3px color-mix(in srgb, var(--verdict-red) 20%, transparent); }
+  .light-hatch { background-image: var(--hatch); border: 1px solid var(--text-muted); }
+  .light-none { border: 1px solid var(--text-muted); }
+
+  /* Dropdown menus: always a solid surface */
+  .menu-surface {
+    background: var(--surface);
+    border-color: var(--border);
   }
-  .light-yellow {
-    background: var(--verdict-yellow);
-    box-shadow: inset 0 0 0 1.5px var(--verdict-yellow-edge);
+  /* Header navigation */
+  .nav-link {
+    position: relative;
+    padding: 0.375rem 0.125rem;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    transition: color 150ms ease;
   }
-  .light-red {
-    background: var(--verdict-red);
+  .nav-link:hover {
+    color: var(--text);
   }
-  .light-hatch {
-    background-image: var(--hatch);
-    border: 1px solid var(--regolith);
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 250ms var(--ease-out), background-color 400ms var(--ease-std);
   }
-  .light-none {
-    border: 1px solid var(--regolith);
+  .nav-link[aria-current="page"] {
+    color: var(--text);
+  }
+  .nav-link[aria-current="page"]::after {
+    transform: scaleX(1);
   }
 
-  /* Table rows outlined as a whole (Referee): set --mark on the row */
-  .row-mark > * {
-    box-shadow: inset 0 2px 0 var(--mark), inset 0 -2px 0 var(--mark);
-  }
-  .row-mark > :first-child {
-    box-shadow: inset 2px 0 0 var(--mark), inset 0 2px 0 var(--mark), inset 0 -2px 0 var(--mark);
-  }
-  .row-mark > :last-child {
-    box-shadow: inset -2px 0 0 var(--mark), inset 0 2px 0 var(--mark), inset 0 -2px 0 var(--mark);
-  }
-  /* Below sm the Referee hides its last column, so the cell before it closes the outline */
-  @media (width < 40rem) {
-    .row-mark > :nth-last-child(2) {
-      box-shadow: inset -2px 0 0 var(--mark), inset 0 2px 0 var(--mark), inset 0 -2px 0 var(--mark);
-    }
-  }
-
-  /* Gravity slider (home flame instrument) */
+  /* Gravity slider */
   .gravity-slider {
     -webkit-appearance: none;
     appearance: none;
     display: block;
     width: 100%;
-    height: 24px;
+    height: 28px;
     background: transparent;
     cursor: pointer;
   }
   .gravity-slider::-webkit-slider-runnable-track {
-    height: 2px;
-    background: var(--regolith);
+    height: 3px;
+    border-radius: 3px;
+    background: var(--border-strong);
   }
   .gravity-slider::-moz-range-track {
-    height: 2px;
-    background: var(--regolith);
+    height: 3px;
+    border-radius: 3px;
+    background: var(--border-strong);
   }
   .gravity-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 20px;
     height: 20px;
-    margin-top: -9px;
-    border: 2px solid var(--panel);
+    margin-top: -8.5px;
+    border: 3px solid var(--surface);
     border-radius: 50%;
-    background: var(--ink);
-    box-shadow: 0 0 0 1px var(--ink);
+    background: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent), 0 2px 8px rgb(0 0 0 / 0.25);
+    transition: transform 150ms ease;
+  }
+  .gravity-slider:active::-webkit-slider-thumb {
+    transform: scale(1.12);
   }
   .gravity-slider::-moz-range-thumb {
     width: 16px;
     height: 16px;
-    border: 2px solid var(--panel);
+    border: 3px solid var(--surface);
     border-radius: 50%;
-    background: var(--ink);
-    box-shadow: 0 0 0 1px var(--ink);
+    background: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
   }
 
-  /* Earth flame only. Shape changes are driven from the slider in FlameInstrument.tsx. */
   .flame-flicker {
     transform-box: fill-box;
     transform-origin: 50% 100%;
-    animation: flame-flicker 1.4s ease-in-out infinite;
+    animation: flame-flicker 1.6s ease-in-out infinite;
+  }
+
+  /* Scene photos */
+  .scene-layer {
+    position: absolute;
+    inset: 0;
+    animation: scene-in 700ms var(--ease-out) both;
+  }
+  .scene-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .scene-drift {
+    animation: scene-drift 40s ease-in-out infinite alternate;
+  }
+  /* Home hero: the scene photo sits on the right and fades into the page background, in both themes */
+  .home-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .home-backdrop .scene-img {
+    opacity: var(--home-scene-opacity);
+    filter: var(--scene-filter);
+  }
+  .scene-scrim-home {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 88%, transparent) 32%, color-mix(in srgb, var(--bg) 35%, transparent) 62%, color-mix(in srgb, var(--bg) 10%, transparent) 100%),
+      linear-gradient(0deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 60%, transparent) 22%, transparent 45%),
+      linear-gradient(180deg, color-mix(in srgb, var(--bg) 50%, transparent) 0%, transparent 18%);
+  }
+  /* Light theme: keep the photo clearly visible; the cream fade stays behind the text column only */
+  [data-theme="light"] .scene-scrim-home {
+    background:
+      linear-gradient(90deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 92%, transparent) 30%, color-mix(in srgb, var(--bg) 40%, transparent) 50%, transparent 68%),
+      linear-gradient(0deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 55%, transparent) 16%, transparent 34%);
+  }
+  @media (max-width: 1023px) {
+    .scene-scrim-home {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 70%, transparent) 0%, color-mix(in srgb, var(--bg) 78%, transparent) 55%, var(--bg) 100%);
+    }
+    [data-theme="light"] .scene-scrim-home {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 72%, transparent) 0%, color-mix(in srgb, var(--bg) 84%, transparent) 50%, var(--bg) 100%);
+    }
+  }
+  .scene-scrim-compact {
+    background: linear-gradient(100deg, rgb(5 7 12 / 0.88) 0%, rgb(5 7 12 / 0.7) 45%, rgb(5 7 12 / 0.35) 100%);
+  }
+
+  /* Page backdrop: the active scene, faded into the page */
+  .page-backdrop {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: min(520px, 70vh);
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / 0.6) 45%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / 0.6) 45%, transparent 100%);
+  }
+  .page-backdrop .scene-img {
+    opacity: var(--scene-opacity);
+    filter: var(--scene-filter);
+    transition: opacity 400ms var(--ease-std), filter 400ms var(--ease-std);
+  }
+
+  /* Environment selector: themed cards, the selected one outlined in the environment accent */
+  .env-option {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.125rem;
+    min-width: 7.5rem;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    color: var(--text-muted);
+    text-align: left;
+    white-space: nowrap;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease, transform 200ms var(--ease-out), box-shadow 200ms ease;
+  }
+  .env-option:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+  .env-option[aria-checked="true"] {
+    color: var(--text);
+    background: var(--surface);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent), var(--shadow);
+  }
+  .env-meta {
+    color: var(--text-faint);
+  }
+
+  /* Theme switch */
+  .theme-switch {
+    position: relative;
+    flex: none;
+    width: 52px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    cursor: pointer;
+    background: transparent;
+    overflow: hidden;
+  }
+  .theme-switch:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 9999px;
+  }
+  .theme-switch svg {
+    display: block;
+    width: 52px;
+    height: 28px;
+  }
+  .ts-day, .ts-night { transition: opacity 350ms ease-in-out; }
+  .ts-night { opacity: 0; }
+  .theme-switch[data-on="true"] .ts-day { opacity: 0; }
+  .theme-switch[data-on="true"] .ts-night { opacity: 1; }
+  .ts-knob {
+    transform: translateX(0);
+    transition: transform 350ms var(--ease-out);
+  }
+  .theme-switch[data-on="true"] .ts-knob {
+    transform: translateX(24px);
   }
 }
 
+/*
+ * Layout wrapper: page headings written with the legacy `display` class (teammate pages) get the same
+ * size and rhythm as `page-title`. Unlayered on purpose, so it outranks per-page size utilities.
+ */
+.page h1.display {
+  font-size: clamp(2rem, 3.6vw, 2.75rem);
+  line-height: 1.1;
+  color: var(--text);
+}
+.page h1.display + p.measure {
+  margin-top: 0.75rem;
+  font-size: 1.0625rem;
+  color: var(--text-muted);
+}
+/* Grid rows (e.g. label/value lists) may shrink below their content, so nothing pushes the page sideways on phones. */
+.page dl.grid > *,
+.page .grid > dd,
+.page .grid > dt {
+  min-width: 0;
+}
+/* Horizontal scroll areas contain their absolutely positioned children (e.g. sr-only labels in tables),
+   which would otherwise escape and widen the page. */
+.page .overflow-x-auto {
+  position: relative;
+}
+.page details.panel > summary {
+  list-style-position: outside;
+}
+
+.drawer-fade { animation: drawer-fade 250ms var(--ease-std) both; }
+.drawer-in { animation: drawer-up 380ms var(--ease-out) both; }
+@media (min-width: 640px) {
+  .drawer-in { animation-name: drawer-left; }
+}
+@keyframes drawer-fade { from { opacity: 0; } }
+@keyframes drawer-up { from { transform: translateY(100%); } }
+@keyframes drawer-left { from { transform: translateX(100%); } }
+
+@keyframes route-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes scene-in {
+  from { opacity: 0; transform: scale(1.015); }
+  to { opacity: 1; transform: none; }
+}
 @keyframes flame-flicker {
   0%, 100% { transform: scale(1, 1) skewX(0deg); }
   25% { transform: scale(0.97, 1.03) skewX(-1.5deg); }
   50% { transform: scale(1.02, 0.98) skewX(1deg); }
   75% { transform: scale(0.98, 1.02) skewX(-0.5deg); }
 }
+@keyframes scene-drift {
+  from { transform: scale(1.02) translate3d(0, 0, 0); }
+  to { transform: scale(1.07) translate3d(-1.2%, -0.6%, 0); }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .flame-flicker {
-    animation: none;
-  }
+  html { scroll-behavior: auto; }
   *, *::before, *::after {
-    transition: none !important;
-    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

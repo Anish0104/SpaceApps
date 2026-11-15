@@ -9,7 +9,7 @@ const pageRef = (page: string) => (/^\d+$/.test(page) ? `p. ${page}` : page);
 export function ValueCell({ v }: { v: NumValue | StrValue }) {
   if (v.value === null) {
     return v.missingReason === "not_applicable"
-      ? <span className="text-ink/70">n/a</span>
+      ? <span className="text-sm text-[var(--text-muted)]">n/a</span>
       : <Tag variant="hatch">Not documented</Tag>;
   }
   const src = sourceById(v.sourceId);
@@ -17,10 +17,19 @@ export function ValueCell({ v }: { v: NumValue | StrValue }) {
   const title = [kind?.ref, src?.title, src?.page && pageRef(src.page), v.formula].filter(Boolean).join(", ");
   return (
     <span className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5" title={title}>
-      <span className="whitespace-nowrap">{String(v.value)}{v.unit ? ` ${v.unit}` : ""}</span>
+      <span className={`num font-medium text-[var(--text)] ${typeof v.value === "number" ? "whitespace-nowrap" : "break-words"}`}>
+        {String(v.value)}{v.unit ? ` ${v.unit}` : ""}
+      </span>
       <EvidenceBadge type={v.type} />
       {src && kind && src.url !== "about:blank" && (
-        <a href={src.url} target="_blank" rel="noreferrer" className="link whitespace-nowrap text-sm">{kind.label}</a>
+        <a
+          href={src.url}
+          target="_blank"
+          rel="noreferrer"
+          className="link whitespace-nowrap text-xs text-[var(--text-muted)] hover:text-[var(--text)]"
+        >
+          {kind.label}
+        </a>
       )}
     </span>
   );
