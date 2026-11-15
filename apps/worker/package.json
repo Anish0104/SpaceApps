@@ -14,7 +14,8 @@
     "eval:score": "node scripts/eval-score.mjs",
     "summaries": "node scripts/summaries.mjs",
     "index:vectors": "node scripts/index-vectors.mjs",
-    "eval:embed": "node scripts/eval-embed.mjs"
+    "eval:embed": "node scripts/eval-embed.mjs",
+    "sms:demo": "node scripts/sms-demo.mjs"
   },
   "dependencies": {
     "@flameatlas/engine": "workspace:*",

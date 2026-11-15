@@ -148,20 +148,53 @@ export function smsReply(body: string, deps: SmsDeps): string {
 
 const escapeXml = (s: string) => s.replace(/[<>&'"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[c]!));
 
+/** WhatsApp caps a single message at 1,600 characters. Our replies are ~300, but guard hard so no
+ *  reply can ever exceed it (and so escaping can never break across the limit). Plain text only — no
+ *  markdown, which WhatsApp would render oddly. */
+export const WHATSAPP_MAX = 1600;
+
 export function twiml(message: string): Response {
-  const body = `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${escapeXml(message)}</Message></Response>`;
+  const safe = message.length > WHATSAPP_MAX ? clampSms(message, WHATSAPP_MAX) : message;
+  const body = `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${escapeXml(safe)}</Message></Response>`;
   return new Response(body, { headers: { "Content-Type": "text/xml; charset=utf-8" } });
 }
 
 // ---------- handler ----------
 
 /**
- * Handle POST /api/sms. Verifies the Twilio signature against TWILIO_AUTH_TOKEN, rate-limits per
- * sender, and replies with TwiML. Without the token configured it refuses (503) rather than
- * answering an unverifiable request.
+ * The webhook URLs a signature may be checked against. Cloudflare gives the exact external https URL
+ * via `req.url` (https, no port, no trailing slash), which is normally exactly what Twilio signed.
+ * For robustness behind a proxy, or when the Twilio console URL differs only by a trailing slash, an
+ * operator can pin the canonical URL with SMS_WEBHOOK_URL; we also try each URL's trailing-slash
+ * variant. Only the URL string varies — the signed params are untouched — so this never weakens the
+ * check: a request still only passes if it carries a valid HMAC over the account auth token.
+ */
+export function candidateUrls(received: string, configured?: string): string[] {
+  const out = new Set<string>();
+  const add = (u?: string) => {
+    const s = (u ?? "").trim();
+    if (!s) return;
+    out.add(s);
+    out.add(s.endsWith("/") ? s.replace(/\/+$/, "") : s + "/");
+  };
+  add(configured);
+  add(received);
+  return [...out];
+}
+
+/**
+ * Handle POST /api/sms (Twilio SMS and the WhatsApp sandbox). Verifies the Twilio signature against
+ * TWILIO_AUTH_TOKEN, rate-limits per sender, and replies with TwiML. Without the token configured it
+ * refuses (503) rather than answering an unverifiable request.
+ *
+ * WhatsApp senders arrive as From="whatsapp:+1..." / To="whatsapp:+14155238886". Twilio signs the
+ * raw params exactly as sent, including the "whatsapp:" prefix, so we verify BEFORE reading From, and
+ * never strip the prefix before the signature check.
  */
 export async function handleSms(
-  req: Request, url: string, env: { TWILIO_AUTH_TOKEN?: string }, deps: SmsDeps, limiter: SlidingWindow,
+  req: Request, url: string,
+  env: { TWILIO_AUTH_TOKEN?: string; SMS_WEBHOOK_URL?: string },
+  deps: SmsDeps, limiter: SlidingWindow,
 ): Promise<Response> {
   if (!env.TWILIO_AUTH_TOKEN) {
     return new Response("SMS endpoint not configured", { status: 503 });
@@ -170,9 +203,16 @@ export async function handleSms(
   const params: Record<string, string> = {};
   for (const [k, v] of form) params[k] = v;
 
-  if (!(await verifyTwilio(env.TWILIO_AUTH_TOKEN, url, params, req.headers.get("X-Twilio-Signature")))) {
-    return new Response("Invalid signature", { status: 403 });
+  const header = req.headers.get("X-Twilio-Signature");
+  if (!header) return new Response("Invalid signature", { status: 403 });
+  let verified = false;
+  for (const candidate of candidateUrls(url, env.SMS_WEBHOOK_URL)) {
+    if (await verifyTwilio(env.TWILIO_AUTH_TOKEN, candidate, params, header)) { verified = true; break; }
   }
+  if (!verified) return new Response("Invalid signature", { status: 403 });
+
+  // Rate-limit key is the sender exactly as Twilio sent it ("whatsapp:+1..." or "+1..."), read only
+  // after the signature is verified so an attacker cannot influence the bucket.
   const from = params.From ?? "unknown";
   if (!limiter.allow(from)) {
     return twiml("You are sending messages quickly. Please wait a minute and try again.");

@@ -53,6 +53,9 @@ export interface Env {
   ASSETS?: Fetcher;
   /** Twilio account auth token, used to verify the X-Twilio-Signature on /api/sms. */
   TWILIO_AUTH_TOKEN?: string;
+  /** Optional: pin the exact public webhook URL Twilio signs (e.g. https://oxyflame.oxyflame.workers.dev/api/sms).
+   *  Defaults to the request URL, which behind Cloudflare is already the external https URL. */
+  SMS_WEBHOOK_URL?: string;
   /** Answer cache and query-vector cache (keys prefixed qemb:). */
   ANSWERS?: KVNamespace;
 }

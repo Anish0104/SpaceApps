@@ -8,7 +8,8 @@ import scenariosJson from "../../../data/scenarios.json";
 import { Dataset, Scenario } from "@flameatlas/engine";
 import { buildIndex } from "../src/search";
 import {
-  SlidingWindow, twilioSignature, verifyTwilio, parseScenario, smsReply, clampSms, twiml, handleSms, type SmsDeps,
+  SlidingWindow, twilioSignature, verifyTwilio, parseScenario, smsReply, clampSms, twiml, handleSms,
+  candidateUrls, type SmsDeps,
 } from "../src/sms";
 
 const ds = Dataset.parse(real);
@@ -118,5 +119,60 @@ describe("twiml + handler", () => {
     const send = async () => (await handleSms(await signedRequest({ From: "+15555559999", Body: "MOON" }), URL, { TWILIO_AUTH_TOKEN: TOKEN }, deps, limiter)).text();
     await send(); await send();
     expect(await send()).toContain("sending messages quickly");
+  });
+});
+
+describe("candidate urls", () => {
+  it("tries the received URL and a pinned canonical URL, each with and without a trailing slash", () => {
+    expect(candidateUrls("https://x.workers.dev/api/sms")).toEqual([
+      "https://x.workers.dev/api/sms",
+      "https://x.workers.dev/api/sms/",
+    ]);
+    // a pinned canonical URL is tried first, so a trailing-slash mismatch at the edge still verifies
+    expect(candidateUrls("https://x.workers.dev/api/sms/", "https://x.workers.dev/api/sms")).toEqual([
+      "https://x.workers.dev/api/sms",
+      "https://x.workers.dev/api/sms/",
+    ]);
+  });
+});
+
+describe("whatsapp (Twilio WhatsApp sandbox)", () => {
+  const WA_FROM = "whatsapp:+15555550123";
+  const WA_TO = "whatsapp:+14155238886";
+
+  it("a signed WhatsApp request, verified against the exact URL, returns 200 TwiML with a <Message>", async () => {
+    // The signature is computed over the raw params INCLUDING the "whatsapp:" prefix on From/To.
+    const params = { Body: "ISS smoke detector", From: WA_FROM, To: WA_TO, MessageSid: "SM" + "a".repeat(32) };
+    const res = await handleSms(await signedRequest(params), URL, { TWILIO_AUTH_TOKEN: TOKEN }, deps, new SlidingWindow());
+    expect(res.status).toBe(200);
+    const body = await res.text();
+    expect(body).toContain("<Response><Message>");
+    expect(body).toContain("</Message></Response>");
+  });
+
+  it("a WhatsApp request with a bad signature returns 403", async () => {
+    const params = { Body: "MOON", From: WA_FROM, To: WA_TO };
+    const req = new Request(URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded", "X-Twilio-Signature": "INVALID_SIGNATURE" },
+      body: new URLSearchParams(params).toString(),
+    });
+    const res = await handleSms(req, URL, { TWILIO_AUTH_TOKEN: TOKEN }, deps, new SlidingWindow());
+    expect(res.status).toBe(403);
+  });
+
+  it('"HELP" returns the help text', async () => {
+    const res = await handleSms(await signedRequest({ Body: "HELP", From: WA_FROM, To: WA_TO }), URL, { TWILIO_AUTH_TOKEN: TOKEN }, deps, new SlidingWindow());
+    expect(res.status).toBe(200);
+    expect(await res.text()).toMatch(/text a crew environment/i);
+  });
+
+  it('"MOON fabric flammability" returns a cited scenario reply with the safety disclaimer, under 1,600 chars', async () => {
+    const res = await handleSms(await signedRequest({ Body: "MOON fabric flammability", From: WA_FROM, To: WA_TO }), URL, { TWILIO_AUTH_TOKEN: TOKEN }, deps, new SlidingWindow());
+    expect(res.status).toBe(200);
+    const body = await res.text();
+    expect(body).toMatch(/\[(PSI-\d+|SAF[-A-Z0-9]*|SAFFIRE[-A-Z0-9]*)\]/); // a cited record id
+    expect(body).toContain("Not a safety rating");
+    expect(body.length).toBeLessThanOrEqual(1600);
   });
 });
