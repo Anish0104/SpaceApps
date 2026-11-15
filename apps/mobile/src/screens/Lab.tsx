@@ -36,7 +36,7 @@ function Condition({ name, f }: { name: string; f: Field }) {
  * value shown is the record's own measurement (or marked undocumented), with its evidence type and a
  * link to the NASA source. The flame is a labelled qualitative illustration, never a measurement.
  */
-export function Lab({ onOpenAsk }: { onOpenAsk: () => void }) {
+export function Lab() {
   const { scenario: sc } = useStore();
   const runs = dataset.runs;
   const [i, setI] = useState(0);
@@ -113,7 +113,6 @@ export function Lab({ onOpenAsk }: { onOpenAsk: () => void }) {
         </div>
       )}
 
-      <button className="btn ghost" style={{ marginTop: 14 }} onClick={onOpenAsk}>Ask about this scenario</button>
       <p className="small faint" style={{ marginTop: 12, textAlign: "center" }}>
         Green = verified run within tolerance · Amber = analog or not yet cross-checked · Hatched = not in curated data.
         Lights rate evidence coverage, never safety.

@@ -40,7 +40,6 @@ export function TopBar() {
               <small>{Number(s.o2MolPct)}% O₂ · {Number(s.gravityG)} g</small>
             </button>
           ))}
-          <p className="small faint" style={{ marginTop: 4 }}>One shared scenario across Brief, Lab, Atlas and Ask.</p>
         </Sheet>
       )}
     </header>

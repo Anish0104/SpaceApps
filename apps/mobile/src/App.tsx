@@ -22,9 +22,9 @@ function Shell() {
       <main className="scroll" key={tab}>
         <div className="fade">
           {offline && <div className="banner">Offline — the archive, Lab and saved records still work</div>}
-          {tab === "brief" && <Brief onOpenLab={() => setTab("lab")} onFlight={() => setFlight(true)} onOpenAsk={() => setTab("ask")} onOpenSaved={() => setTab("saved")} />}
-          {tab === "atlas" && <Atlas onOpenAsk={() => setTab("ask")} />}
-          {tab === "lab" && <Lab onOpenAsk={() => setTab("ask")} />}
+          {tab === "brief" && <Brief onOpenLab={() => setTab("lab")} onFlight={() => setFlight(true)} />}
+          {tab === "atlas" && <Atlas />}
+          {tab === "lab" && <Lab />}
           {tab === "ask" && <Ask />}
           {tab === "saved" && <Saved onOpenAtlas={() => setTab("atlas")} />}
         </div>

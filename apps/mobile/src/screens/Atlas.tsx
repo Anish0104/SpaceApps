@@ -5,7 +5,7 @@ import { dataset, runsFor, invById } from "../data";
 
 /** Research Atlas: every investigation ranked for the active environment. Score is relevance, never
  *  fire risk. Save adds a record to the on-device Saved tab. */
-export function Atlas({ onOpenAsk }: { onOpenAsk: () => void }) {
+export function Atlas() {
   const { scenario: sc, isSaved, toggleSave } = useStore();
 
   const ranked = useMemo(() => {
@@ -52,7 +52,6 @@ export function Atlas({ onOpenAsk }: { onOpenAsk: () => void }) {
       <p className="small faint" style={{ marginTop: 12 }}>
         "Cannot assess" means oxygen and pressure are both undocumented, so no score — the card is still placed by what is documented.
       </p>
-      <button className="btn ghost" style={{ marginTop: 12 }} onClick={onOpenAsk}>Ask a question instead</button>
     </>
   );
 }

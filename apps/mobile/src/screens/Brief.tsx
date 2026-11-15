@@ -9,8 +9,8 @@ const QUICK: [string, string][] = [["Earth", "earth"], ["Orbit", "iss"], ["Moon"
 
 /** Mission Brief: choose a destination and open the Lab. Readings come from the selected scenario in
  *  the backend data with its source; atmosphere inputs are labelled assumed, O₂ partial pressure calculated. */
-export function Brief({ onOpenLab, onFlight, onOpenAsk, onOpenSaved }: { onOpenLab: () => void; onFlight: () => void; onOpenAsk: () => void; onOpenSaved: () => void }) {
-  const { scenario: sc, setScenarioId, saved } = useStore();
+export function Brief({ onOpenLab, onFlight }: { onOpenLab: () => void; onFlight: () => void }) {
+  const { scenario: sc, setScenarioId } = useStore();
   const po2 = o2PartialKPa(sc.o2MolPct, sc.pressureKPa);
 
   return (
@@ -51,10 +51,6 @@ export function Brief({ onOpenLab, onFlight, onOpenAsk, onOpenSaved }: { onOpenL
       <p className="small faint" style={{ marginTop: 10 }}>Source: {sc.source}.{sc.note ? ` ${sc.note}.` : ""}</p>
 
       <button className="btn primary" style={{ marginTop: 14 }} onClick={onOpenLab}>Open Mission Lab</button>
-      <div className="row" style={{ gap: 10, marginTop: 10 }}>
-        <button className="btn ghost" onClick={onOpenAsk}>Ask the archive</button>
-        <button className="btn ghost" onClick={onOpenSaved} style={{ whiteSpace: "nowrap" }}>Saved · {saved.length}</button>
-      </div>
     </>
   );
 }

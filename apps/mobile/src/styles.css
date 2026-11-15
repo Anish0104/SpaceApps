@@ -164,18 +164,20 @@ a.src { color: var(--ice); text-decoration: none; font-family: var(--mono); font
 .bubble.in { background: var(--card-2); border: 1px solid var(--line); align-self: flex-start; border-bottom-left-radius: 5px; }
 .sms { display: flex; flex-direction: column; gap: 8px; }
 
-/* dock */
-.dock { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(11px + var(--sb)); z-index: 40; width: min(94vw, 464px); border-radius: 26px; padding: 7px 14px; display: grid; grid-template-columns: repeat(5, 1fr);
+/* dock — WhatsApp-style sliding glass pill */
+.dock { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(11px + var(--sb)); z-index: 40; width: min(94vw, 464px); border-radius: 26px; padding: 7px 10px; display: grid; grid-template-columns: repeat(5, 1fr);
   background: var(--dock); backdrop-filter: blur(25px) saturate(1.5); -webkit-backdrop-filter: blur(25px) saturate(1.5); border: 1px solid var(--dock-line); box-shadow: var(--shadow); }
-.dock button { position: relative; background: none; border: 0; color: var(--dock-inactive); display: grid; gap: 3px; justify-items: center; padding: 8px 0 4px; min-height: var(--tap); cursor: pointer; font-size: 10.5px; font-weight: 600; }
+.dock-slide { position: absolute; top: 6px; bottom: 6px; left: 10px; width: calc((100% - 20px) / 5); border-radius: 18px;
+  background: color-mix(in srgb, var(--dock-ind) 20%, transparent); border: 1px solid color-mix(in srgb, var(--dock-ind) 35%, transparent);
+  transition: transform .34s cubic-bezier(.4,0,.2,1); pointer-events: none; }
+.dock button { position: relative; z-index: 1; background: none; border: 0; color: var(--dock-inactive); display: grid; gap: 3px; justify-items: center; padding: 8px 0 4px; min-height: var(--tap); cursor: pointer; font-size: 10.5px; font-weight: 600; }
 .dock button[aria-current="true"] { color: var(--dock-active); }
-.dock .ic { width: 34px; height: 30px; border-radius: 10px; display: grid; place-items: center; transition: transform .2s ease; }
-.dock button[aria-current="true"] .ic { transform: translateY(-2px); }
+.dock .ic { width: 34px; height: 28px; border-radius: 10px; display: grid; place-items: center; transition: transform .2s ease; }
+.dock button[aria-current="true"] .ic { transform: translateY(-1px); }
 .dock svg { width: 20px; height: 20px; }
 .dock .lab .ic { background: radial-gradient(70% 70% at 50% 35%, #a74f30, #612b25 60%, #341b26); color: #ffe6d2; width: 50px; height: 50px; border-radius: 50%; margin-top: -21px; box-shadow: 0 10px 22px rgba(167,79,48,0.5), 0 0 0 4px var(--bg), inset 0 0 0 1.5px rgba(255,230,210,0.55); }
 .dock .lab svg { width: 24px; height: 24px; }
 .dock button:active .ic { transform: scale(0.91); }
-.dock .ind { position: absolute; top: 2px; width: 18px; height: 2px; border-radius: 2px; background: var(--dock-ind); box-shadow: 0 0 8px var(--dock-ind); transition: left .34s cubic-bezier(.4,0,.2,1); }
 
 /* motion */
 .fade { animation: fade .42s ease both; }

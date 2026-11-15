@@ -8,13 +8,13 @@ const ITEMS: { id: Tab; label: string; icon: JSX.Element }[] = [
   { id: "saved", label: "Saved", icon: <path d="M6 3h12v18l-6-4-6 4z" /> },
 ];
 
-/** Floating glass dock. Lab is raised, copper-lit. The current tab shows an animated blue indicator.
- *  The whole tab (icon + label) is tappable and at least 44px. */
+/** Floating glass dock. A frosted highlight pill slides smoothly behind the active tab (WhatsApp-style);
+ *  Lab is the raised copper button in the center. Whole tab tappable, 44px targets, visible focus. */
 export function Dock({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
   const idx = ITEMS.findIndex((i) => i.id === tab);
   return (
-    <nav className="dock glass" aria-label="Primary">
-      <span className="ind" style={{ left: `calc(${idx * 20}% + 10% - 9px)` }} aria-hidden="true" />
+    <nav className="dock" aria-label="Primary">
+      <span className="dock-slide" style={{ transform: `translateX(${idx * 100}%)` }} aria-hidden="true" />
       {ITEMS.map((i) => (
         <button key={i.id} className={i.id === "lab" ? "lab" : ""} aria-current={tab === i.id} onClick={() => onTab(i.id)}>
           <span className="ic">
