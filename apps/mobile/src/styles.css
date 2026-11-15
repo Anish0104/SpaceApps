@@ -6,7 +6,7 @@
   --bg: #090c13; --raised: #0d111a; --card: #10141e; --card-2: #142135;
   --text: #e9ebf1; --muted: #a0a6b6; --faint: #6f7689; --line: #212838;
   --copper: #e48a54; --copper-2: #f0a878; --ice: #94d6ff;
-  --green: #5ad6a6; --amber: #f1b957; --red: #ff7a6b;
+  --green: #5ad6a6; --amber: #f1b957; --red: #ff7a6b; --wa: #25d366;
   --hatch: repeating-linear-gradient(45deg, #2a3346 0 1px, transparent 1px 7px);
   --dock: linear-gradient(180deg, #27364bca, #101a2bd9 55%, #080f1eeb);
   --dock-inactive: #a9b5cc; --dock-active: #f2f7ff; --dock-ind: #99caff; --dock-line: #2a3a55;
@@ -18,7 +18,7 @@
   --bg: #f6f5f1; --raised: #fbfaf7; --card: #ffffff; --card-2: #f3f6fb;
   --text: #15171e; --muted: #5a5f6c; --faint: #8a909e; --line: #e2e1da;
   --copper: #b4572b; --copper-2: #c9652f; --ice: #1d74c4;
-  --green: #1e8a5a; --amber: #b07611; --red: #c8402f;
+  --green: #1e8a5a; --amber: #b07611; --red: #c8402f; --wa: #1faa52;
   --hatch: repeating-linear-gradient(45deg, #c7cad2 0 1px, transparent 1px 7px);
   --dock: linear-gradient(180deg, #fffef4eb, #f1f5f9dd 55%, #dfe8f3e8);
   --dock-inactive: #475a75; --dock-active: #182e50; --dock-ind: #3e6ba4; --dock-line: #d3ddea;
@@ -52,11 +52,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; letter-spacing: -0.01em; }
 .brand b { color: var(--copper); }
 .brand img { width: 26px; height: 26px; }
-.tb-env { margin-left: auto; display: flex; align-items: center; gap: 6px; height: 38px; padding: 0 12px; border-radius: 999px;
-  background: var(--card-2); border: 1px solid var(--line); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; max-width: 150px; }
-.tb-env .mono { font-size: 10px; color: var(--muted); }
 .icon-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--card-2); color: var(--text); display: grid; place-items: center; cursor: pointer; flex: none; }
 .icon-btn svg { width: 18px; height: 18px; }
+.tb-picker { position: relative; margin-left: auto; }
+.tb-env { display: flex; align-items: center; gap: 6px; height: 38px; padding: 0 12px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--line); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; max-width: 160px; }
+.dropdown { position: absolute; top: 46px; right: 0; width: 248px; max-height: 60vh; overflow: auto; padding: 6px; border-radius: 18px;
+  background: color-mix(in srgb, var(--raised) 85%, transparent); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border: 1px solid var(--line); box-shadow: 0 18px 44px rgba(0,0,0,0.38); z-index: 60; animation: ddin .16s ease; }
+@keyframes ddin { from { opacity: 0; transform: translateY(-6px) scale(.98); } to { opacity: 1; transform: none; } }
+.dd-opt { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 11px 12px; border-radius: 12px; border: 0; background: transparent; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; }
+.dd-opt:hover { background: var(--card-2); }
+.dd-opt.on { background: color-mix(in srgb, var(--wa) 14%, var(--card-2)); color: var(--wa); }
+.dd-opt .dd-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* sheet (env picker / menu) */
 .sheet-wrap { position: fixed; inset: 0; z-index: 50; display: flex; align-items: flex-end; justify-content: center; }
@@ -164,20 +171,22 @@ a.src { color: var(--ice); text-decoration: none; font-family: var(--mono); font
 .bubble.in { background: var(--card-2); border: 1px solid var(--line); align-self: flex-start; border-bottom-left-radius: 5px; }
 .sms { display: flex; flex-direction: column; gap: 8px; }
 
-/* dock — WhatsApp-style sliding glass pill */
-.dock { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(11px + var(--sb)); z-index: 40; width: min(94vw, 464px); border-radius: 26px; padding: 7px 10px; display: grid; grid-template-columns: repeat(5, 1fr);
-  background: var(--dock); backdrop-filter: blur(25px) saturate(1.5); -webkit-backdrop-filter: blur(25px) saturate(1.5); border: 1px solid var(--dock-line); box-shadow: var(--shadow); }
-.dock-slide { position: absolute; top: 6px; bottom: 6px; left: 10px; width: calc((100% - 20px) / 5); border-radius: 18px;
-  background: color-mix(in srgb, var(--dock-ind) 20%, transparent); border: 1px solid color-mix(in srgb, var(--dock-ind) 35%, transparent);
-  transition: transform .34s cubic-bezier(.4,0,.2,1); pointer-events: none; }
-.dock button { position: relative; z-index: 1; background: none; border: 0; color: var(--dock-inactive); display: grid; gap: 3px; justify-items: center; padding: 8px 0 4px; min-height: var(--tap); cursor: pointer; font-size: 10.5px; font-weight: 600; }
-.dock button[aria-current="true"] { color: var(--dock-active); }
-.dock .ic { width: 34px; height: 28px; border-radius: 10px; display: grid; place-items: center; transition: transform .2s ease; }
+/* dock — WhatsApp-modern glass bar with iOS liquid-glass + emerald active pill */
+.dock { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(12px + var(--sb)); z-index: 40; width: min(94vw, 460px); border-radius: 30px; padding: 8px 10px; display: grid; grid-template-columns: repeat(5, 1fr); isolation: isolate;
+  background: var(--dock); backdrop-filter: blur(30px) saturate(1.8); -webkit-backdrop-filter: blur(30px) saturate(1.8);
+  border: 1px solid var(--dock-line); box-shadow: 0 10px 34px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.22); }
+.dock::before { content: ""; position: absolute; inset: 0; border-radius: 30px; pointer-events: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); }
+.dock-slide { position: absolute; top: 7px; bottom: 7px; left: 10px; width: calc((100% - 20px) / 5); border-radius: 20px;
+  background: color-mix(in srgb, var(--wa) 18%, transparent); border: 1px solid color-mix(in srgb, var(--wa) 38%, transparent);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--wa) 22%, transparent); transition: transform .36s cubic-bezier(.34,1.3,.46,1); pointer-events: none; z-index: 0; }
+.dock button { position: relative; z-index: 1; background: none; border: 0; color: var(--dock-inactive); display: grid; gap: 3px; justify-items: center; padding: 8px 0 5px; min-height: var(--tap); cursor: pointer; font-size: 10.5px; font-weight: 600; transition: color .2s ease; }
+.dock button[aria-current="true"] { color: var(--wa); }
+.dock .ic { position: relative; width: 30px; height: 26px; display: grid; place-items: center; transition: transform .2s ease; }
 .dock button[aria-current="true"] .ic { transform: translateY(-1px); }
-.dock svg { width: 20px; height: 20px; }
-.dock .lab .ic { background: radial-gradient(70% 70% at 50% 35%, #a74f30, #612b25 60%, #341b26); color: #ffe6d2; width: 50px; height: 50px; border-radius: 50%; margin-top: -21px; box-shadow: 0 10px 22px rgba(167,79,48,0.5), 0 0 0 4px var(--bg), inset 0 0 0 1.5px rgba(255,230,210,0.55); }
-.dock .lab svg { width: 24px; height: 24px; }
-.dock button:active .ic { transform: scale(0.91); }
+.dock button:active .ic { transform: scale(0.9); }
+.dock svg { width: 21px; height: 21px; }
+.dock .badge { position: absolute; top: -5px; right: -8px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: var(--wa); color: #06230f; font-family: var(--mono); font-size: 10px; font-weight: 700; display: grid; place-items: center; box-shadow: 0 0 0 2px var(--bg); }
+.dock .status-dot { position: absolute; top: -3px; right: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--wa); box-shadow: 0 0 0 2px var(--bg); }
 
 /* motion */
 .fade { animation: fade .42s ease both; }

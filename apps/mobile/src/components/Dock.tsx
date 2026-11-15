@@ -1,3 +1,5 @@
+import { useStore } from "../store";
+
 export type Tab = "brief" | "atlas" | "lab" | "ask" | "saved";
 
 const ITEMS: { id: Tab; label: string; icon: JSX.Element }[] = [
@@ -8,21 +10,32 @@ const ITEMS: { id: Tab; label: string; icon: JSX.Element }[] = [
   { id: "saved", label: "Saved", icon: <path d="M6 3h12v18l-6-4-6 4z" /> },
 ];
 
-/** Floating glass dock. A frosted highlight pill slides smoothly behind the active tab (WhatsApp-style);
- *  Lab is the raised copper button in the center. Whole tab tappable, 44px targets, visible focus. */
+/**
+ * Bottom navigation dock, modelled on WhatsApp's modern glass bar: an iOS liquid-glass pill with a
+ * smooth emerald active pill that slides between tabs, count badges and status dots. Full tab tappable,
+ * 44px targets, visible focus, safe-area aware.
+ */
 export function Dock({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
+  const { saved } = useStore();
   const idx = ITEMS.findIndex((i) => i.id === tab);
+  const badge: Partial<Record<Tab, number>> = { saved: saved.length };
+
   return (
     <nav className="dock" aria-label="Primary">
       <span className="dock-slide" style={{ transform: `translateX(${idx * 100}%)` }} aria-hidden="true" />
-      {ITEMS.map((i) => (
-        <button key={i.id} className={i.id === "lab" ? "lab" : ""} aria-current={tab === i.id} onClick={() => onTab(i.id)}>
-          <span className="ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{i.icon}</svg>
-          </span>
-          {i.label}
-        </button>
-      ))}
+      {ITEMS.map((i) => {
+        const n = badge[i.id];
+        return (
+          <button key={i.id} aria-current={tab === i.id} onClick={() => onTab(i.id)}>
+            <span className="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">{i.icon}</svg>
+              {n ? <span className="badge" aria-label={`${n} saved`}>{n > 99 ? "99+" : n}</span> : null}
+              {i.id === "ask" && <span className="status-dot" aria-hidden="true" />}
+            </span>
+            {i.label}
+          </button>
+        );
+      })}
     </nav>
   );
 }
