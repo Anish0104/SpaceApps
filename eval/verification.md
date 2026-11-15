@@ -750,3 +750,49 @@ evidence until the run identity is resolved.
 12. **Conclusions that must not be drawn:** no material is called safe or unsafe; "not in our curated
     data" is never "NASA never studied it"; the two BASS-II records are not confirmed BASS-II evidence;
     verified status covers 3 runs only and is not a claim about the other 10.
+
+---
+
+# Re-verification pass — 2026-11-15 (Juvana), data 1.3.0
+
+Independent check of the 9 imported runs against the **primary NASA PDFs, read directly** (not AI
+summaries or web snippets). Branch `juvana-verify`, based off `data-1.3.0` because PR #9 (the 1.3.0
+release) is **not yet merged to main**. The 3 already-verified runs (SAF-V-2, SAF-VI-3, SAF-VI-4) were
+left untouched.
+
+**Sources read**
+- Saffire I–III — NTRS 20180005168, Table 1 and Table 1 (continued), slides 30–31.
+- Saffire IV–VI — NTRS 20240002981, Table 1, p.3.
+- BASS / BASS-II (2015) — NTRS 20150008962, §2–3 (p.2–3) and the Appendix run list.
+
+**Decisions — all 9 flipped `imported → verified`** (`verifiedBy: Juvana` on each value confirmed on the
+cited page; COMPUTED pO₂ left unverified):
+
+| Run | Source page | Confirmed against the page | Decision |
+|---|---|---|---|
+| SAF-I-1 | 20180005168 Table 1 (sl.30–31) | Cotton-Fiberglass, 40.6 cm wide, 94 cm (940 mm), 0.37 mm, 20 cm/s, concurrent, O₂ 21.7 (table 21.7→21.5), µ-g, spread **1.8 mm/s** | **verified** |
+| SAF-I-2 | same | 40.6 cm, ~10 cm (100 mm, approx.), 0.37 mm, 20 cm/s, opposed, O₂ ~21.5, spread **1.3 mm/s** | **verified** |
+| SAF-II-1 | same | Silicone, 5 cm wide, 29 cm (290 mm), 0.27 mm, 20 cm/s, concurrent, O₂ ~22.1; no µ-g spread (none stored) | **verified** |
+| SAF-II-9 | same | PMMA, 5 cm, 29 cm, 1 cm (10 mm), 20 cm/s, concurrent, O₂ 22.0 (22.0→21.9); µ-g spread "Note (iv)", none stored | **verified** |
+| SAF-III-1 | same | Cotton-Fiberglass, 40.6 cm, 94 cm, 0.37 mm, 25 cm/s, concurrent, O₂ 21.2, spread **2.3 mm/s** | **verified** |
+| SAF-III-2 | same | 40.6 cm, ~10 cm (approx.), 0.37 mm, 25 cm/s, opposed, O₂ 21.2, spread **0.98 mm/s** | **verified** |
+| SAF-IV-1 | 20240002981 Table 1 (p.3) | SIBAL, 20 cm/s, concurrent, **100.0 kPa**, **22.0 mol%** | **verified** |
+| SAF-VI-2 | 20240002981 Table 1 (p.3) | SIBAL, 20 cm/s, concurrent, **54.1 kPa**, **31.0 mol%** | **verified** |
+| GMT96-T7 | 20150008962 Appendix + p.2–3 | 2.2 cm wide, 10 cm/s, 21% O₂, row **labelled "BASS"** (not BASS-II), concurrent, 0.32 mm, 7.6×7.6 cm duct, "Ambient pressure was 1 atm" (101.3 kPa) | **verified** |
+
+**Notes / honest limits**
+- **Pressure for Saffire I–III** is not stated anywhere in Table 1 (slides 30–31); it stays
+  `null / not_documented` (confirmed absent), never inferred.
+- **pO₂** values are COMPUTED (pO₂ = O₂% × pressure) and were left **unverified**.
+- **SAF-I-2 / SAF-III-2 length** reads "~10 cm" in the table; verified **as approximate** (stored 100 mm
+  with an approximate note), not an exact 100 mm.
+- **SAF-II-1 / SAF-II-9** have no µ-g spread-rate number in the source (II-1 "~0 n/a"; II-9 "Note (iv)"),
+  so none is stored — consistent.
+- **Build not regenerated here.** `release.py` needs the raw PSI scrape (`data/raw/psi/`, gitignored and
+  absent in this checkout), so `data/dataset.json` + `data/coverage.json` were **not** rebuilt. The marks
+  live in the seed `data/dataset-v1.0.json`; `preserve_verified()` will carry them into the build and
+  **coverage `runsVerified` rises 3 → 12** when the maintainer regenerates with the raw pull.
+
+**Checks** — `pnpm -r test` green (engine 83, worker 135, web 35). `eval:score` (data 1.3.0): keyword
+Top-1 8/18, Top-3 12/18; flameatlas Top-1 9/18, Top-3 15/18 (misses q14, q15, q22); Referee verdict 9/9,
+named reason 5/5; adversarial 5/5. **VERSION unchanged** (verification pass within 1.3.0; no bump).

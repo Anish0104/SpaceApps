@@ -15,10 +15,10 @@ describe("dataset.json", () => {
     expect(issues).toEqual([]);
   });
 
-  it("is release 1.2.0, real data, not the fixture set", () => {
-    expect(parsed.data?.version).toBe("1.2.0");
+  it("is release 1.3.0, real data, not the fixture set", () => {
+    expect(parsed.data?.version).toBe("1.3.0");
     expect(parsed.data?.fixture).toBe(false);
-    expect(parsed.data?.runs).toHaveLength(13);
+    expect(parsed.data?.runs).toHaveLength(12);
     expect(parsed.data?.investigations).toHaveLength(25);
   });
 
@@ -91,7 +91,7 @@ describe("release side files", () => {
         if (none) unassessable++;
       }
     }
-    expect(unassessable).toBeGreaterThan(0); // 1.2.0 has cards without either range
+    expect(unassessable).toBeGreaterThan(0); // 1.3.0 has cards without either range
   });
 });
 
@@ -108,7 +108,7 @@ describe("locked Referee demo pairs", () => {
   };
   const expected = (id: string) => demoPairs.pairs.find((x) => x.id === id)!.expected;
 
-  it("A: BASS-II vs Saffire-I on sample size cannot be isolated", () => {
+  it("A: BASS vs Saffire-I on sample size cannot be isolated", () => {
     const r = judge("A");
     expect(r.verdict).toBe(expected("A"));
     expect(r.verdict).toBe("CANNOT_ISOLATE");

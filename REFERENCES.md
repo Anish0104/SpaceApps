@@ -1,4 +1,4 @@
-# NASA data sources — FlameAtlas dataset v1.2.0
+# NASA data sources — FlameAtlas dataset v1.3.0
 
 Every sourced value in `data/dataset.json` cites one of the entries below by its `sourceId`.
 Per-run verification status is tracked in `eval/verification.md`.

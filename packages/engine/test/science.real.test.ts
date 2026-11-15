@@ -123,11 +123,6 @@ describe("ranking on real data", () => {
 });
 
 describe("variable summary on real data", () => {
-  it("BASS-II cotton-fiberglass runs differ only in flow direction", () => {
-    const rows = variableSummary(ds.runs.filter((r) => r.psiId === "PSI-25"));
-    expect(rows.filter((r) => r.status === "varies").map((r) => r.field)).toEqual(["flowDirection"]);
-    expect(rows.filter((r) => r.status === "undocumented")).toEqual([]);
-  });
   it("Saffire I-III runs never document pressure", () => {
     const rows = variableSummary(ds.runs.filter((r) => ["PSI-98", "PSI-99", "PSI-100"].includes(r.psiId)));
     expect(rows.find((r) => r.field === "pressureKPa")?.status).toBe("undocumented");
