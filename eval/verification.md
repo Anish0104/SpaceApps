@@ -675,3 +675,78 @@ No outcome values are recorded for this run.
 - Decision: [ ] confirmed  [ ] flagged
 - Reason if flagged:
 - Checked on:
+
+---
+
+# Independent NASA source audit (2026-11-14, Juvana)
+
+A second pass that re-opened the primary NASA PDFs (not AI summaries) and checked every curated run
+against the cited page. The three previously verified runs were rechecked for regressions; the ten
+flagged runs and the collector's corrections were checked against the source.
+
+**Rule followed:** this audit records what the sources support. It does not promote any run to
+`verified` on its own — a status change is a human sign-off the collector and verifier make. Where the
+audit confirms a value, that is recorded as a finding, not a status change.
+
+## Documents read
+
+| Source id | NTRS | Used for | Key location |
+|---|---|---|---|
+| S-SAF-IIII | 20180005168 | Saffire I-III run conditions | Table 1, PDF p.30-31 |
+| S-SAF-IVVI | 20240002981 | Saffire IV-VI run conditions | Table 1, PDF p.2 |
+| S-BASS2 | 20150008962 | BASS-II fabric, thickness, pressure, appendix run list | Sec.2 p.2-3, Appendix |
+| S-BASS-SR | 20140011099 | BASS spread rates (2.55 / 1.21 mm/s) | "Concurrent and Opposed Spread" slide, PDF p.20 |
+
+## Findings
+
+**Saffire IV-VI (the three verified runs, rechecked):** Table 1 of 20240002981 confirms SAF-V-2
+(Cotton Jersey, 50 cm, 20 cm/s concurrent, 70.7 kPa, 26.2% O2), SAF-VI-3 (two-sided PMMA, 18 cm,
+54.6 kPa, 30.3%, 10 mm) and SAF-VI-4 (one-sided PMMA, 18 cm, 55.2 kPa, 28.8%, 5 mm) exactly as
+recorded. No regression. The same table confirms the flagged SAF-IV-1 (22.0%, 100.0 kPa) and
+SAF-VI-2 (31.0%, 54.1 kPa) values; those two stay flagged only because the SIBAL **thickness** is
+not given per-run in this paper (it reports an areal density of 18.05 mg/cm2, not a thickness), so the
+collector's choice to mark SAF-IV-1 and SAF-VI-2 thickness "not documented" is correct — the 0.37 mm
+from the Saffire I-III paper must not be transferred.
+
+**Saffire I-III:** Table 1 of 20180005168 has **no pressure column**, so the six runs' pressure is
+correctly "not documented" and their O2 partial pressure correctly UNKNOWN. The table *does* document
+0.37 mm SIBAL thickness for I-1, I-2, III-1, III-2 and the other listed conditions. Two points remain:
+I-2 and III-2 lengths are printed as "~ 10 cm" (approximate), while the dataset stores an exact 100 mm;
+and the same Table 1 (continued, p.31) reports microgravity **spread rates** (I-1 1.8, I-2 1.3,
+III-1 2.3, III-2 0.98 mm/s) that the dataset does not carry — a gap, not an error.
+
+**BASS-II:** 20150008962 supports the 0.32 mm thickness ("about 0.32 mm", Sec.2) and states "Ambient
+pressure was 1 atm", so the collector's 0.32 mm is sourced and the 101.3 kPa is actually documented,
+not merely inferred. **However**, the Appendix classifies the 21% O2, 10 cm/s concurrent case as a
+**BASS** run (GMT96-T7), not BASS-II, and lists no opposed BASS-II run at these conditions. So the two
+records attributed to BASS-II (PSI-25) at 21% / 10 cm/s do not have a confirmed BASS-II run identity,
+and BASS2-CF-opp's opposed flow direction is not tied to a documented BASS-II run. The collector
+correctly removed the 2.55 / 1.21 mm/s spread rates (those are from the 2014 BASS presentation, p.20,
+and are BASS, not BASS-II). These two runs must stay unverified and should not be cited as BASS-II
+evidence until the run identity is resolved.
+
+## Scientific validation report
+
+1. **Records audited:** 13 of 13.
+2. **Verified (human sign-off, rechecked, no regression):** 3 — SAF-V-2, SAF-VI-3, SAF-VI-4.
+3. **Flagged / imported:** 10.
+4. **Corrected since the first check (by the collector, audit-confirmed):** Saffire I-III pressure and
+   partial pressure → not documented / UNKNOWN; SAF-IV-1 and SAF-VI-2 thickness → not documented;
+   BASS-II thickness → 0.32 mm (sourced); BASS spread rates removed.
+5. **Unresolved source problems:** BASS-II run identity (21% / 10 cm/s traces to a BASS appendix row;
+   opposed direction unsourced); I-2 / III-2 "~10 cm" stored as exact 100 mm; Saffire I-III documented
+   spread rates not yet ingested.
+6. **Referee evaluation:** verdicts 10/10, named confounders 5/5 on the hand-built pairs (self-authored).
+7. **Planner evaluation:** control checks, duplicate detection and scoring tested; proposals carry
+   provenance badges and never claim a scientist approved them.
+8. **Ranking benchmark:** FlameAtlas Top-1 8/18, Top-3 16/18; keyword 8/18, 12/18 (18 labelled of 24).
+9. **Citation validation:** run identifiers (e.g. "SAF-IV-1", "Saffire VI-2") are no longer misread as
+   numbers; real measurements are still checked. Grounded-answer metrics vs plain RAG not recorded (no
+   AI calls made).
+10. **Adversarial tests:** 5/5 traps caught, plus regression tests for run-name citations, computed-value
+    classification, and false-duplicate detection.
+11. **Known limitations:** no AI-answer recording; the eval question set is a development set, tuned
+    against (not an independent holdout); several Referee pairs and all traps are author-written.
+12. **Conclusions that must not be drawn:** no material is called safe or unsafe; "not in our curated
+    data" is never "NASA never studied it"; the two BASS-II records are not confirmed BASS-II evidence;
+    verified status covers 3 runs only and is not a claim about the other 10.

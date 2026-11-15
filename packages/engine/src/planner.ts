@@ -76,11 +76,11 @@ export function projectRun(c: ExperimentCandidate, anchor: Run): Run {
     run[field] = { value: to, unit: anchor[field].unit, type: "ASSUMED" };
   }
   const o2 = run.o2MolPct.value, p = run.pressureKPa.value;
-  run.o2PartialKPa = {
-    value: o2 !== null && p !== null ? o2PartialKPa(o2, p) : null,
-    unit: "kPa", type: "COMPUTED", formula: O2_PARTIAL_FORMULA,
-    ...(o2 === null || p === null ? { missingReason: "not_documented" as const } : {}),
-  };
+  // COMPUTED only when both inputs are supported; otherwise UNKNOWN, with no formula and no
+  // computed-value claim. A projected run never presents a partial pressure it cannot compute.
+  run.o2PartialKPa = o2 !== null && p !== null
+    ? { value: o2PartialKPa(o2, p), unit: "kPa", type: "COMPUTED", formula: O2_PARTIAL_FORMULA }
+    : { value: null, unit: "kPa", type: "UNKNOWN", missingReason: "not_documented" };
   return run;
 }
 
@@ -103,18 +103,33 @@ export interface ControlCheck {
   feasibility: string;
 }
 
-/** Same material and the same gravity, O2, pressure and flow (within tolerance) as an existing run. */
-function alreadyTested(projected: Run, runs: Run[]): Run | undefined {
+/**
+ * Does an existing run already cover the projected conditions? Returns:
+ *  - "duplicate" with the run, when the same material and every scenario field is documented and equal
+ *    on both (a confirmed overlap);
+ *  - "insufficient_metadata", when a run matches every documented field but a needed field is undocumented
+ *    on one side (cannot confirm the overlap, and absence of data is not treated as a match);
+ *  - "gap", when no run comes close.
+ * Missing conditions never count as a match: absence of data is never evidence an experiment was run.
+ */
+type DuplicateCheck = { kind: "duplicate"; run: Run } | { kind: "insufficient_metadata"; run: Run } | { kind: "gap" };
+function alreadyTested(projected: Run, runs: Run[]): DuplicateCheck {
   const mat = projected.material.value;
-  return runs.find((r) => {
-    if (r.id === projected.id) return false;
-    if (mat !== null && !materialMatches(r, mat)) return false;
-    return SCENARIO_FIELDS.every((f) => {
+  let partial: Run | undefined;
+  for (const r of runs) {
+    if (r.id === projected.id) continue;
+    if (mat !== null && !materialMatches(r, mat)) continue;
+    let allDocumentedEqual = true, anyUnknown = false;
+    for (const f of SCENARIO_FIELDS) {
       const a = projected[f].value, b = r[f].value;
-      if (a === null) return true; // nothing to match on
-      return b !== null && sameValue(f, a, b);
-    });
-  });
+      if (a === null || b === null) { anyUnknown = true; continue; } // undocumented on a side: cannot confirm
+      if (!sameValue(f, a, b)) { allDocumentedEqual = false; break; }
+    }
+    if (!allDocumentedEqual) continue;
+    if (!anyUnknown) return { kind: "duplicate", run: r };
+    partial = partial ?? r;
+  }
+  return partial ? { kind: "insufficient_metadata", run: partial } : { kind: "gap" };
 }
 
 export function controlCheck(c: ExperimentCandidate, runs: Run[]): ControlCheck {
@@ -159,8 +174,12 @@ export function controlCheck(c: ExperimentCandidate, runs: Run[]): ControlCheck 
 
   const dup = alreadyTested(projectRun(c, anchor), runs);
   checks.push({
-    id: "FILLS_GAP", required: true, pass: !dup,
-    detail: dup ? `Already covered by ${dup.id} in our curated data.` : "No curated run of this material at these conditions.",
+    id: "FILLS_GAP", required: dup.kind !== "insufficient_metadata",
+    pass: dup.kind === "gap",
+    detail: dup.kind === "duplicate" ? `Already covered by ${dup.run.id} in our curated data.`
+      : dup.kind === "insufficient_metadata"
+        ? `Possible overlap with ${dup.run.id}, but a needed condition is undocumented on one side, so neither a confirmed duplicate nor a confirmed gap.`
+        : "No curated run of this material at these conditions.",
   });
 
   return {
@@ -330,7 +349,7 @@ export function planExperiments(
     const robust = robustShare >= ROBUST_SHARE;
     const badges = [
       p.candidate.origin === "ai" ? "AI-proposed" : "Rule-generated",
-      "Rules-verified",
+      "Control checks passed (feasibility and safety not assessed)",
       ...(robust ? ["Robust"] : []),
       ...(anchorVerified(p) ? [] : ["Anchor not yet cross-checked"]),
       ...(p.check.factorial ? ["Factorial: not a one-variable comparison"] : []),

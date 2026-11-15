@@ -37,7 +37,8 @@ describe("Missing experiment page", () => {
     expect(text).toContain("Proposal 1");
     expect(text).toContain("does changing only gravity change how");
     expect(text).toContain("0.165 g");
-    expect(text).toContain("Rules-verified");
+    expect(text).toContain("Control checks passed (feasibility and safety not assessed)");
+    expect(text).not.toContain("Rules-verified");
     expect(text).toContain("Illustrative research proposal, not an approved NASA protocol.");
     expect(text).toContain("Lines up with FM2's design");
     expect(text).not.toMatch(/predict/i);
