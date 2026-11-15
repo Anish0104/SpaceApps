@@ -5,6 +5,7 @@ import react from "@vitejs/plugin-react";
 // released dataset. Service worker and manifest live in public/ and are copied verbatim.
 export default defineConfig({
   plugins: [react()],
-  server: { port: 5273, fs: { allow: ["../.."] } }, // import /data/*.json from the repo root
+  // allowedHosts lets a tunnel (e.g. *.trycloudflare.com) reach the dev server for phone testing.
+  server: { port: 5273, fs: { allow: ["../.."] }, allowedHosts: [".trycloudflare.com"] }, // import /data/*.json from the repo root
   build: { outDir: "dist", target: "es2022" },
 });

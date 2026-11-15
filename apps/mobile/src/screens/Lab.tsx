@@ -1,41 +1,39 @@
 import { useMemo, useState } from "react";
-import { engineerReadout, kPaToPsi, o2PartialKPa, gravityRegime } from "@flameatlas/engine";
+import { engineerReadout, kPaToPsi, o2PartialKPa } from "@flameatlas/engine";
 import { useStore } from "../store";
 import { dataset, invById, field, sourceRef, type Field } from "../data";
-import { FlameView } from "../components/FlameView";
 
 const LIGHT: Record<string, "green" | "amber" | "red"> = { green: "green", yellow: "amber", red: "red" };
 const fmt = (n: number, d = 1) => Number(n.toFixed(d)).toString();
-const EV_CLASS: Record<string, string> = { MEASURED: "measured", COMPUTED: "computed", ASSUMED: "assumed", INFERRED: "inferred", UNKNOWN: "unknown" };
+
+const Chevron = ({ dir }: { dir: "l" | "r" }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    <path d={dir === "l" ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"} />
+  </svg>
+);
 
 function Condition({ name, f }: { name: string; f: Field }) {
   const documented = f.value !== null;
   return (
-    <div className="condcard">
-      <div className="top">
-        <div className="k label">{name}</div>
-        <span className={`ev ${EV_CLASS[f.type] ?? "unknown"}`}>{documented ? f.type : "Undocumented"}</span>
+    <div className="item">
+      <div className="item-top">
+        <span className="item-name" style={{ fontWeight: 500 }}>{name}</span>
+        <span className="num" style={{ fontSize: 17, fontWeight: 600 }}>
+          {documented ? <>{f.value}<span className="u" style={{ color: "var(--muted)", fontWeight: 400 }}>{f.unit ? ` ${f.unit}` : ""}</span></> : <span className="faint" style={{ fontWeight: 400 }}>Not documented</span>}
+        </span>
       </div>
-      <div style={{ marginTop: 6 }}>
-        {documented
-          ? <span className="val mono">{f.value}{f.unit ? <span className="u"> {f.unit}</span> : null}</span>
-          : <span className="val undoc mono">not documented</span>}
+      <div className="row between" style={{ marginTop: 8 }}>
+        <span className={`tag${f.type === "MEASURED" ? " accent" : ""}`}>{documented ? f.type.toLowerCase() : "undocumented"}</span>
+        {documented && f.src && <a className="src" href={f.src.url} target="_blank" rel="noreferrer">{sourceRef(f.src)}</a>}
       </div>
-      {documented && f.src && (
-        <a className="src" href={f.src.url} target="_blank" rel="noreferrer" style={{ marginTop: 8, display: "inline-block" }}>
-          {sourceRef(f.src)} ↗
-        </a>
-      )}
-      {!documented && f.missing && <p className="small faint" style={{ margin: "6px 0 0" }}>{f.missing.replace(/_/g, " ")}</p>}
+      {!documented && f.missing && <p className="caption" style={{ margin: "7px 0 0" }}>{f.missing.replace(/_/g, " ")}</p>}
     </div>
   );
 }
 
-/**
- * Mission Lab: the real NASA experiment record is the centerpiece. Step through curated runs; every
- * value shown is the record's own measurement (or marked undocumented), with its evidence type and a
- * link to the NASA source. The flame is a labelled qualitative illustration, never a measurement.
- */
+/** Mission Lab: the real NASA experiment record is the centrepiece. Step through curated runs; every
+ *  value is the record's own measurement (or marked undocumented), with its evidence type and a link
+ *  to the NASA source. */
 export function Lab() {
   const { scenario: sc } = useStore();
   const runs = dataset.runs;
@@ -48,73 +46,59 @@ export function Lab() {
   const po2 = o2PartialKPa(sc.o2MolPct, sc.pressureKPa);
 
   return (
-    <>
-      <div className="eyebrow">Mission Lab · {sc.name.split(" (")[0]}</div>
-      <h1 className="h-xl">Inside the test chamber</h1>
+    <div className="page">
+      <h1 className="title">Mission Lab</h1>
+      <p className="subtitle">{sc.name.split(" (")[0]} · real NASA test records</p>
 
       <div className="card">
         <div className="stepper">
-          <button className="step-btn" aria-label="Previous run" onClick={() => setI((x) => (x - 1 + runs.length) % runs.length)}>‹</button>
+          <button className="step" aria-label="Previous run" onClick={() => setI((x) => (x - 1 + runs.length) % runs.length)}><Chevron dir="l" /></button>
           <div className="rec">
-            <div className="id mono">{run.id} · {i + 1}/{runs.length}</div>
             <div className="mat">{run.material.value ?? "Material not documented"}</div>
-            <div className="small faint">{inv?.acronym} — {inv?.name}</div>
+            <div className="meta">{inv?.acronym} · run {i + 1} of {runs.length}</div>
           </div>
-          <button className="step-btn" aria-label="Next run" onClick={() => setI((x) => (x + 1) % runs.length)}>›</button>
+          <button className="step" aria-label="Next run" onClick={() => setI((x) => (x + 1) % runs.length)}><Chevron dir="r" /></button>
         </div>
-        <div className="row between" style={{ marginTop: 12 }}>
-          <span className={`ev ${verified ? "verified" : "imported"}`}>{verified ? "Verified" : "Imported · awaiting cross-check"}</span>
-          {inv && <a className="src" href={inv.url} target="_blank" rel="noreferrer">PSI record ↗</a>}
+        <div className="row between" style={{ marginTop: 14 }}>
+          <span className={`tag${verified ? " green" : ""}`}>{verified ? "Verified" : "Awaiting cross-check"}</span>
+          {inv && <a className="src" href={inv.url} target="_blank" rel="noreferrer">PSI record</a>}
         </div>
       </div>
 
-      <h2 className="sec">Documented conditions</h2>
-      <div className="cond">
+      <div className="sec">Documented conditions</div>
+      <div className="group">
         <Condition name="Oxygen fraction" f={field(run.o2MolPct)} />
         <Condition name="Total pressure" f={field(run.pressureKPa)} />
         <Condition name="Gravity" f={field(run.gravityG)} />
         <Condition name="O₂ partial pressure" f={field(run.o2PartialKPa)} />
       </div>
 
-      <h2 className="sec">Gravity illustration</h2>
+      <div className="sec">Evidence vs {sc.name.split(" (")[0]}</div>
       <div className="card">
-        <div style={{ position: "relative" }}>
-          <FlameView gravityG={sc.gravityG} o2MolPct={sc.o2MolPct} height={190} />
-          <span className="ev assumed" style={{ position: "absolute", top: 8, left: 8 }}>Illustration — not measured</span>
-          <span className="mono small faint" style={{ position: "absolute", bottom: 8, right: 10 }}>{gravityRegime(sc.gravityG)} · {fmt(sc.gravityG, 3)} g</span>
-        </div>
-        <p className="small faint" style={{ marginTop: 8 }}>Qualitative buoyancy shape only — not a measurement.</p>
-      </div>
-
-      <h2 className="sec">Evidence vs this scenario</h2>
-      <div className="card">
-        <div className="row between" style={{ marginBottom: 10 }}>
-          <span className="label">{sc.name.split(" (")[0]}</span>
-          <span className="mono small faint">{fmt(sc.o2MolPct)} mol% · {fmt(sc.pressureKPa)} kPa ({fmt(kPaToPsi(sc.pressureKPa))} psi) · pO₂ {fmt(po2)} kPa</span>
-        </div>
+        <p className="caption num" style={{ margin: "0 0 4px" }}>{fmt(sc.o2MolPct)} mol% · {fmt(sc.pressureKPa)} kPa ({fmt(kPaToPsi(sc.pressureKPa))} psi) · pO₂ {fmt(po2)} kPa</p>
         {readout.rows.map((r) => (
-          <div className="item" key={r.condition}>
-            <span className={`dot ${r.light === "red" ? "hatch" : LIGHT[r.light]}`} />
+          <div className="evrow" key={r.condition}>
+            <span className={`dot ${r.light === "red" ? "off" : LIGHT[r.light]}`} />
             <div>
-              <div style={{ fontWeight: 700, fontSize: 14 }}>{r.name}</div>
-              <p className="small" style={{ margin: 0 }}>{r.note}</p>
+              <div className="evrow-t">{r.name}</div>
+              <p className="evrow-s">{r.note}</p>
             </div>
           </div>
         ))}
-        <p className="small faint" style={{ marginTop: 10 }}>{readout.limit} {readout.scope}</p>
+        <p className="caption" style={{ marginTop: 12 }}>{readout.limit} {readout.scope}</p>
       </div>
 
       {readout.nearestTested.disagree && (
         <div className="note" style={{ marginTop: 12 }}>
-          Nearest tested condition depends on how you match oxygen: {readout.nearestTested.byMolPct?.runId} by mole
-          fraction vs {readout.nearestTested.byPartialPressure?.runId} by partial pressure. A higher O₂ percentage does not mean more oxygen.
+          Nearest tested condition depends on how you match oxygen: {readout.nearestTested.byMolPct?.runId} by mole fraction
+          vs {readout.nearestTested.byPartialPressure?.runId} by partial pressure. A higher O₂ percentage does not mean more oxygen.
         </div>
       )}
 
-      <p className="small faint" style={{ marginTop: 12, textAlign: "center" }}>
-        Green = verified run within tolerance · Amber = analog or not yet cross-checked · Hatched = not in curated data.
-        Lights rate evidence coverage, never safety.
+      <p className="caption" style={{ marginTop: 14, textAlign: "center" }}>
+        Green marks a verified run within tolerance; amber an analog or not-yet-checked run; grey means not in the curated data.
+        These rate evidence coverage, never safety.
       </p>
-    </>
+    </div>
   );
 }

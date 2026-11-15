@@ -21,6 +21,11 @@ export const SCENES: Record<string, Scene> = {
 
 const BY_ENV: Record<string, string> = { earth: "earth", spacecraft: "iss", station: "iss", moon: "moon-challenge", mars: "mars", rover: "rover", suit: "suit" };
 export const sceneFor = (sc: { id: string; environment: string }): Scene => SCENES[sc.id] ?? SCENES[BY_ENV[sc.environment]] ?? SCENES["moon-challenge"];
+
+/** A CSS-drawn planetary orb (no photo) tinted by the environment's accent — a shaded sphere. */
+export const orbStyle = (accent: string): { background: string } => ({
+  background: `radial-gradient(circle at 34% 29%, rgba(255,255,255,0.9), ${accent} 44%, rgba(0,0,0,0.6) 100%)`,
+});
 export const sceneSrcSet = (s: Scene) => `/scenes/${s.id}-960.webp 960w, /scenes/${s.id}-1600.webp 1600w`;
 export const sceneSrc = (s: Scene) => `/scenes/${s.id}-1600.webp`;
 export const photoUrl = (nasaId: string) => `https://images.nasa.gov/details/${nasaId}`;

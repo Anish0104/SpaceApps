@@ -18,6 +18,7 @@
     "eval:score": "pnpm --filter @flameatlas/worker eval:score",
     "summaries": "pnpm --filter @flameatlas/worker summaries",
     "deploy:worker": "pnpm --filter @flameatlas/worker deploy",
-    "deploy:web": "pnpm --filter @flameatlas/web build && pnpm --filter @flameatlas/worker exec wrangler pages deploy ../web/dist --project-name flameatlas --branch main"
+    "deploy:web": "pnpm --filter @flameatlas/web build && pnpm --filter @flameatlas/worker exec wrangler pages deploy ../web/dist --project-name flameatlas --branch main",
+    "deploy:app": "pnpm --filter @flameatlas/mobile build && pnpm --filter @flameatlas/worker exec wrangler pages deploy ../mobile/dist --project-name oxyflame --branch main"
   }
 }

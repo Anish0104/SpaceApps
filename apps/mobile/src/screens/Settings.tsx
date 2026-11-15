@@ -1,7 +1,11 @@
 import { useStore } from "../store";
 import { scenarios, coverage, invById } from "../data";
-import { sceneFor } from "../scenes";
+import { sceneFor, orbStyle } from "../scenes";
 import { useTheme } from "../theme";
+
+const Check = () => (
+  <svg className="check" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 5 5L20 7" /></svg>
+);
 
 /** Settings: appearance, crew environment, saved records, and the honest scope of the app. */
 export function Settings({ onOpenAtlas }: { onOpenAtlas: () => void }) {
@@ -12,10 +16,13 @@ export function Settings({ onOpenAtlas }: { onOpenAtlas: () => void }) {
     <div className="page">
       <h1 className="title">Settings</h1>
 
-      <h2 className="sec">Appearance</h2>
+      <div className="sec">Appearance</div>
       <div className="card">
-        <div className="srow">
-          <div><div className="srow-t">Theme</div><div className="srow-s">{theme === "dark" ? "Dark" : "Light"} mode</div></div>
+        <div className="row between">
+          <div>
+            <div style={{ fontSize: 16, fontWeight: 500 }}>Theme</div>
+            <div className="cell-s">{theme === "dark" ? "Dark" : "Light"}</div>
+          </div>
           <div className="seg" role="group" aria-label="Theme">
             <button className={theme === "light" ? "on" : ""} aria-pressed={theme === "light"} onClick={() => theme === "dark" && toggle()}>Light</button>
             <button className={theme === "dark" ? "on" : ""} aria-pressed={theme === "dark"} onClick={() => theme === "light" && toggle()}>Dark</button>
@@ -23,40 +30,47 @@ export function Settings({ onOpenAtlas }: { onOpenAtlas: () => void }) {
         </div>
       </div>
 
-      <h2 className="sec">Crew environment</h2>
-      <div className="card" style={{ padding: 8 }}>
-        {scenarios.map((s) => (
-          <button key={s.id} className={`listrow${sc.id === s.id ? " on" : ""}`} aria-pressed={sc.id === s.id} onClick={() => setScenarioId(s.id)}>
-            <span className="dotc" style={{ background: sceneFor(s).heroAccent }} />
-            <span className="listrow-t">{sceneFor(s).pickerLabel ?? s.name}</span>
-            {sc.id === s.id && <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="m5 12 5 5L20 7" /></svg>}
-          </button>
-        ))}
+      <div className="sec">Crew environment</div>
+      <div className="group">
+        {scenarios.map((s) => {
+          const on = sc.id === s.id;
+          return (
+            <button key={s.id} className={`cell${on ? " sel" : ""}`} aria-pressed={on} onClick={() => setScenarioId(s.id)}>
+              <span className="orb" style={orbStyle(sceneFor(s).heroAccent)} />
+              <span className="cell-t">{sceneFor(s).pickerLabel ?? s.name}</span>
+              {on && <Check />}
+            </button>
+          );
+        })}
       </div>
 
-      <h2 className="sec">Saved records · {saved.length}</h2>
-      <div className="card" style={{ padding: saved.length ? 8 : 16 }}>
-        {saved.length === 0
-          ? <p className="srow-s" style={{ margin: 0 }}>Save investigations from the <button className="inline-link" onClick={onOpenAtlas}>Atlas</button> to keep them here, offline.</p>
-          : saved.map((id) => {
-              const inv = invById(id); if (!inv) return null;
-              return (
-                <div key={id} className="listrow">
-                  <span className="listrow-t"><b>{inv.acronym}</b> <span className="mono faint" style={{ fontSize: 12 }}>{id}</span></span>
-                  <button className="rm" onClick={() => toggleSave(id)} aria-label={`Remove ${inv.acronym}`}>Remove</button>
-                </div>
-              );
-            })}
+      <div className="sec">Saved records · {saved.length}</div>
+      <div className="group">
+        {saved.length === 0 ? (
+          <p className="caption" style={{ padding: 16, margin: 0 }}>
+            Save investigations from the <button className="src" style={{ background: "none", border: 0, padding: 0 }} onClick={onOpenAtlas}>Atlas</button> to keep them here, offline.
+          </p>
+        ) : (
+          saved.map((id) => {
+            const inv = invById(id); if (!inv) return null;
+            return (
+              <div key={id} className="cell">
+                <span className="cell-t"><b style={{ fontWeight: 600 }}>{inv.acronym}</b> <span className="item-id num">{id}</span></span>
+                <button className="toggle" onClick={() => toggleSave(id)} aria-label={`Remove ${inv.acronym}`}>Remove</button>
+              </div>
+            );
+          })
+        )}
       </div>
 
-      <h2 className="sec">About</h2>
+      <div className="sec">About</div>
       <div className="card">
-        <p className="srow-s" style={{ marginTop: 0 }}>
-          FlameAtlas reads NASA's microgravity combustion archive for a crew environment. Evidence strength and
-          relevance describe the archive — never whether a material is safe. Data version {coverage.version};
-          {" "}{coverage.investigations} investigations, {coverage.verified} of {coverage.runs} runs verified.
+        <p className="caption" style={{ marginTop: 0 }}>
+          Oxyflame reads NASA's microgravity combustion archive for a crew environment. Evidence strength and relevance
+          describe the archive — never whether a material is safe. Data version {coverage.version}; {coverage.investigations} investigations,
+          {" "}{coverage.verified} of {coverage.runs} runs verified.
         </p>
-        <p className="srow-s" style={{ marginBottom: 0 }}>Photos are public-domain NASA imagery, credited where shown. Built for NASA Space Apps 2026.</p>
+        <p className="caption" style={{ marginBottom: 0 }}>Built for NASA Space Apps 2026.</p>
       </div>
     </div>
   );
