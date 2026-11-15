@@ -7,29 +7,53 @@
  *   POST /api/dev/warm-cache   localhost only, used by `pnpm warm-cache` (spends Gemini quota)
  *   POST /api/dev/eval         localhost only, used by `pnpm eval:record` (spends Gemini quota)
  *   POST /api/dev/summaries    localhost only, used by `pnpm summaries` (spends Gemini quota)
+ *   GET  /api/dev/corpus       localhost only, used by `pnpm index:vectors` (no AI calls)
+ *   POST /api/dev/embed        localhost only, used by `pnpm index:vectors` and `pnpm eval:embed` (Workers AI calls)
+ *
+ * Everything else is the web app (apps/web/dist), served by Workers static assets: wrangler.toml routes only
+ * /api/* to this code (run_worker_first), and unknown paths get index.html (single-page application).
+ *
+ * Retrieval (src/search.ts planRetrieval): keyword by default; when keyword finds nothing, the bge-m3 /
+ * Vectorize results instead (semantic-fallback); SEARCH_MODE = "hybrid" | "hybrid-cosine" fuses both.
+ * Any AI/Vectorize failure or the 1.5 s timeout falls back to keyword, logged. The mode is reported in the
+ * X-FlameAtlas-Retrieval response header; response bodies are unchanged.
  */
 import { AskRequest, AskResponse, Dataset, Scenario, SearchRequest } from "@flameatlas/engine";
 import datasetJson from "../../../data/dataset.json";
 import scenariosJson from "../../../data/scenarios.json";
 import demoAnswersJson from "../../../data/cache/demo-answers.json";
-import { buildIndex, search } from "./search";
+import summariesJson from "../../../data/cache/summaries.json";
+import { SummaryFile } from "@flameatlas/engine";
+import { z } from "zod";
+import { buildCorpus } from "./corpus";
+import { embed, type EmbedAI, type VectorQuery } from "./semantic";
+import { buildIndex, planRetrieval, search, searchModeOf, type RetrievalPlan } from "./search";
 import { ask } from "./ask";
 import { parseModels } from "./gemini";
 import { WarmRequest, loadDemoAnswers, warmCache } from "./demoCache";
 import { EvalRequest, budgetedFetch, runEval } from "./evalRun";
 import { SummaryRequest, summarize } from "./summaries";
-
-export { templateAnswer } from "./ask";
+import { corsHeaders } from "./cors";
 
 export interface Env {
   DATA_VERSION: string;
-  /** The deployed web app's origin (the pages.dev URL), allowed by CORS next to the local Vite server. */
+  /** Local development only: extra browser origins allowed by CORS (the deployed site calls the API on its own origin). */
   ALLOWED_ORIGIN?: string;
   GEMINI_API_KEY?: string;
   GEMINI_MODELS?: string; // comma-separated, tried in order
-  AI?: unknown; // Workers AI binding (bge-small-en-v1.5), used for semantic search
+  /** Workers AI binding: @cf/baai/bge-m3 embeddings for hybrid search. */
+  AI?: EmbedAI;
+  /** Vectorize index flameatlas-records (1024 dimensions, cosine), metadata index on dataVersion. */
+  VECTORS?: VectorQuery;
+  /** "keyword" (default), "hybrid" (rrf) or "hybrid-cosine". Anything else means keyword. */
+  SEARCH_MODE?: string;
+  /** Workers static assets (the built web app). */
+  ASSETS?: Fetcher;
+  /** Answer cache and query-vector cache (keys prefixed qemb:). */
   ANSWERS?: KVNamespace;
 }
+
+const EmbedRequest = z.object({ texts: z.array(z.string().min(1)).min(1).max(50), maxCalls: z.number().int().min(0) });
 
 // The released dataset, bundled with the worker. data/fixtures.json (FAKE values) is for unit tests only.
 // TODO(data release): load dataset-vX.Y.json from R2 instead of bundling it.
@@ -38,19 +62,13 @@ const SCENARIOS = scenariosJson.map((s) => Scenario.parse(s));
 const INDEX = buildIndex(DS);
 // Committed demo answers (filled by `pnpm warm-cache`); served offline with source "cache".
 const DEMO = loadDemoAnswers(demoAnswersJson, (m) => console.warn(m));
+const SUMMARIES = SummaryFile.safeParse(summariesJson);
 
-/** The local Vite dev server; always allowed so `pnpm dev:web` works against a local or deployed worker. */
-export const DEV_ORIGIN = "http://localhost:5173";
-
-/**
- * CORS headers for this request. Only the deployed web app (ALLOWED_ORIGIN) and the local Vite
- * server get an Access-Control-Allow-Origin header; any other browser origin is refused by the
- * browser. Requests without an Origin (curl, server to server) are unaffected.
- */
-export function corsHeaders(origin: string | null, env: Pick<Env, "ALLOWED_ORIGIN">): Record<string, string> {
-  const allowed = [DEV_ORIGIN, ...(env.ALLOWED_ORIGIN ?? "").split(",").map((o) => o.trim().replace(/\/+$/, ""))].filter(Boolean);
-  const base = { "Access-Control-Allow-Methods": "GET,POST,OPTIONS", "Access-Control-Allow-Headers": "Content-Type", Vary: "Origin" };
-  return origin && allowed.includes(origin) ? { ...base, "Access-Control-Allow-Origin": origin } : base;
+/** Which scores to rank this question with (keyword, semantic-fallback, hybrid, hybrid-cosine). */
+function retrieval(env: Env, question: string): Promise<RetrievalPlan> {
+  return planRetrieval(DS, INDEX, question, searchModeOf(env.SEARCH_MODE), {
+    ai: env.AI, vectors: env.VECTORS, kv: env.ANSWERS, dataVersion: DS.version, log: (m) => console.log(m),
+  });
 }
 
 const scenarioById = (id: string) => SCENARIOS.find((s) => s.id === id);
@@ -60,8 +78,8 @@ export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const cors = corsHeaders(req.headers.get("Origin"), env);
-    const json = (body: unknown, status = 200) =>
-      new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", ...cors } });
+    const json = (body: unknown, status = 200, extra: Record<string, string> = {}) =>
+      new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", ...cors, ...extra } });
     if (req.method === "OPTIONS") return new Response(null, { headers: cors });
 
     // Every /api/dev/* route spends Gemini quota or writes local files: localhost only, 404 anywhere else.
@@ -78,8 +96,8 @@ export default {
       if (!parsed.success) return json({ error: parsed.error.flatten() }, 400);
       const sc = scenarioById(parsed.data.scenarioId);
       if (!sc) return json({ error: "unknown scenarioId" }, 404);
-      // TODO(semantic): embed query with env.AI (@cf/baai/bge-small-en-v1.5), cosine vs stored vectors, pass as 5th arg
-      return json(search(DS, INDEX, sc, parsed.data));
+      const r = await retrieval(env, parsed.data.query);
+      return json(search(DS, INDEX, sc, parsed.data, r.semantic, r.fusion), 200, { "X-FlameAtlas-Retrieval": r.label });
     }
 
     if (url.pathname === "/api/ask" && req.method === "POST") {
@@ -87,11 +105,14 @@ export default {
       if (!parsed.success) return json({ error: parsed.error.flatten() }, 400);
       const sc = scenarioById(parsed.data.scenarioId);
       if (!sc) return json({ error: "unknown scenarioId" }, 404);
+      const r = await retrieval(env, parsed.data.question);
       const answer = await ask(parsed.data.question, sc, {
         ds: DS, index: INDEX, apiKey: env.GEMINI_API_KEY, models: parseModels(env.GEMINI_MODELS), demo: DEMO, kv: env.ANSWERS,
+        semantic: r.semantic, fusion: r.fusion,
         log: (m) => console.log(m),
       });
-      return json(AskResponse.parse(answer));
+      console.log(`ask: retrieval ${r.label}${r.reason ? ` (${r.reason})` : ""}`);
+      return json(AskResponse.parse(answer), 200, { "X-FlameAtlas-Retrieval": r.label });
     }
 
     // Dev only: `pnpm warm-cache` posts the demo questions here and writes the returned answers to
@@ -129,6 +150,28 @@ export default {
       return json({ ...result, callsUsed: budget.used() });
     }
 
+    // Dev only: `pnpm index:vectors` reads the corpus to embed. No AI calls.
+    if (url.pathname === "/api/dev/corpus" && req.method === "GET") {
+      return json({ dataVersion: DS.version, docs: buildCorpus(DS, SUMMARIES.success ? SUMMARIES.data.summaries : {}) });
+    }
+
+    // Dev only: embed up to 50 texts in ONE Workers AI call. maxCalls must be >= 1, so a script has to
+    // state its budget; maxCalls 0 is a dry run that reports what would be called.
+    if (url.pathname === "/api/dev/embed" && req.method === "POST") {
+      const parsed = EmbedRequest.safeParse(await req.json());
+      if (!parsed.success) return json({ error: parsed.error.flatten() }, 400);
+      if (parsed.data.maxCalls < 1) return json({ vectors: null, callsUsed: 0, dryRun: true });
+      if (!env.AI) return json({ error: "no AI binding" }, 503);
+      try {
+        return json({ vectors: await embed(env.AI, parsed.data.texts), callsUsed: 1 });
+      } catch (e) {
+        return json({ error: String(e).slice(0, 300), callsUsed: 1 }, 502);
+      }
+    }
+
+    if (url.pathname.startsWith("/api/")) return json({ error: "not found" }, 404);
+    // Not an API route: the web app. (wrangler.toml sends only /api/* here; this covers anything else.)
+    if (env.ASSETS) return env.ASSETS.fetch(req);
     return json({ error: "not found" }, 404);
   },
 };

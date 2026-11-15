@@ -3,7 +3,8 @@ import { Dataset } from "@flameatlas/engine";
 import fixtures from "../../../data/fixtures.json";
 import { expandQuery, rrf } from "../src/search";
 import { validateSentences } from "../src/validator";
-import worker, { corsHeaders } from "../src/index";
+import worker from "../src/index";
+import { corsHeaders } from "../src/cors";
 
 const ds = Dataset.parse(fixtures);
 const env = { DATA_VERSION: "fixture-0.1" };

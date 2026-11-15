@@ -29,7 +29,9 @@ export interface TopK {
   partlyRankable: string[];
 }
 
-export function topK(questions: RankingEntry[], system: "keyword" | "flameatlas", k: number): TopK {
+export type RankedSystem = "keyword" | "flameatlas" | "hybrid" | "hybridCosine";
+
+export function topK(questions: RankingEntry[], system: RankedSystem, k: number): TopK {
   const out: TopK = { k, hits: 0, n: 0, misses: [], unlabelled: [], unrankable: [], partlyRankable: [] };
   for (const q of questions) {
     if (!q.relevantPsiIds.length) { out.unlabelled.push(q.qid); continue; }
@@ -37,7 +39,7 @@ export function topK(questions: RankingEntry[], system: "keyword" | "flameatlas"
     if (!rankable.length) { out.unrankable.push(q.qid); continue; }
     if (q.relevantNotInDataset.length) out.partlyRankable.push(q.qid);
     out.n++;
-    if (q[system].slice(0, k).some((id) => rankable.includes(id))) out.hits++;
+    if ((q[system] ?? []).slice(0, k).some((id) => rankable.includes(id))) out.hits++;
     else out.misses.push(q.qid);
   }
   return out;

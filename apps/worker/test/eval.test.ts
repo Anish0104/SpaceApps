@@ -281,6 +281,16 @@ describe("offline ranking (pnpm eval:rank)", () => {
     }
   });
 
+  it("adds a hybrid top-5 only when semantic scores are given, ranked by the same engine", () => {
+    expect(out.questions.every((q) => q.hybrid === undefined)).toBe(true);
+    const target = ds.investigations.at(-1)!.psiId;
+    const withSem = rankingFor(ds, index, questions.slice(0, 2), (q) => scenarios.find((s) => s.id === scenarioIdFor(q, null))!, () => new Map([[target, 1]]));
+    for (const q of withSem.questions) {
+      expect(q.hybrid).toHaveLength(RANK_K);
+      expect(q.hybrid!.every((id) => known.has(id))).toBe(true);
+    }
+  });
+
   it("flags labelled ids that no system can rank because they are not in the dataset", () => {
     // Since 1.1.0 the dataset indexes PSI-69, PSI-101 and PSI-47 (missing in 1.0.0-seed), so every labelled id is rankable.
     for (const q of out.questions) expect(q.relevantNotInDataset, q.qid).toEqual([]);

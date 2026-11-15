@@ -56,6 +56,7 @@ labelled investigations. Full method, history and failures: [eval/README.md](eva
 | Keyword search (BM25 + synonyms), Top-1 / Top-3 | 8/18 / 12/18 |
 | FlameAtlas before reading the role from the question | 6/18 / 10/18 |
 | FlameAtlas now | 8/18 / 16/18 (misses q14, q15) |
+| Hybrid (keyword + bge-m3 semantic, fused by `rrf`, into the engine); measured, not shipped | 4/18 / 10/18 |
 | Referee: verdict / named reason on hand-built pairs | 10/10 / 5/5 |
 | Adversarial traps caught | 5/5 |
 | Runs verified against their NASA source | 3 of 13 ([eval/verification.md](eval/verification.md)) |

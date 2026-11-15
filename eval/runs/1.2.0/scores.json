@@ -1,8 +1,10 @@
 {
   "dataVersion": "1.2.0",
+  "questionFile": "data/eval/questions.json",
   "questions": 24,
   "ranking": {
     "keyword": {
+      "label": "Keyword",
       "top1": {
         "k": 1,
         "hits": 8,
@@ -55,6 +57,7 @@
       }
     },
     "flameatlas": {
+      "label": "Engine-only",
       "top1": {
         "k": 1,
         "hits": 8,
@@ -89,6 +92,65 @@
         "misses": [
           "q14",
           "q15"
+        ],
+        "unlabelled": [
+          "q1",
+          "q5",
+          "q10",
+          "q18",
+          "q20",
+          "q23"
+        ],
+        "unrankable": [],
+        "partlyRankable": []
+      }
+    },
+    "hybrid": {
+      "label": "Hybrid (rrf)",
+      "top1": {
+        "k": 1,
+        "hits": 4,
+        "n": 18,
+        "misses": [
+          "q3",
+          "q4",
+          "q6",
+          "q7",
+          "q9",
+          "q11",
+          "q12",
+          "q14",
+          "q15",
+          "q16",
+          "q17",
+          "q21",
+          "q22",
+          "q24"
+        ],
+        "unlabelled": [
+          "q1",
+          "q5",
+          "q10",
+          "q18",
+          "q20",
+          "q23"
+        ],
+        "unrankable": [],
+        "partlyRankable": []
+      },
+      "top3": {
+        "k": 3,
+        "hits": 10,
+        "n": 18,
+        "misses": [
+          "q7",
+          "q11",
+          "q12",
+          "q14",
+          "q15",
+          "q16",
+          "q17",
+          "q21"
         ],
         "unlabelled": [
           "q1",

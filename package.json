@@ -3,7 +3,12 @@
   "private": true,
   "packageManager": "pnpm@10.28.0",
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "workerd", "sharp", "@tailwindcss/oxide"]
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "workerd",
+      "sharp",
+      "@tailwindcss/oxide"
+    ]
   },
   "scripts": {
     "test": "pnpm -r --if-present test",
@@ -11,13 +16,16 @@
     "dev:worker": "pnpm --filter @flameatlas/worker dev",
     "dev:web": "pnpm --filter @flameatlas/web dev",
     "dev:web:mock": "VITE_MOCK_ASK=1 pnpm --filter @flameatlas/web dev",
+    "build:web": "pnpm --filter @flameatlas/web build",
+    "deploy": "pnpm --filter @flameatlas/web build && pnpm --filter @flameatlas/worker exec wrangler deploy",
+    "deploy:worker": "pnpm --filter @flameatlas/worker exec wrangler deploy",
     "fixtures": "python3 ingest/make_fixtures.py",
     "warm-cache": "pnpm --filter @flameatlas/worker warm-cache",
+    "summaries": "pnpm --filter @flameatlas/worker summaries",
+    "index:vectors": "pnpm --filter @flameatlas/worker index:vectors",
+    "eval:embed": "pnpm --filter @flameatlas/worker eval:embed",
     "eval:record": "pnpm --filter @flameatlas/worker eval:record",
     "eval:rank": "pnpm --filter @flameatlas/worker eval:rank",
-    "eval:score": "pnpm --filter @flameatlas/worker eval:score",
-    "summaries": "pnpm --filter @flameatlas/worker summaries",
-    "deploy:worker": "pnpm --filter @flameatlas/worker deploy",
-    "deploy:web": "pnpm --filter @flameatlas/web build && pnpm --filter @flameatlas/worker exec wrangler pages deploy ../web/dist --project-name flameatlas --branch main"
+    "eval:score": "pnpm --filter @flameatlas/worker eval:score"
   }
 }

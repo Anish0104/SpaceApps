@@ -28,6 +28,13 @@ describe("topK", () => {
   it("a missing label never counts as a hit", () => {
     expect(topK([entry("g", ["P9", "P1"], ["P9"], ["P9"])], "flameatlas", 3).hits).toBe(0);
   });
+  it("scores the hybrid column the same way, and treats a missing hybrid list as a miss", () => {
+    const withHybrid = { ...entry("h", ["P1"], [], ["P2"]), hybrid: ["P1", "P2"] };
+    const without = entry("i", ["P1"], [], ["P1"]);
+    expect(topK([withHybrid], "hybrid", 1)).toMatchObject({ hits: 1, n: 1 });
+    expect(topK([withHybrid], "flameatlas", 1)).toMatchObject({ hits: 0, misses: ["h"] });
+    expect(topK([without], "hybrid", 3)).toMatchObject({ hits: 0, misses: ["i"] });
+  });
 });
 
 describe("scoreReferee", () => {

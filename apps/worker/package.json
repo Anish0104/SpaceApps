@@ -11,8 +11,10 @@
     "warm-cache": "node scripts/warm-cache.mjs",
     "eval:record": "node scripts/eval-record.mjs",
     "eval:rank": "vitest run --config vitest.eval.config.ts",
-    "eval:score": "vitest run --config vitest.score.config.ts",
-    "summaries": "node scripts/summaries.mjs"
+    "eval:score": "node scripts/eval-score.mjs",
+    "summaries": "node scripts/summaries.mjs",
+    "index:vectors": "node scripts/index-vectors.mjs",
+    "eval:embed": "node scripts/eval-embed.mjs"
   },
   "dependencies": {
     "@flameatlas/engine": "workspace:*",
@@ -23,6 +25,6 @@
     "@cloudflare/workers-types": "^4.20241106.0",
     "typescript": "^5.6.3",
     "vitest": "^2.1.4",
-    "wrangler": "^3.86.0"
+    "wrangler": "~4.86.0"
   }
 }

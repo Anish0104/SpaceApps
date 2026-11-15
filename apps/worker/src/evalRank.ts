@@ -1,7 +1,11 @@
 /**
  * Offline ranking comparison for the benchmark (`pnpm eval:rank`, no Gemini): for every eval question,
- * the top-5 investigations by keyword search alone (MiniSearch BM25 + synonyms) and by FlameAtlas
- * (the same keyword score fed into the rules engine with the scenario), for Top-1 / Top-3 scoring.
+ * the top-5 investigations by
+ *   - keyword:    keyword search alone (MiniSearch BM25 + synonyms)
+ *   - flameatlas: "Engine-only": the same keyword score fed into the rules engine with the scenario
+ *   - hybrid:     keyword and bge-m3 semantic scores fused by rrf, fed into the same engine (only when the
+ *                 cached corpus and question vectors exist; computed offline, no network)
+ * for Top-1 / Top-3 scoring.
  */
 import { SearchRequest, type Dataset, type Scenario } from "@flameatlas/engine";
 import type MiniSearch from "minisearch";
@@ -20,6 +24,10 @@ export interface RankingEntry {
   relevantNotInDataset: string[];
   keyword: string[];
   flameatlas: string[];
+  /** Present when cached embeddings were available for this question. */
+  hybrid?: string[];
+  /** Hybrid-cosine top-5; only computed when asked for (it is judged on held-out questions, not this set). */
+  hybridCosine?: string[];
 }
 
 /** Keyword-only order: highest normalised BM25 score first; ties broken by id so the file is stable. */
@@ -29,6 +37,8 @@ export function keywordTop(index: MiniSearch, query: string, k = RANK_K): string
 
 export function rankingFor(
   ds: Dataset, index: MiniSearch, questions: EvalQuestion[], scenarioFor: (q: EvalQuestion) => Scenario,
+  semanticFor?: (q: EvalQuestion) => Map<string, number> | undefined,
+  opts: { cosine?: boolean } = {},
 ): { dataVersion: string; k: number; questions: RankingEntry[] } {
   const known = new Set(ds.investigations.map((i) => i.psiId));
   return {
@@ -37,6 +47,8 @@ export function rankingFor(
     questions: questions.map((q) => {
       const sc = scenarioFor(q);
       const relevant = q.relevantPsiIds ?? [];
+      const req = SearchRequest.parse({ query: q.question, scenarioId: sc.id });
+      const semantic = semanticFor?.(q);
       return {
         qid: q.id,
         question: q.question,
@@ -44,7 +56,9 @@ export function rankingFor(
         relevantPsiIds: relevant,
         relevantNotInDataset: relevant.filter((id) => !known.has(id)),
         keyword: keywordTop(index, q.question),
-        flameatlas: search(ds, index, sc, SearchRequest.parse({ query: q.question, scenarioId: sc.id })).slice(0, RANK_K).map((r) => r.psiId),
+        flameatlas: search(ds, index, sc, req).slice(0, RANK_K).map((r) => r.psiId),
+        ...(semantic ? { hybrid: search(ds, index, sc, req, semantic, "rrf").slice(0, RANK_K).map((r) => r.psiId) } : {}),
+        ...(semantic && opts.cosine ? { hybridCosine: search(ds, index, sc, req, semantic, "cosine").slice(0, RANK_K).map((r) => r.psiId) } : {}),
       };
     }),
   };

@@ -5,7 +5,7 @@ Owner: Juvana. Questions: Navneet (`data/eval/questions.json`, frozen before tun
 Systems compared on the same questions:
 
 1. Keyword: MiniSearch BM25 (+ synonyms)
-2. Embeddings: bge-small-en-v1.5 cosine (not built yet)
+2. Hybrid: keyword + bge-m3 semantic scores (Workers AI, Vectorize), fused by `rrf()` and fed into the rules engine (`apps/worker/src/semantic.ts`); measured below, not shipped
 3. Plain RAG: top-k records + LLM, no rules or validator (`apps/worker/src/plainRag.ts`)
 4. FlameAtlas: search + rules engine + citation validator (`apps/worker/src/ask.ts`)
 
@@ -166,3 +166,61 @@ rule, is needed before quoting 16/18 as a result.
 
 Quote the "before the rule" row and the current row, and say the rule came after the first ranking. A higher question weight
 (0.25 to 0.40, renormalised) was also tried: 9/18 and 13/18, with a new miss on q19, so it was not adopted.
+
+### Hybrid semantic search (data 1.2.0)
+
+Added after the rows above: `@cf/baai/bge-m3` embeddings (Workers AI) of one document per investigation and
+per run (`apps/worker/src/corpus.ts`), the top 20 by cosine (Vectorize in production; computed offline here
+from `data/cache/embeddings-1.2.0.json` and `data/cache/eval-query-embeddings-1.2.0.json`), run hits
+counted for their investigation, fused with the keyword scores by the existing `rrf()` (k = 60), and fed into
+the same rules engine as the question score. Same 18 labelled questions; `pnpm eval:rank && pnpm eval:score`.
+Workers AI calls: 2 to embed the 38 corpus documents, 2 to embed the 24 questions; none at scoring time.
+
+| System | Top-1 | Top-3 | Top-1 misses | Top-3 misses |
+|---|---|---|---|---|
+| Keyword | 8/18 | 12/18 | q2, q4, q8, q14, q15, q16, q17, q19, q22, q24 | q2, q8, q14, q16, q19, q24 |
+| Engine-only (keyword into the engine; shipped) | 8/18 | 16/18 | q2, q4, q8, q14, q15, q16, q17, q19, q22, q24 | q14, q15 |
+| Hybrid (keyword + bge-m3, `rrf`, into the engine) | 4/18 | 10/18 | q3, q4, q6, q7, q9, q11, q12, q14, q15, q16, q17, q21, q22, q24 | q7, q11, q12, q14, q15, q16, q17, q21 |
+
+Referee 10/10 (named reason 5/5) and adversarial traps 5/5 are unchanged: neither uses retrieval scores.
+
+**Result: hybrid is worse, so it is not used.** `SEARCH_MODE = "keyword"` in `apps/worker/wrangler.toml`. The
+hybrid code path stays in the worker behind that switch (with its keyword fallback), so it can be re-measured.
+
+Why, from the cached vectors (a diagnosis, not a change):
+
+- The embeddings themselves retrieve well. bge-m3 alone (top-20 by cosine, no engine) gets **Top-1 10/18,
+  Top-3 14/18**, the best Top-1 of any system here; it ranks the labelled investigation first on q7, q16 and
+  q17, which Hybrid misses.
+- The loss comes from the fusion. `rrf()` turns ranks into nearly flat scores (in one list of 18, rank 1
+  normalises to 1.00 and rank 18 to 0.78), and the semantic top 20 covers a median of 20 of the 25
+  investigations. So almost every investigation gets a question score between about 0.78 and 1, and the
+  engine's scenario-match and completeness terms decide the order: SAFFIRE-IVVI, PSI-25 and PSI-20, the
+  investigations with run data, come out on top for nearly every question.
+
+Nothing was tuned to these questions. A different fusion (for example passing cosine scores, or a rank scale
+that keeps its spread, instead of `rrf`) is the obvious next step, but it would be designed after seeing these
+18 questions, so it must be checked on questions that were not used to choose it before it is quoted or
+switched on.
+
+### What ships now, and what is still to be measured
+
+- **Semantic fallback (on).** In `keyword` mode, a question with no keyword hits at all gets the Vectorize
+  results instead of an empty list (`X-FlameAtlas-Retrieval: semantic-fallback`). Every question in
+  `data/eval/questions.json` has keyword hits (a test checks this), so the benchmark above is unchanged by it.
+- **Hybrid-cosine (built, off).** `SEARCH_MODE = "hybrid-cosine"` fuses by averaging the keyword score with
+  the min-max-normalised cosine score instead of `rrf()`. It was designed after seeing the 18 questions above,
+  so its numbers on them are not quoted (`pnpm eval:score` leaves it out on the development set). It will be
+  judged on held-out questions:
+
+  ```bash
+  pnpm dev:worker                            # another terminal; holds the AI binding
+  pnpm eval:embed data/eval/heldout.json     # 1 Workers AI call per 20 new questions
+  pnpm eval:score data/eval/heldout.json     # offline; writes eval/runs/<version>/scores-heldout.json
+  ```
+
+  `pnpm eval:score [file]` scores any question file in the same format; with no argument it scores the
+  development set and also reports the recorded answers.
+
+**These numbers are for data 1.2.0. They will be re-run on 1.3.0** (`pnpm index:vectors`, `pnpm eval:embed`,
+`pnpm eval:rank`, `pnpm eval:score`; the scripts read the version from `data/dataset.json`).
