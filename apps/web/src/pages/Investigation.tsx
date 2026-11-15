@@ -30,8 +30,7 @@ function Summary({ s }: { s: SummaryEntry }) {
   const mock = s.model === "MOCK";
   return (
     <section aria-labelledby="summary-heading" className="panel p-6 sm:p-8">
-      <p className="eyebrow">Cited summary</p>
-      <h2 id="summary-heading" className="section-title mt-2">
+      <h2 id="summary-heading" className="panel-title">
         Summary
       </h2>
       <ul className="measure mt-4 space-y-3 leading-relaxed text-[var(--text)]">
@@ -128,16 +127,14 @@ export default function Investigation() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section aria-labelledby="objectives-heading" className="panel p-6 sm:p-8">
-          <p className="eyebrow">From the source</p>
-          <h2 id="objectives-heading" className="section-title mt-2">
+          <h2 id="objectives-heading" className="panel-title">
             Objectives
           </h2>
           <p className="mt-4 leading-relaxed text-[var(--text)]">{inv.objectives}</p>
         </section>
         {inv.earthBenefits ? (
           <section aria-labelledby="benefits-heading" className="panel p-6 sm:p-8">
-            <p className="eyebrow">From the source</p>
-            <h2 id="benefits-heading" className="section-title mt-2">
+            <h2 id="benefits-heading" className="panel-title">
               Earth benefits
             </h2>
             <p className="mt-4 leading-relaxed text-[var(--text)]">{inv.earthBenefits}</p>
@@ -154,8 +151,7 @@ export default function Investigation() {
       <section aria-labelledby="runs-heading" className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-2">
           <div>
-            <p className="eyebrow">Run-level data</p>
-            <h2 id="runs-heading" className="section-title mt-2">
+            <h2 id="runs-heading" className="section-title">
               Experimental runs <span className="font-mono text-lg text-[var(--text-muted)]">{runs.length}</span>
             </h2>
           </div>
@@ -247,8 +243,7 @@ export default function Investigation() {
 function Related({ ids }: { ids: string[] }) {
   return (
     <section aria-labelledby="related-heading" className="panel p-6 sm:p-8">
-      <p className="eyebrow">Connections</p>
-      <h2 id="related-heading" className="section-title mt-2">
+      <h2 id="related-heading" className="panel-title">
         Related investigations
       </h2>
       <ul className="mt-4 flex flex-wrap gap-2">

@@ -103,7 +103,7 @@ export function AnswerCard({
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-semibold tracking-tight text-2xl text-[var(--text)]">
+                <h2 className="text-xl font-semibold tracking-tight text-[var(--text)]">
                   {verdict.label}
                 </h2>
                 <span className="rounded-[4px] bg-[var(--surface-2)] px-2 py-0.5 text-xs text-[var(--text-muted)]">

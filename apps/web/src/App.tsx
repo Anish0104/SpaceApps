@@ -83,19 +83,10 @@ function PageLayout() {
 function Header() {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
   const navPanelRef = useRef<HTMLElement>(null);
-  const onHome = pathname === "/";
 
   useEffect(() => setOpen(false), [pathname]);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // Escape closes the menu; Tab stays inside it while open.
   useEffect(() => {
@@ -124,22 +115,13 @@ function Header() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const solid = scrolled || open || !onHome;
-  const heroAccent = sceneFor(useScenario().scenario).heroAccent;
 
   return (
-    <header
-      className={`sticky top-0 z-30 h-16 border-b transition-[background-color,border-color] duration-300 ${
-        solid
-          ? "border-[var(--border)] bg-[color-mix(in_srgb,var(--bg)_82%,transparent)] backdrop-blur-xl"
-          : "header-over-hero border-transparent"
-      }`}
-      style={solid ? undefined : { ["--hero-accent" as string]: heroAccent }}
-    >
-      <div className="content-container flex h-16 items-center justify-between gap-4">
+    <header className="sticky top-0 z-30 h-16 border-b border-[var(--border)] bg-[color-mix(in_srgb,var(--bg)_82%,transparent)] backdrop-blur-xl transition-colors duration-300">
+      <div className="content-container flex h-16 items-center justify-between gap-2 sm:gap-4">
         <Link to="/" className="flex shrink-0 items-center gap-2.5 rounded-[4px] text-[var(--text)]">
           <FlameMark size={16} />
-          <span className="text-[1.2rem] font-semibold tracking-tight">FlameAtlas</span>
+          <span className="text-[1.2rem] font-semibold tracking-tight max-[359px]:sr-only">FlameAtlas</span>
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-x-7 lg:flex">
@@ -150,7 +132,7 @@ function Header() {
           ))}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <div className="flex min-w-0 items-center gap-1.5 sm:gap-3">
           <ScenarioPicker />
           <ThemeSwitch />
           <button

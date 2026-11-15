@@ -72,8 +72,7 @@ export function CoveragePreview() {
     <section aria-labelledby="coverage-heading" className="relative z-10 border-y border-[var(--border)] bg-[var(--bg-elev)]">
       <div className="content-container grid gap-8 py-10 sm:py-12 lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)] lg:items-center">
         <div>
-          <p className="eyebrow">Coverage</p>
-          <h2 id="coverage-heading" className="section-title mt-2">
+          <h2 id="coverage-heading" className="section-title">
             Where the evidence ends
           </h2>
           <p className="mt-2 text-sm text-[var(--text-muted)]">

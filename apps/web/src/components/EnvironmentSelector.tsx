@@ -57,7 +57,6 @@ export function EnvironmentSelector({ className = "" }: { className?: string }) 
             onMouseEnter={() => prefetchScene(scene)}
             onFocus={() => prefetchScene(scene)}
             className="env-option snap-start lg:flex-1"
-            style={{ ["--hero-accent" as string]: scene.heroAccent }}
           >
             <span className="text-[0.9375rem] font-medium">{scene.label}</span>
             <span className="env-meta font-mono text-[11px]">

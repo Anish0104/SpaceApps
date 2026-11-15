@@ -4,17 +4,17 @@ import { srcSet, src, type Scene } from "../lib/scenes";
 /**
  * The active scene's photo, cross-fading when the scenario changes. The outgoing image stays underneath
  * until the new one has loaded and faded in, so a switch never flashes the background colour.
- *  - "hero": full-bleed with a dark scrim (home page)
+ *  - "home": the home hero; the photo fades into the page background on the left and bottom
  *  - "compact": strip behind white text (scenario strip)
  *  - "page": faint, masked into the page background (every other page)
  */
 export function SceneBackdrop({
   scene,
-  variant = "hero",
+  variant = "page",
   drift = false,
 }: {
   scene: Scene;
-  variant?: "hero" | "compact" | "page";
+  variant?: "home" | "compact" | "page";
   drift?: boolean;
 }) {
   const [layers, setLayers] = useState<Scene[]>([scene]);
@@ -25,10 +25,10 @@ export function SceneBackdrop({
 
   const drop = (id: string) => setLayers((prev) => (prev.length > 1 && prev[prev.length - 1]?.id === id ? prev.slice(-1) : prev));
 
-  const wrapper = variant === "page" ? "page-backdrop" : "absolute inset-0 overflow-hidden";
+  const wrapper = variant === "page" ? "page-backdrop" : variant === "home" ? "home-backdrop" : "absolute inset-0 overflow-hidden";
 
   return (
-    <div aria-hidden="true" className={wrapper} style={variant === "page" ? undefined : { background: scene.fallback }}>
+    <div aria-hidden="true" className={wrapper} style={variant === "compact" ? { background: scene.fallback } : undefined}>
       {layers.map((s) => (
         <div key={s.id} className="scene-layer" onAnimationEnd={(e) => e.target === e.currentTarget && drop(s.id)}>
           <img
@@ -42,7 +42,7 @@ export function SceneBackdrop({
           />
         </div>
       ))}
-      {variant === "hero" && <div className="scene-scrim-hero absolute inset-0" />}
+      {variant === "home" && <div className="scene-scrim-home" />}
       {variant === "compact" && <div className="scene-scrim-compact absolute inset-0" />}
     </div>
   );

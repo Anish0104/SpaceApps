@@ -41,14 +41,16 @@ describe("one global scenario: nav picker and hero selector stay in sync", () =>
     expect(navPicker().value).toBe(scenarios[0].id);
   });
 
-  it("changes the scene photo with the environment and credits the real NASA image", () => {
+  it("the home hero shows the selected environment's NASA scene photo and credits it", () => {
     renderAt("/");
     const hero = screen.getByRole("region", { name: /how does fire behave/i });
+    expect(within(hero).getByRole("radiogroup", { name: "Crew environment" })).toBeTruthy();
     fireEvent.change(navPicker(), { target: { value: "rover" } });
     expect(within(hero).getByRole("link", { name: /as17-147-22527/ }).getAttribute("href")).toBe("https://images.nasa.gov/details/as17-147-22527");
-    fireEvent.change(navPicker(), { target: { value: "earth" } });
+    fireEvent.click(within(heroSelector()).getByRole("radio", { name: "Earth" }));
     expect(within(hero).getByRole("link", { name: /GRC-1998-C-00486/ })).toBeTruthy();
     expect(within(hero).queryByRole("link", { name: /as17-147-22527/ })).toBeNull();
+    expect(within(hero).getByText("Earth sea level")).toBeTruthy();
   });
 
   it("the selection carries into other pages", () => {

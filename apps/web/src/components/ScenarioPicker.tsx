@@ -126,14 +126,14 @@ export function ScenarioPicker() {
           scenarios.forEach((s) => prefetchScene(sceneFor(s)));
         }}
         onKeyDown={onButtonKeyDown}
-        className="field field-sm flex items-center gap-2 rounded-full bg-[color-mix(in_srgb,var(--surface)_80%,transparent)] pl-3 pr-2.5 text-sm text-[var(--text)] backdrop-blur"
+        className="field field-sm flex items-center gap-2 rounded-full bg-[color-mix(in_srgb,var(--surface)_80%,transparent)] pl-2.5 pr-2 text-sm sm:pl-3 sm:pr-2.5 text-[var(--text)] backdrop-blur"
       >
         <span
           className="h-2 w-2 shrink-0 rounded-full"
           style={{ backgroundColor: currentScene.accent }}
           aria-hidden="true"
         />
-        <span className="truncate max-w-[7.5rem] sm:max-w-[10rem]">
+        <span className="truncate max-w-[5.75rem] sm:max-w-[10rem]">
           {currentScene.pickerLabel ?? currentScene.label}
         </span>
         <svg

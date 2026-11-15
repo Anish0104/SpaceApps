@@ -32,7 +32,6 @@ export default function Atlas() {
     <div className="space-y-8">
       {/* Title block */}
       <div>
-        <p className="eyebrow">Investigations</p>
         <h1 className="page-title">
           Research atlas
         </h1>

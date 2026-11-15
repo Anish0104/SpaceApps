@@ -31,18 +31,20 @@ export function ScenarioStrip({ scenario }: { scenario: Scenario }) {
       <SceneBackdrop scene={scene} variant="compact" />
 
       {/* Content overlay */}
-      <div className="relative z-10 flex min-h-[200px] flex-col justify-between p-6 sm:p-7">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <span
-              className="h-2.5 w-2.5 rounded-full"
-              style={{ backgroundColor: scene.heroAccent }}
-              aria-hidden="true"
-            />
-            <h2 key={scenario.id} className="route-enter text-xl text-white sm:text-2xl">
-              {scenario.name}
-            </h2>
-            <span className="rounded-[4px] border border-[rgba(255,255,255,0.3)] bg-[rgba(0,0,0,0.4)] px-2 py-0.5 text-xs text-[rgba(255,255,255,0.85)]">
+      <div className="relative z-10 flex min-h-[200px] flex-col justify-between p-5 sm:p-7">
+        <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-2">
+            <span className="flex min-w-0 items-baseline gap-2.5">
+              <span
+                className="h-2.5 w-2.5 shrink-0 -translate-y-0.5 rounded-full"
+                style={{ backgroundColor: scene.heroAccent }}
+                aria-hidden="true"
+              />
+              <h2 key={scenario.id} className="route-enter text-xl leading-tight text-white sm:text-2xl">
+                {scenario.name}
+              </h2>
+            </span>
+            <span className="rounded-[4px] border border-[rgba(255,255,255,0.3)] bg-[rgba(0,0,0,0.4)] px-2 py-0.5 text-xs whitespace-nowrap text-[rgba(255,255,255,0.85)]">
               Assumed context
             </span>
           </div>

@@ -22,7 +22,6 @@ export default function Limits() {
   return (
     <div className="space-y-14">
       <header>
-        <p className="eyebrow">Scope</p>
         <h1 className="page-title">What FlameAtlas does not claim</h1>
         <p className="page-lede">
           The boundaries of what the curated data supports. Everything shown in the app links to its NASA source; when a value is not

@@ -30,7 +30,7 @@ export function EvidenceBadge({ type }: { type: EvidenceType }) {
 const REGIME: Record<GravityRegime, { label: string; color: string }> = {
   earth: { label: "Earth", color: "var(--env-earth)" },
   mars: { label: "Mars", color: "var(--env-mars)" },
-  moon: { label: "Moon", color: "var(--env-moon)" },
+  moon: { label: "Moon", color: "var(--regolith)" },
   orbit: { label: "Orbit", color: "var(--env-orbit)" },
 };
 

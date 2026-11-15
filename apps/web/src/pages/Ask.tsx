@@ -83,7 +83,6 @@ export default function Ask() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <p className="eyebrow">Evidence Q&amp;A</p>
         <h1 className="page-title">
           Ask the archive
         </h1>

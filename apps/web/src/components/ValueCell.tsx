@@ -17,7 +17,7 @@ export function ValueCell({ v }: { v: NumValue | StrValue }) {
   const title = [kind?.ref, src?.title, src?.page && pageRef(src.page), v.formula].filter(Boolean).join(", ");
   return (
     <span className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5" title={title}>
-      <span className="num whitespace-nowrap font-medium text-[var(--text)]">
+      <span className={`num font-medium text-[var(--text)] ${typeof v.value === "number" ? "whitespace-nowrap" : "break-words"}`}>
         {String(v.value)}{v.unit ? ` ${v.unit}` : ""}
       </span>
       <EvidenceBadge type={v.type} />

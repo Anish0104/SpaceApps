@@ -96,7 +96,6 @@ export default function Referee() {
     <div className="space-y-8">
       {/* Title */}
       <div>
-        <p className="eyebrow">Fair comparison</p>
         <h1 className="page-title">
           Referee
         </h1>
@@ -220,7 +219,7 @@ export default function Referee() {
                 {verdict.icon}
               </span>
               <div>
-                <h2 className="section-title">
+                <h2 className="text-xl font-semibold tracking-tight text-[var(--text)]">
                   {verdict.title}
                 </h2>
                 <p className="measure mt-1.5 text-sm leading-relaxed text-[var(--text-muted)]">
