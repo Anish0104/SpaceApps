@@ -11,7 +11,7 @@ import {
   Dataset, Scenario, type Run, type Investigation,
   rankInvestigations, fuelApplicability, missionMatch, inferSafetyRole,
   referee, variableSummary, TOLERANCE, FLOW_REL_TOL,
-  labelCondition, labelScenario, nearestTested, findConflicts, closestOnEachSide,
+  PO2_TOLERANCE_KPA, labelCondition, labelScenario, nearestTested, findConflicts, closestOnEachSide,
   engineerReadout,
   ExperimentCandidate, generateRuleCandidates, controlCheck, scoreCandidate, planExperiments, projectRun,
   PROPOSAL_STAMP,
@@ -41,6 +41,7 @@ describe("tolerances", () => {
     expect(TOLERANCE.thicknessMm).toBe(tolerances.thicknessMm);
     expect(TOLERANCE.sizeMm).toBe(tolerances.sizeMm);
     expect(FLOW_REL_TOL).toBe(tolerances.flowRelative);
+    expect(PO2_TOLERANCE_KPA).toBe(tolerances.o2PartialKPa);
   });
 });
 
@@ -96,10 +97,17 @@ describe("safety role from the question", () => {
     expect(inferSafetyRole("Which fabric has the lowest flammability limit?")).toBe("prevention");
     expect(inferSafetyRole("Where is the biggest evidence gap for a lunar habitat?")).toBeNull();
     expect(inferSafetyRole("Does suppressing a fire change the smoke a detector sees?")).toBeNull(); // two roles
-    // flame-physics terms that only look like role words
-    expect(inferSafetyRole("What is the smoke point of gas jet diffusion flames in microgravity?")).toBeNull();
-    expect(inferSafetyRole("Do cool flames re-ignite or persist after an apparent extinction event?")).toBeNull();
+    // flame-physics terms are their own role, and are never read as detection or prevention words
+    expect(inferSafetyRole("What is the smoke point of gas jet diffusion flames in microgravity?")).toBe("physics");
+    expect(inferSafetyRole("Can an electric field change flame behavior in microgravity?")).toBe("physics");
+    expect(inferSafetyRole("Do cool flames re-ignite after they go out?")).toBe("physics");
     expect(inferSafetyRole("How easily does this fabric ignite?")).toBe("prevention");
+    // physics terms mixed with another role's words name two roles: left alone
+    expect(inferSafetyRole("Do cool flames persist after an apparent extinction event?")).toBeNull();
+    expect(inferSafetyRole("Does soot from a diffusion flame set off a smoke detector?")).toBeNull();
+    // extinction limits are suppression science
+    expect(inferSafetyRole("What oxygen levels mark the extinction limit for fuel droplet flames?")).toBe("suppression");
+    expect(inferSafetyRole("How does thickness affect flame spread and extinction for PMMA?")).toBeNull(); // prevention + suppression
   });
   it("a role match is a reason code and never turns a cannot-assess card into a score", () => {
     const inputs = ds.investigations.map((i) => ({ investigation: i, runs: ds.runs.filter((r) => r.psiId === i.psiId), questionScore: i.psiId === "PSI-47" ? 1 : 0 }));

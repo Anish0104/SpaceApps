@@ -47,6 +47,9 @@ importers:
       vite:
         specifier: ^6.0.0
         version: 6.4.6(jiti@2.7.0)(lightningcss@1.33.0)
+      vitest:
+        specifier: ^2.1.9
+        version: 2.1.9(lightningcss@1.33.0)
 
   apps/worker:
     dependencies:

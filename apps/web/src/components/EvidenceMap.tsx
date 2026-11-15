@@ -4,11 +4,12 @@ import {
 import { gravityRegime, o2PartialKPa, runPO2, type GravityRegime, type Run, type Scenario } from "@flameatlas/engine";
 
 /** Columns left to right. A gravity regime always has the same colour (see Badge.tsx). */
-const REGIMES: { id: GravityRegime; label: string; color: string }[] = [
-  { id: "orbit", label: "Orbit (~0 g)", color: "var(--ch-blue)" },
-  { id: "moon", label: "Moon (0.165 g)", color: "var(--regolith)" },
-  { id: "mars", label: "Mars (0.38 g)", color: "var(--mars)" },
-  { id: "earth", label: "Earth (1 g)", color: "var(--soot)" },
+/** `tick` is the short axis label: all four must fit side by side at phone width. */
+const REGIMES: { id: GravityRegime; label: string; tick: string; color: string }[] = [
+  { id: "orbit", label: "Orbit (~0 g)", tick: "Orbit", color: "var(--ch-blue)" },
+  { id: "moon", label: "Moon (0.165 g)", tick: "Moon", color: "var(--regolith)" },
+  { id: "mars", label: "Mars (0.38 g)", tick: "Mars", color: "var(--mars)" },
+  { id: "earth", label: "Earth (1 g)", tick: "Earth", color: "var(--soot)" },
 ];
 const column = (g: number) => REGIMES.findIndex((r) => r.id === gravityRegime(g));
 
@@ -78,16 +79,16 @@ export function EvidenceMap({ runs, scenario }: { runs: Run[]; scenario: Scenari
               </pattern>
             </defs>
             <CartesianGrid stroke="var(--rule)" vertical={false} />
-            <XAxis type="number" dataKey="x" domain={[-0.5, 3.5]} ticks={[0, 1, 2, 3]} tickFormatter={(i: number) => REGIMES[i]?.label ?? ""}
+            <XAxis type="number" dataKey="x" domain={[-0.5, 3.5]} ticks={[0, 1, 2, 3]} interval={0} tickFormatter={(i: number) => REGIMES[i]?.tick ?? ""}
               tick={{ fill: "var(--ink)", fontSize: 13 }} stroke="var(--regolith)" />
             <YAxis type="number" dataKey="y" domain={[0, yMax]} ticks={Array.from({ length: yMax / 5 + 1 }, (_, i) => i * 5)} tick={{ fill: "var(--ink)", fontSize: 13 }} stroke="var(--regolith)"
               label={{ value: "O2 partial pressure (kPa, computed)", angle: -90, position: "insideLeft", style: { textAnchor: "middle", fill: "var(--ink)", fontSize: 13 } }} />
             {empty.map((i) => (
               <ReferenceArea key={i} x1={i - 0.5} x2={i + 0.5} y1={0} y2={yMax} fill="url(#map-hatch)" stroke="none"
-                label={{ value: "No curated run", position: "insideTop", fill: "var(--ink)", fontSize: 13 }} />
+                label={{ value: "No run", position: "insideTop", fill: "var(--ink)", fontSize: 13 }} />
             ))}
             <ReferenceLine y={target} stroke="var(--ink)" strokeDasharray="5 4"
-              label={{ value: `Scenario ${fmt(target)} kPa (assumed inputs)`, position: "insideTopRight", fill: "var(--ink)", fontSize: 13 }} />
+              label={{ value: `Scenario ${fmt(target)} kPa`, position: "insideBottomRight", fill: "var(--ink)", fontSize: 13 }} />
             <ReferenceDot x={scenarioCol} y={target} r={9} fill="none" stroke="var(--ink)" strokeDasharray="3 3" strokeWidth={1.5} />
             <Tooltip content={<PointTip />} cursor={false} />
             {FAMILIES.map((f) => {
@@ -120,7 +121,8 @@ export function EvidenceMap({ runs, scenario }: { runs: Run[]; scenario: Scenari
           </li>
         </ul>
         <p>
-          Each mark is one curated run, coloured by gravity regime. Hatched columns have no curated run: no sustained, spacecraft-based
+          Each mark is one curated run, coloured by gravity regime ({REGIMES.map((r) => r.label).join(", ")}). The dashed line and ring are the
+          scenario, from assumed inputs. Hatched columns have no curated run: no sustained, spacecraft-based
           lunar-gravity flame-spread data is in PSI. Earth and orbit are reference points, not bounds for the Moon or Mars.
         </p>
         {unplaced.length > 0 && <p>Not placed (gravity or oxygen not documented): {unplaced.join(", ")}.</p>}

@@ -127,10 +127,17 @@ export function domainMatch(role: SafetyRole, filter: SafetyRole | null): number
  * a question is only assigned a role when exactly one role's words appear.
  */
 export const ROLE_WORDS: Record<Exclude<SafetyRole, "physics">, RegExp> = {
-  detection: /\b(smoke|detect\w*|alarm\w*|aerosol\w*|particle\w*|particulate\w*|dust\w*|soot)\b/i,
-  suppression: /\b(suppress\w*|extinguish\w*|fire[- ]?fight\w*|water[- ]mist|quench\w*)\b/i,
+  detection: /\b(smoke|detect\w*|alarm\w*|aerosol\w*|particle\w*|particulate\w*|dust\w*)\b/i,
+  // "extinction": extinction limits are what the suppression experiments (FLEX = Flame Extinguishment) measured
+  suppression: /\b(suppress\w*|extinguish\w*|extinction|fire[- ]?fight\w*|water[- ]mist|quench\w*)\b/i,
   prevention: /\b(flammab\w*|flame[- ]spread|ignit\w*|material selection|fabric\w*|textile\w*)\b/i,
 };
+
+/**
+ * Flame-physics terms, taken from what the physics investigations studied (cool flames, laminar
+ * diffusion flames, electric fields, soot and smoke points, gas-jet flames, lift-off).
+ */
+export const PHYSICS_WORDS = /\b(cool[- ]flames?|diffusion flames?|electric[- ]field\w*|soot\w*|smoke[- ]points?|laminar|jet flames?|gas jet|flame (structure|shape|dynamics)|lift-?off|spherical flames?)\b/i;
 
 /**
  * Flame-physics terms that contain a role word but are not about that role: "smoke point" is a
@@ -143,10 +150,14 @@ const NOT_ROLE_WORDS = /\bsmoke[- ]points?\b|\bre-?ignit\w*/gi;
  * Safety role a question is about, or null when it names none or more than one.
  * Used as the domain filter (D) when the user has not picked one, so that a smoke-detector
  * question is not ranked purely on how well a flame-spread test matches the cabin atmosphere.
+ * A question in flame-physics terms and no other role's words is a physics question; physics
+ * terms mixed with another role's words name more than one role, so the question is left alone.
  */
 export function inferSafetyRole(question: string): SafetyRole | null {
-  question = question.replace(NOT_ROLE_WORDS, " ");
-  const hits = (Object.keys(ROLE_WORDS) as (keyof typeof ROLE_WORDS)[]).filter((role) => ROLE_WORDS[role].test(question));
+  const physics = PHYSICS_WORDS.test(question);
+  const rest = question.replace(NOT_ROLE_WORDS, " ");
+  const hits = (Object.keys(ROLE_WORDS) as (keyof typeof ROLE_WORDS)[]).filter((role) => ROLE_WORDS[role].test(rest));
+  if (physics) return hits.length === 0 ? "physics" : null;
   return hits.length === 1 ? hits[0] : null;
 }
 

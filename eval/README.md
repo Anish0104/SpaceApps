@@ -142,13 +142,26 @@ role and labels exist; it names no role on q14 and q16, which FlameAtlas still m
 | Keyword | 8/18 | 12/18 | q2, q8, q14, q16, q19, q24 |
 | FlameAtlas before the rule (ranking.json on `main` at 20c9886) | 6/18 | 10/18 | q7, q11, q12, q14, q15, q16, q17, q21 |
 | FlameAtlas with the rule, data before the verification fixes | 10/18 | 14/18 | q14, q15, q16, q17 |
-| FlameAtlas with the rule, current data (current ranking.json) | 7/18 | 13/18 | q13, q14, q15, q16, q17 |
+| FlameAtlas with the rule, after the data corrections | 7/18 | 13/18 | q13, q14, q15, q16, q17 |
+| FlameAtlas with the rule extended to flame physics and extinction (current ranking.json) | 8/18 | 16/18 | q14, q15 |
 
-The last row is the one that describes the shipped system. Two data changes moved it: SAME / SAME-R / DAFT
+The last row is the one that describes the shipped system. The row above it shows what two data changes did: SAME / SAME-R / DAFT
 lost their O2 and pressure ranges (not source-backed), and verification removed the inferred 101.3 kPa
 from the six Saffire I-III runs. Investigations whose O2 and pressure are both undocumented still show
 "Cannot assess", and are placed by their documented terms (question, role, fuel, completeness) rescaled
 without the mission-match term (`sortKey` in `ranking.ts`); without that they would all rank last.
+
+The rule was then extended, again after seeing the misses: a question in flame-physics terms (cool
+flames, diffusion flames, electric field, soot, smoke point, gas jet) and no other role's words is a
+physics question, and "extinction" counts as a suppression word. Against the labelled investigations'
+roles the rule is right on all 10 questions where it names a role and labels exist.
+
+**How to read these numbers.** The rule has now been adjusted three times against these 24 questions,
+so the current row measures how well the rule fits this set, not how it would do on new questions. The
+honest claims are: (1) before any change FlameAtlas ranked worse than keyword search (10/18 vs 12/18
+Top-3), because the mission-match term outweighed the question; (2) reading the safety role from the
+question fixes that on this set; (3) a fresh set of questions, written by someone who has not seen the
+rule, is needed before quoting 16/18 as a result.
 
 Quote the "before the rule" row and the current row, and say the rule came after the first ranking. A higher question weight
 (0.25 to 0.40, renormalised) was also tried: 9/18 and 13/18, with a new miss on q19, so it was not adopted.

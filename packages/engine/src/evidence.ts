@@ -17,8 +17,8 @@ export const CONDITIONS = ["gravityG", "o2MolPct", "o2PartialKPa", "pressureKPa"
 export type Condition = (typeof CONDITIONS)[number];
 
 /**
- * Matching heuristic for O2 partial pressure (kPa). Not in data/tolerances.json yet:
- * 2 mol% O2 at sea-level pressure is about 2 kPa. Not a safety limit.
+ * Matching heuristic for O2 partial pressure (kPa), mirrored in data/tolerances.json (a test keeps
+ * the two equal): 2 mol% O2 at sea-level pressure is about 2 kPa. Not a safety limit.
  */
 export const PO2_TOLERANCE_KPA = 2;
 /** Two runs at the same documented conditions "disagree" when an outcome differs by more than this share. */
