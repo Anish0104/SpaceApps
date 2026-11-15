@@ -137,18 +137,19 @@ SIBAL = "Cotton-fiberglass fabric (SIBAL)"
 runs = [
     # Saffire I-III (NTRS 20180005168, Table 1 p.31). The cited table reports NO pressure,
     # so pressure is recorded as not documented (UNKNOWN); O2 partial pressure follows (uncomputable).
+    # Microgravity spread rates (I-1 1.8, I-2 1.3, III-1 2.3, III-2 0.98 mm/s) added from Table 1 (p.31 cont.).
     run("SAF-I-1",  "PSI-98",  SIBAL, "sheet, 40.6 cm wide", 940, 0.37, 21.7, None, 20, "concurrent",
-        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
+        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module", spread=1.8, spread_src="S-SAF-IIII"),
     run("SAF-I-2",  "PSI-98",  SIBAL, "sheet, 40.6 cm wide", 100, 0.37, 21.5, None, 20, "opposed",
-        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
+        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module", spread=1.3, spread_src="S-SAF-IIII"),
     run("SAF-II-1", "PSI-99",  "Silicone", "sheet, 5 cm wide", 290, 0.27, 22.1, None, 20, "concurrent",
         "S-SAF-IIII", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
     run("SAF-II-9", "PSI-99",  "PMMA (acrylic)", "flat slab, 5 cm wide", 290, 10.0, 22.0, None, 20, "concurrent",
         "S-SAF-IIII", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
     run("SAF-III-1","PSI-100", SIBAL, "sheet, 40.6 cm wide", 940, 0.37, 21.2, None, 25, "concurrent",
-        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
+        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module", spread=2.3, spread_src="S-SAF-IIII"),
     run("SAF-III-2","PSI-100", SIBAL, "sheet, 40.6 cm wide", 100, 0.37, 21.2, None, 25, "opposed",
-        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module"),
+        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module", spread=0.98, spread_src="S-SAF-IIII"),
 
     # Saffire IV-VI (NTRS 20240007488 matrix). Pressure + O2 MEASURED. Not a PSI investigation.
     # SAF-IV-1 thickness: 0.37 mm not run-specific in the cited 2024 paper -> not documented.
@@ -165,14 +166,17 @@ runs = [
         "S-SAF-IVVI", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
 
     # BASS-II cotton-fiberglass (NTRS 20150008962). O2 = cabin air -> INFERRED.
+    # Pressure documented as 1 atm in the 2015 paper -> MEASURED. NOTE: the 21% O2 / 10 cm/s run
+    # identity is unconfirmed (the paper appendix classes this as a BASS run, not BASS-II), so these
+    # two runs stay imported and must not be cited as verified BASS-II evidence until resolved.
     # Thickness ~0.32 mm is explicitly stated in the 2015 paper (Sec.2, p.2-3).
     # Spread rates removed: the 2.55 / 1.21 mm/s figures are from the 2014 BASS presentation
     # and are not tied to these BASS-II runs (per verification).
     run("BASS2-CF-conc", "PSI-25", SIBAL, "sheet, 2.2 cm wide", 100, 0.32, 21.0, 101.3, 10, "concurrent",
-        "S-BASS2", o2_t="INFERRED", p_t="INFERRED", duct="76 x 76 mm",
+        "S-BASS2", o2_t="INFERRED", p_t="MEASURED", duct="76 x 76 mm",
         apparatus="Microgravity Science Glovebox (BASS-II duct)"),
     run("BASS2-CF-opp",  "PSI-25", SIBAL, "sheet, 2.2 cm wide", 100, 0.32, 21.0, 101.3, 10, "opposed",
-        "S-BASS2", o2_t="INFERRED", p_t="INFERRED", duct="76 x 76 mm",
+        "S-BASS2", o2_t="INFERRED", p_t="MEASURED", duct="76 x 76 mm",
         apparatus="Microgravity Science Glovebox (BASS-II duct)"),
 ]
 

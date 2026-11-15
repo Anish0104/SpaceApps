@@ -15,8 +15,8 @@ describe("dataset.json", () => {
     expect(issues).toEqual([]);
   });
 
-  it("is release 1.2.0, real data, not the fixture set", () => {
-    expect(parsed.data?.version).toBe("1.2.0");
+  it("is release 1.3.0, real data, not the fixture set", () => {
+    expect(parsed.data?.version).toBe("1.3.0");
     expect(parsed.data?.fixture).toBe(false);
     expect(parsed.data?.runs).toHaveLength(13);
     expect(parsed.data?.investigations).toHaveLength(25);
@@ -91,7 +91,7 @@ describe("release side files", () => {
         if (none) unassessable++;
       }
     }
-    expect(unassessable).toBeGreaterThan(0); // 1.2.0 has cards without either range
+    expect(unassessable).toBeGreaterThan(0); // 1.3.0 has cards without either range
   });
 });
 

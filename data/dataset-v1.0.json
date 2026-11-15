@@ -320,7 +320,18 @@
         "cameras",
         "thermocouples"
       ],
-      "outcomes": [],
+      "outcomes": [
+        {
+          "label": "flame spread rate",
+          "value": {
+            "value": 1.8,
+            "type": "MEASURED",
+            "collectedBy": "Navneet",
+            "unit": "mm/s",
+            "sourceId": "S-SAF-IIII"
+          }
+        }
+      ],
       "status": "imported"
     },
     {
@@ -422,7 +433,18 @@
         "cameras",
         "thermocouples"
       ],
-      "outcomes": [],
+      "outcomes": [
+        {
+          "label": "flame spread rate",
+          "value": {
+            "value": 1.3,
+            "type": "MEASURED",
+            "collectedBy": "Navneet",
+            "unit": "mm/s",
+            "sourceId": "S-SAF-IIII"
+          }
+        }
+      ],
       "status": "imported"
     },
     {
@@ -728,7 +750,18 @@
         "cameras",
         "thermocouples"
       ],
-      "outcomes": [],
+      "outcomes": [
+        {
+          "label": "flame spread rate",
+          "value": {
+            "value": 2.3,
+            "type": "MEASURED",
+            "collectedBy": "Navneet",
+            "unit": "mm/s",
+            "sourceId": "S-SAF-IIII"
+          }
+        }
+      ],
       "status": "imported"
     },
     {
@@ -830,7 +863,18 @@
         "cameras",
         "thermocouples"
       ],
-      "outcomes": [],
+      "outcomes": [
+        {
+          "label": "flame spread rate",
+          "value": {
+            "value": 0.98,
+            "type": "MEASURED",
+            "collectedBy": "Navneet",
+            "unit": "mm/s",
+            "sourceId": "S-SAF-IIII"
+          }
+        }
+      ],
       "status": "imported"
     },
     {
@@ -1426,7 +1470,7 @@
       },
       "pressureKPa": {
         "value": 101.3,
-        "type": "INFERRED",
+        "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-BASS2"
@@ -1529,7 +1573,7 @@
       },
       "pressureKPa": {
         "value": 101.3,
-        "type": "INFERRED",
+        "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "kPa",
         "sourceId": "S-BASS2"

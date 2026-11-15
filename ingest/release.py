@@ -28,7 +28,7 @@ sys.path.insert(0, str(HERE))
 
 from psi_ids import INVESTIGATIONS  # {psiId: (acronym, safetyRole, fuelPhase)}
 
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 PSI_URL = "https://psi.nasa.gov/physci/repo/data/investigations/{}"
 
 # Documented operating ranges, added ONLY where the PSI investigation page (or a
