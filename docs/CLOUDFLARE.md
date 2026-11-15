@@ -1,12 +1,12 @@
-# FlameAtlas on Cloudflare
+# Oxyflame on Cloudflare
 
-All of FlameAtlas runs as one Cloudflare Worker on the **Workers Free plan**. Billing is never enabled: when
-a free allocation runs out, the product stops answering (and FlameAtlas falls back), it does not charge.
+All of Oxyflame runs as one Cloudflare Worker on the **Workers Free plan**. Billing is never enabled: when
+a free allocation runs out, the product stops answering (and Oxyflame falls back), it does not charge.
 How to deploy: [DEPLOY.md](DEPLOY.md).
 
 ## One slide
 
-| Cloudflare product | What FlameAtlas uses it for | If it is unavailable |
+| Cloudflare product | What Oxyflame uses it for | If it is unavailable |
 |---|---|---|
 | **Workers** | The whole answer pipeline: `/api/search` and `/api/ask` (keyword retrieval, the rules engine, Gemini proposal, Zod + citation validator, template fallback) | — (this is the app) |
 | **Workers static assets** | The website (`apps/web/dist`) on the same URL; deep links get `index.html` | — |
@@ -18,7 +18,7 @@ How to deploy: [DEPLOY.md](DEPLOY.md).
 ## Request flow
 
 ```
-browser ──► flameatlas.<subdomain>.workers.dev
+browser ──► oxyflame.<subdomain>.workers.dev
              ├─ /api/*  ──► Worker
              │              ├─ keyword search (MiniSearch, bundled)      ─┐
              │              ├─ [no hits] Workers AI embed ─► Vectorize ──┤─► rules engine ranking
@@ -35,7 +35,7 @@ browser ──► flameatlas.<subdomain>.workers.dev
 | `hybrid` | Keyword + semantic fused by `rrf()` | measured on data 1.2.0: Top-1 4/18, Top-3 10/18 (keyword 8/18, 12/18). Off |
 | `hybrid-cosine` | Keyword score averaged with min-max-normalised cosine | built, off; not quoted on the 18 development questions it was designed after; judged on `data/eval/heldout.json` |
 
-Every response says which path it took in the `X-FlameAtlas-Retrieval` header. Any Workers AI or Vectorize
+Every response says which path it took in the `X-Oxyflame-Retrieval` header. Any Workers AI or Vectorize
 failure, missing binding, or a semantic step slower than 1.5 s falls back to keyword results; it is logged and
 never fails the request. The `/api/ask` request and response shapes, the six-part answer, the citation
 validator and the template fallback do not depend on the search mode: search only changes which records are
@@ -45,7 +45,7 @@ retrieved.
 
 Figures are Cloudflare's published free allocations at the time of writing; check the dashboard if in doubt.
 
-| Product | Free allocation | FlameAtlas usage |
+| Product | Free allocation | Oxyflame usage |
 |---|---|---|
 | Workers | 100,000 requests/day; 10 ms CPU per request (time waiting on Gemini, Workers AI or Vectorize is not CPU) | One request per search or question; the site's pages do not call the API |
 | Static assets | Requests are free and unlimited; up to 20,000 files, 25 MiB each | 57 files, about 90 KiB gzipped |

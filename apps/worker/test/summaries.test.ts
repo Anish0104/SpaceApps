@@ -101,7 +101,7 @@ describe("POST /api/dev/summaries", () => {
   const post = (host: string, body: unknown) =>
     worker.fetch(new Request(`${host}/api/dev/summaries`, { method: "POST", body: JSON.stringify(body) }), { DATA_VERSION: "x" });
 
-  it("is 404 off localhost", async () => expect((await post("https://flameatlas-api.example.workers.dev", { psiId: "PSI-98", maxCalls: 1 })).status).toBe(404));
+  it("is 404 off localhost", async () => expect((await post("https://oxyflame.example.workers.dev", { psiId: "PSI-98", maxCalls: 1 })).status).toBe(404));
   it("rejects an unknown investigation and a bad budget", async () => {
     expect((await post("http://localhost:8787", { psiId: "PSI-999", maxCalls: 1 })).status).toBe(404);
     expect((await post("http://localhost:8787", { psiId: "PSI-98", maxCalls: 99 })).status).toBe(400);

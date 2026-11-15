@@ -1,9 +1,9 @@
-# FlameAtlas
+# Oxyflame
 
 Mission-aware fire-safety intelligence from NASA's microgravity combustion data.
 NASA Space Apps Challenge 2026: Flame in Freefall.
 
-FlameAtlas ranks NASA's 24 PSI combustion investigations for a chosen crew environment
+Oxyflame ranks NASA's 24 PSI combustion investigations for a chosen crew environment
 (spacecraft, station, Moon, Mars, rover), shows which results can fairly be compared, and
 names the experiment that would close the gap. Every number links to its NASA source.
 
@@ -54,8 +54,8 @@ labelled investigations. Full method, history and failures: [eval/README.md](eva
 | Measure | Result |
 |---|---|
 | Keyword search (BM25 + synonyms), Top-1 / Top-3 | 8/18 / 12/18 |
-| FlameAtlas before reading the role from the question | 6/18 / 10/18 |
-| FlameAtlas now | 9/18 / 15/18 (Top-3 misses q14, q15, q22) |
+| Oxyflame before reading the role from the question | 6/18 / 10/18 |
+| Oxyflame now | 9/18 / 15/18 (Top-3 misses q14, q15, q22) |
 | Hybrid (keyword + bge-m3 semantic, fused by `rrf`, into the engine); measured on data 1.2.0, not shipped; 1.3.0 re-run pending | 4/18 / 10/18 |
 | Referee: verdict / named reason on hand-built pairs | 9/9 / 5/5 |
 | Adversarial traps caught | 5/5 |
@@ -68,7 +68,7 @@ claims, abstention) are not recorded yet.
 
 ## Non-claims
 
-FlameAtlas never rates a material safe or unsafe, never assumes the Moon falls between Earth
+Oxyflame never rates a material safe or unsafe, never assumes the Moon falls between Earth
 and orbit, never transfers results across materials without evidence, and never predicts FM2 results.
 
 ## Sources

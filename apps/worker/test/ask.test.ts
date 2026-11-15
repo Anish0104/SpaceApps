@@ -428,7 +428,7 @@ describe("POST /api/dev/warm-cache route", () => {
   const body = { scenarioId: "moon-fm2", questions: [{ id: "q4", question: "Where is the biggest evidence gap?" }] };
 
   it("does not exist outside localhost", async () => {
-    expect((await post("https://flameatlas-api.example.workers.dev", body)).status).toBe(404);
+    expect((await post("https://oxyflame.example.workers.dev", body)).status).toBe(404);
   });
 
   it("reports a skipped question and returns no answers when there is no key", async () => {

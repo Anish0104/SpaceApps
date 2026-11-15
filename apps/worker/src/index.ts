@@ -1,5 +1,5 @@
 /**
- * FlameAtlas API (Cloudflare Worker)
+ * Oxyflame API (Cloudflare Worker)
  *   GET  /api/health
  *   GET  /api/data/:version
  *   POST /api/search   Contract 2
@@ -17,7 +17,7 @@
  * Retrieval (src/search.ts planRetrieval): keyword by default; when keyword finds nothing, the bge-m3 /
  * Vectorize results instead (semantic-fallback); SEARCH_MODE = "hybrid" | "hybrid-cosine" fuses both.
  * Any AI/Vectorize failure or the 1.5 s timeout falls back to keyword, logged. The mode is reported in the
- * X-FlameAtlas-Retrieval response header; response bodies are unchanged.
+ * X-Oxyflame-Retrieval response header; response bodies are unchanged.
  */
 import { AskRequest, AskResponse, Dataset, Scenario, SearchRequest } from "@flameatlas/engine";
 import datasetJson from "../../../data/dataset.json";
@@ -103,7 +103,7 @@ export default {
       const sc = scenarioById(parsed.data.scenarioId);
       if (!sc) return json({ error: "unknown scenarioId" }, 404);
       const r = await retrieval(env, parsed.data.query);
-      return json(search(DS, INDEX, sc, parsed.data, r.semantic, r.fusion), 200, { "X-FlameAtlas-Retrieval": r.label });
+      return json(search(DS, INDEX, sc, parsed.data, r.semantic, r.fusion), 200, { "X-Oxyflame-Retrieval": r.label });
     }
 
     if (url.pathname === "/api/ask" && req.method === "POST") {
@@ -118,7 +118,7 @@ export default {
         log: (m) => console.log(m),
       });
       console.log(`ask: retrieval ${r.label}${r.reason ? ` (${r.reason})` : ""}`);
-      return json(AskResponse.parse(answer), 200, { "X-FlameAtlas-Retrieval": r.label });
+      return json(AskResponse.parse(answer), 200, { "X-Oxyflame-Retrieval": r.label });
     }
 
     // Dev only: `pnpm warm-cache` posts the demo questions here and writes the returned answers to

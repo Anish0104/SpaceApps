@@ -1,7 +1,7 @@
 /**
  * pnpm eval:rank  (offline: no worker, no network, no Gemini)
  *
- * Writes eval/runs/<data-version>/ranking.json: keyword-only vs FlameAtlas top-5 for every question in
+ * Writes eval/runs/<data-version>/ranking.json: keyword-only vs Oxyflame top-5 for every question in
  * data/eval/questions.json. Run through vitest (vitest.eval.config.ts) only because vitest already
  * loads the TypeScript engine; this file is not part of `pnpm test`.
  */

@@ -15,7 +15,7 @@ const ds = Dataset.parse(real);
 const scenarios = scenariosJson.map((s) => Scenario.parse(s));
 const deps: SmsDeps = { ds, index: buildIndex(ds), scenarios };
 const TOKEN = "test_auth_token_1234567890";
-const URL = "https://flameatlas-api.example.workers.dev/api/sms";
+const URL = "https://oxyflame.example.workers.dev/api/sms";
 
 /** Build a signed Twilio-style request like Twilio would send. */
 async function signedRequest(params: Record<string, string>, token = TOKEN): Promise<Request> {

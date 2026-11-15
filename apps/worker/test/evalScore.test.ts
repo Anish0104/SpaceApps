@@ -80,7 +80,7 @@ describe("scoreAnswers", () => {
     expect(s.abstention).toEqual({ expected: 1, correct: 0, wrong: ["q1"] });
     expect(s.citationPrecision).toBeCloseTo(2 / 3, 5);
   });
-  it("FlameAtlas: counts what the validator caught, correct and excessive abstentions", () => {
+  it("Oxyflame: counts what the validator caught, correct and excessive abstentions", () => {
     const s = scoreAnswers(ds, scenarios, questions, records, "flameatlas");
     expect(s).toMatchObject({ n: 2, caughtByValidator: 1, overAbstained: ["q2"], citationPrecision: null });
     expect(s.abstention).toEqual({ expected: 1, correct: 1, wrong: [] });

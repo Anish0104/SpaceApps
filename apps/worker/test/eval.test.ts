@@ -107,7 +107,7 @@ describe("/api/dev/eval runner", () => {
     expect(plain).toMatchObject({ system: "plain_rag", recorded: true, model: "model-a", callsUsed: 1, systemPrompt: PLAIN_PROMPT, output: ANSWER });
     expect(fa.records).toBe(plain.records);
     expect(fa.recordIds.length).toBeGreaterThan(0);
-    // FlameAtlas validated its answer: the invented 99 mol% sentence was dropped and logged; plain RAG kept it.
+    // Oxyflame validated its answer: the invented 99 mol% sentence was dropped and logged; plain RAG kept it.
     expect(JSON.stringify(fa.output)).not.toContain("99 mol%");
     expect(fa.log.join("\n")).toMatch(/number 99 not in cited records/);
   });

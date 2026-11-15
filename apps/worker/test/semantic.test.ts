@@ -135,7 +135,7 @@ describe("fallback to keyword", () => {
     const env = { DATA_VERSION: ds.version, SEARCH_MODE: "hybrid", AI: fakeAI(async () => { throw new Error("AI down"); }), VECTORS: fakeVectors([]) };
     const res = await worker.fetch(new Request("http://x/api/ask", { method: "POST", body: JSON.stringify({ question: "fabric fire on the Moon", scenarioId: "moon-challenge", dataVersion: ds.version }) }), env);
     expect(res.status).toBe(200);
-    expect(res.headers.get("X-FlameAtlas-Retrieval")).toBe("keyword");
+    expect(res.headers.get("X-Oxyflame-Retrieval")).toBe("keyword");
     expect(((await res.json()) as { source: string }).source).toBe("template");
   });
 });
@@ -224,7 +224,7 @@ describe("semantic fallback (keyword finds nothing)", () => {
     const env = { DATA_VERSION: ds.version, AI: fakeAI(), VECTORS: fakeVectors([{ id: invDocId(target), score: 0.6, metadata: { dataVersion: ds.version } }]) };
     const res = await worker.fetch(new Request("http://x/api/search", { method: "POST", body: JSON.stringify({ query: noHits, scenarioId: "moon-challenge" }) }), env);
     expect(res.status).toBe(200);
-    expect(res.headers.get("X-FlameAtlas-Retrieval")).toBe("semantic-fallback");
+    expect(res.headers.get("X-Oxyflame-Retrieval")).toBe("semantic-fallback");
   });
 });
 

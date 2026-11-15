@@ -28,7 +28,7 @@ Edit [`apps/mobile/.env.production`](../apps/mobile/.env.production) and set `VI
 worker URL from `pnpm run deploy` (no trailing slash):
 
 ```
-VITE_API_BASE=https://flameatlas.<your-subdomain>.workers.dev
+VITE_API_BASE=https://oxyflame.<your-subdomain>.workers.dev
 ```
 
 This is **not a secret** — it ends up in the public JavaScript. (`http://localhost:5173` is always
@@ -48,17 +48,17 @@ root `deploy:app` script to match.
 
 The worker refuses browser calls from any origin not in `ALLOWED_ORIGIN` (that's why Ask would otherwise
 fail). The website is served by the worker itself (same origin, no CORS needed), so only the app's URL goes
-in, in
-[`apps/worker/wrangler.toml`](../apps/worker/wrangler.toml):
+in. It is already set in [`apps/worker/wrangler.toml`](../apps/worker/wrangler.toml):
 
 ```toml
 ALLOWED_ORIGIN = "https://oxyflame.pages.dev"
 ```
 
-Then redeploy the worker so it picks up the new value (vars are fixed at deploy time):
+If step 2 gave the Pages project a different URL, change it there and redeploy the worker (vars are fixed
+at deploy time):
 
 ```bash
-pnpm deploy:worker
+pnpm run deploy
 ```
 
 ## 4. Deploy the app
@@ -74,7 +74,7 @@ future update.
 ## 5. Smoke test, then open on your phone
 
 ```bash
-WORKER=https://flameatlas.<your-subdomain>.workers.dev
+WORKER=https://oxyflame.<your-subdomain>.workers.dev
 APP=https://oxyflame.pages.dev
 
 # worker healthy — expect {"ok":true,...}

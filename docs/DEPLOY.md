@@ -1,15 +1,17 @@
-# Deploying FlameAtlas (free tier only)
+# Deploying Oxyflame (free tier only)
 
-FlameAtlas is **one Cloudflare Worker** on the **Workers Free** plan. It serves the website (Workers static
+Oxyflame is **one Cloudflare Worker** on the **Workers Free** plan. It serves the website (Workers static
 assets, from `apps/web/dist`) and the API (`/api/*`) from the same URL:
 
 ```
-https://flameatlas.<your-subdomain>.workers.dev
+https://oxyflame.<your-subdomain>.workers.dev
 ```
 
 Gemini is the **AI Studio free tier**. Workers AI, Vectorize and KV are on their free allocations. Nothing here
 enables billing; don't add a payment method or paid add-ons. See [CLOUDFLARE.md](CLOUDFLARE.md) for every
 Cloudflare product used and the free-plan limits.
+
+Internal package names and the Vectorize index still use flameatlas; the product name is Oxyflame.
 
 Run every command from the repo root. Wrangler (4.86, the last release that runs on Node 20) comes from the
 worker package, so it is called as `pnpm --filter @flameatlas/worker exec wrangler ...`.
@@ -58,7 +60,7 @@ pnpm --filter @flameatlas/worker exec wrangler secret put GEMINI_API_KEY
 
 Paste the key when asked. It is stored encrypted by Cloudflare and never goes in `wrangler.toml` or git
 (`apps/worker/.dev.vars` is only for `pnpm dev:worker` and is gitignored). If Wrangler says the Worker
-`flameatlas` does not exist yet, answer **yes** to create it.
+`oxyflame` does not exist yet, answer **yes** to create it.
 
 ## 3. Build and deploy
 
@@ -79,8 +81,8 @@ How requests are routed (all in `apps/worker/wrangler.toml`):
 - Static asset requests are free and do not count against the Workers request limit.
 
 The site calls the API on its own origin (`/api/...`), so it needs no CORS setup: `VITE_API_BASE` in
-`apps/web/.env.production` stays empty. `ALLOWED_ORIGIN` is only for other browser origins: the Oxyflame
-mobile app on Pages ([DEPLOY-APP.md](DEPLOY-APP.md), step 3). `pnpm dev:web` on `http://localhost:5173` is
+`apps/web/.env.production` stays empty. `ALLOWED_ORIGIN` (`https://oxyflame.pages.dev`) is only for other
+browser origins: the Oxyflame mobile app on Pages ([DEPLOY-APP.md](DEPLOY-APP.md), step 3). `pnpm dev:web` on `http://localhost:5173` is
 always allowed.
 
 Optional, for the SMS route (`/api/sms`, no Gemini): `pnpm --filter @flameatlas/worker exec wrangler secret put
@@ -94,13 +96,13 @@ When a domain is on this Cloudflare account, uncomment the `routes` line in `app
 the hostname, and run `pnpm run deploy` again:
 
 ```toml
-routes = [{ pattern = "flameatlas.example.org", custom_domain = true }]
+routes = [{ pattern = "oxyflame.example.org", custom_domain = true }]
 ```
 
 ## 4. Smoke test
 
 ```bash
-SITE=https://flameatlas.<your-subdomain>.workers.dev
+SITE=https://oxyflame.<your-subdomain>.workers.dev
 
 # API: expect {"ok":true,"dataVersion":"1.3.0","fixture":false,"gemini":true,...}
 curl -s $SITE/api/health
@@ -116,10 +118,10 @@ curl -s -w " %{http_code}\n" $SITE/api/nope
 curl -s -o /dev/null -w "%{http_code}\n" -X POST $SITE/api/dev/warm-cache
 
 # Retrieval mode for a question (0 Gemini calls: /api/search never calls Gemini).
-# Expect "x-flameatlas-retrieval: keyword". A question with no keyword hits shows "semantic-fallback"
+# Expect "x-oxyflame-retrieval: keyword". A question with no keyword hits shows "semantic-fallback"
 # (1 Workers AI call the first time, then cached in KV for 7 days).
 curl -s -D - -o /dev/null -X POST -H "Content-Type: application/json" \
-  -d '{"query":"fabric flame spread","scenarioId":"moon-challenge"}' $SITE/api/search | grep -i x-flameatlas-retrieval
+  -d '{"query":"fabric flame spread","scenarioId":"moon-challenge"}' $SITE/api/search | grep -i x-oxyflame-retrieval
 ```
 
 Then open `$SITE` in a browser. The landing page, dashboard, Research atlas, Mission lab, Referee and the
@@ -194,5 +196,5 @@ pnpm --filter @flameatlas/worker exec wrangler deployments list
 pnpm --filter @flameatlas/worker exec wrangler rollback          # previous version (site and API together)
 ```
 
-A Worker named `flameatlas-api` from the earlier two-part setup is no longer used. If it exists on the
-account, it can be removed with `pnpm --filter @flameatlas/worker exec wrangler delete --name flameatlas-api`.
+Workers named `flameatlas-api` or `flameatlas` (earlier names of this Worker) are no longer used. If one exists
+on the account, remove it with `pnpm --filter @flameatlas/worker exec wrangler delete --name <that name>`.

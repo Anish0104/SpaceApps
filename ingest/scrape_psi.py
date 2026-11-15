@@ -40,7 +40,7 @@ from psi_ids import INVESTIGATIONS
 
 BASE = "https://psi.nasa.gov/geode-py/ws"
 RAW = Path(__file__).resolve().parent.parent / "data" / "raw" / "psi"
-HEADERS = {"User-Agent": "FlameAtlas/1.0 (NASA Space Apps; data ingest)"}
+HEADERS = {"User-Agent": "Oxyflame/1.0 (NASA Space Apps; data ingest)"}
 
 
 def fetch_search(client: httpx.Client, term: str = "combustion") -> list[dict]:
