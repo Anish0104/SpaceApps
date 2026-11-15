@@ -46,7 +46,7 @@ describe("validator", () => {
 describe("served dataset", () => {
   it("is the released dataset, not the fixtures", async () => {
     const res = await worker.fetch(new Request("http://x/api/health"), env);
-    expect(await res.json()).toMatchObject({ ok: true, dataVersion: "1.1.0", fixture: false, gemini: false });
+    expect(await res.json()).toMatchObject({ ok: true, dataVersion: "1.2.0", fixture: false, gemini: false });
   });
   it("never ranks or cites a fixture record", async () => {
     const ranked = (await (await post("/api/search", { query: "fabric flame spread", scenarioId: "moon-challenge" })).json()) as { psiId: string }[];
