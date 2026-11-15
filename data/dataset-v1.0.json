@@ -1,5 +1,5 @@
 {
-  "_note": "Layer B seed: real NASA runs, every value sourced. status=imported (awaiting cross-check). Saffire IV-VI are NASA-report (NTRS) data, not PSI. Expand with the full PSI pull via release.py.",
+  "_note": "Layer B seed: real NASA runs, every value sourced. New runs start status=imported; runs already marked verified in the existing file keep that status (see preserve_verified). Saffire IV-VI are NASA-report (NTRS) data, not PSI. Expand with the full PSI pull via release.py.",
   "version": "1.0.0-seed",
   "generatedAt": "2026-11-14",
   "fixture": false,
@@ -259,19 +259,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 21.98,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 20,
@@ -362,19 +361,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 21.78,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 20,
@@ -465,19 +463,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 22.39,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 20,
@@ -568,19 +565,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 22.29,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 20,
@@ -671,19 +667,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 21.48,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 25,
@@ -774,19 +769,18 @@
         "sourceId": "S-SAF-IIII"
       },
       "pressureKPa": {
-        "value": 101.3,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2PartialKPa": {
-        "value": 21.48,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "kPa",
-        "sourceId": "S-SAF-IIII",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "flowCmS": {
         "value": 25,
@@ -863,11 +857,11 @@
         "sourceId": "S-SAF-IVVI"
       },
       "thicknessMm": {
-        "value": 0.37,
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "mm",
-        "sourceId": "S-SAF-IVVI"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2MolPct": {
         "value": 22.0,
@@ -949,42 +943,48 @@
         "value": "Cotton jersey fabric",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "cloth",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "sizeMm": {
         "value": 500,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "mm",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "thicknessMm": {
         "value": null,
         "unit": "mm",
         "type": "UNKNOWN",
         "missingReason": "not_documented",
-        "collectedBy": "Navneet"
+        "collectedBy": "Navneet",
+        "verifiedBy": "Juvana"
       },
       "o2MolPct": {
         "value": 26.2,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "mol%",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "pressureKPa": {
         "value": 70.7,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "kPa",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "o2PartialKPa": {
         "value": 18.52,
@@ -999,51 +999,58 @@
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "cm/s",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "g",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "ductSize": {
         "value": "Saffire flow duct",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "sensors": [
         "cameras",
         "thermocouples"
       ],
       "outcomes": [],
-      "status": "imported"
+      "status": "verified"
     },
     {
       "id": "SAF-VI-2",
@@ -1069,11 +1076,11 @@
         "sourceId": "S-SAF-IVVI"
       },
       "thicknessMm": {
-        "value": 0.37,
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
+        "value": null,
         "unit": "mm",
-        "sourceId": "S-SAF-IVVI"
+        "type": "UNKNOWN",
+        "missingReason": "not_documented",
+        "collectedBy": "Navneet"
       },
       "o2MolPct": {
         "value": 31.0,
@@ -1155,42 +1162,48 @@
         "value": "PMMA (acrylic), two-sided",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "slab",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "sizeMm": {
         "value": 180,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "mm",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "thicknessMm": {
         "value": 10.0,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "mm",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "o2MolPct": {
         "value": 30.3,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "mol%",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "pressureKPa": {
         "value": 54.6,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "kPa",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "o2PartialKPa": {
         "value": 16.54,
@@ -1205,51 +1218,58 @@
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "cm/s",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "g",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "ductSize": {
         "value": "Saffire flow duct",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "sensors": [
         "cameras",
         "thermocouples"
       ],
       "outcomes": [],
-      "status": "imported"
+      "status": "verified"
     },
     {
       "id": "SAF-VI-4",
@@ -1258,42 +1278,48 @@
         "value": "PMMA (acrylic), one-sided",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "fuelPhase": "solid",
       "geometry": {
         "value": "slab",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "sizeMm": {
         "value": 180,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "mm",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "thicknessMm": {
         "value": 5.0,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "mm",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "o2MolPct": {
         "value": 28.8,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "mol%",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "pressureKPa": {
         "value": 55.2,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "kPa",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "o2PartialKPa": {
         "value": 15.9,
@@ -1308,51 +1334,58 @@
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "cm/s",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "flowDirection": {
         "value": "concurrent",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "gravityG": {
         "value": 0.0,
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "g",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "ductSize": {
         "value": "Saffire flow duct",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "diluent": {
         "value": "nitrogen",
         "type": "INFERRED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "apparatus": {
         "value": "Cygnus Saffire module",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "method": {
         "value": "cameras / video",
         "type": "MEASURED",
         "collectedBy": "Navneet",
-        "sourceId": "S-SAF-IVVI"
+        "sourceId": "S-SAF-IVVI",
+        "verifiedBy": "Juvana"
       },
       "sensors": [
         "cameras",
         "thermocouples"
       ],
       "outcomes": [],
-      "status": "imported"
+      "status": "verified"
     },
     {
       "id": "BASS2-CF-conc",
@@ -1378,11 +1411,11 @@
         "sourceId": "S-BASS2"
       },
       "thicknessMm": {
-        "value": null,
+        "value": 0.32,
+        "type": "MEASURED",
+        "collectedBy": "Navneet",
         "unit": "mm",
-        "type": "UNKNOWN",
-        "missingReason": "not_documented",
-        "collectedBy": "Navneet"
+        "sourceId": "S-BASS2"
       },
       "o2MolPct": {
         "value": 21.0,
@@ -1454,18 +1487,7 @@
         "cameras",
         "thermocouples"
       ],
-      "outcomes": [
-        {
-          "label": "flame spread rate",
-          "value": {
-            "value": 2.55,
-            "type": "MEASURED",
-            "collectedBy": "Navneet",
-            "unit": "mm/s",
-            "sourceId": "S-BASS-SR"
-          }
-        }
-      ],
+      "outcomes": [],
       "status": "imported"
     },
     {
@@ -1492,11 +1514,11 @@
         "sourceId": "S-BASS2"
       },
       "thicknessMm": {
-        "value": null,
+        "value": 0.32,
+        "type": "MEASURED",
+        "collectedBy": "Navneet",
         "unit": "mm",
-        "type": "UNKNOWN",
-        "missingReason": "not_documented",
-        "collectedBy": "Navneet"
+        "sourceId": "S-BASS2"
       },
       "o2MolPct": {
         "value": 21.0,
@@ -1568,18 +1590,7 @@
         "cameras",
         "thermocouples"
       ],
-      "outcomes": [
-        {
-          "label": "flame spread rate",
-          "value": {
-            "value": 1.21,
-            "type": "MEASURED",
-            "collectedBy": "Navneet",
-            "unit": "mm/s",
-            "sourceId": "S-BASS-SR"
-          }
-        }
-      ],
+      "outcomes": [],
       "status": "imported"
     }
   ],

@@ -39,8 +39,16 @@ describe("dataset.json", () => {
         if (v.value !== null) expect(sourceIds.has(v.sourceId ?? ""), `${run.id}.${f} source`).toBe(true);
         else expect(v.missingReason, `${run.id}.${f} missingReason`).toBeDefined();
       }
-      expect(run.o2PartialKPa.type).toBe("COMPUTED");
-      expect(run.o2PartialKPa.formula).toBeTruthy();
+      // O2 partial pressure is COMPUTED (with its formula) when both inputs are documented, UNKNOWN otherwise
+      if (run.o2MolPct.value !== null && run.pressureKPa.value !== null) {
+        expect(run.o2PartialKPa.type, `${run.id} pO2 type`).toBe("COMPUTED");
+        expect(run.o2PartialKPa.formula, `${run.id} pO2 formula`).toBeTruthy();
+        expect(run.o2PartialKPa.value, `${run.id} pO2 value`).toBeCloseTo((run.o2MolPct.value / 100) * run.pressureKPa.value, 1);
+      } else {
+        expect(run.o2PartialKPa.type, `${run.id} pO2 type`).toBe("UNKNOWN");
+        expect(run.o2PartialKPa.value, `${run.id} pO2 value`).toBeNull();
+        expect(run.o2PartialKPa.missingReason, `${run.id} pO2 missingReason`).toBeDefined();
+      }
     }
   });
 });
@@ -114,19 +122,16 @@ describe("locked Referee demo pairs", () => {
     expect(r.confounds).toEqual(["pressureKPa"]);
   });
 
-  // KNOWN MISMATCH, not forced. The team expects CAN_ISOLATE for pair B. The comparison is clean
-  // (no confounds, nothing undocumented), but the Referee's flow tolerance is 20% of the larger
-  // value, and 20 vs 25 cm/s differ by exactly 20%, so the engine calls the flow "the same" and
-  // returns NO_CONTRAST. Whoever owns the tolerance decides; then flip the two tests below.
-  it("B: Saffire I-1 vs III-1 on flow is a clean comparison", () => {
+  // Saffire I-III pressure was not in the cited table and is now "not documented" (eval/verification.md).
+  // Nothing else differs but the flow (20 vs 25 cm/s, outside the 10% tolerance), so this is the honest
+  // "Can't confirm" example: it would be a clean comparison if the pressure were documented.
+  it("B: Saffire I-1 vs III-1 on flow has no confound, but pressure is undocumented on both runs", () => {
     const r = judge("B");
     expect(r.confounds).toEqual([]);
-    expect(r.undocumented).toEqual([]);
+    expect(r.undocumented).toEqual(["pressureKPa"]);
   });
-  it("B: currently returns NO_CONTRAST (20 vs 25 cm/s sits on the 20% flow tolerance)", () => {
-    expect(judge("B").verdict).toBe("NO_CONTRAST");
-  });
-  it.fails("B: gives the expected CAN_ISOLATE", () => {
+  it("B: gives the expected CANT_CONFIRM", () => {
     expect(judge("B").verdict).toBe(expected("B"));
+    expect(judge("B").verdict).toBe("CANT_CONFIRM");
   });
 });

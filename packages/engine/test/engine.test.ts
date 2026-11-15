@@ -3,7 +3,7 @@ import fixtures from "../../../data/fixtures.json";
 import scenarios from "../../../data/scenarios.json";
 import {
   Dataset, Scenario, psiToKPa, o2PartialKPa, gravitySimilarity,
-  rankInvestigations, referee, type Run,
+  rankInvestigations, sortKey, referee, type Run,
 } from "../src";
 
 const ds = Dataset.parse(fixtures);
@@ -31,11 +31,15 @@ describe("ranking", () => {
   const inputs = ds.investigations.map((inv) => ({
     investigation: inv, runs: ds.runs.filter((r) => r.psiId === inv.psiId), questionScore: 0,
   }));
-  it("returns every investigation, scored ones first", () => {
+  it("returns every investigation; cannot-assess ones have no score but are still placed by relevance", () => {
     const res = rankInvestigations(inputs, sc("moon-challenge"));
     expect(res).toHaveLength(ds.investigations.length);
-    const firstNull = res.findIndex((r) => r.score === null);
-    if (firstNull >= 0) expect(res.slice(firstNull).every((r) => r.score === null)).toBe(true);
+    expect(res.every((r) => (r.score === null) === r.cannotAssess)).toBe(true);
+    // sort key: the score, or for cannot-assess the documented terms without the mission match, rescaled
+    for (let i = 1; i < res.length; i++) expect(sortKey(res[i - 1])).toBeGreaterThanOrEqual(sortKey(res[i]));
+    const unscored = res.find((r) => r.cannotAssess)!;
+    const { F, Q, D, C } = unscored.contributions;
+    expect(sortKey(unscored)).toBeCloseTo((F + Q + D + C) / 0.7, 10); // default match weight is 0.30
   });
   it("flags cannot-assess when O2 and pressure are both missing", () => {
     const res = rankInvestigations(inputs, sc("moon-challenge"));

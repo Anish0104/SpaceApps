@@ -46,6 +46,25 @@ python scrape_psi.py --all                   # all 24
 - Whoever collects a number never verifies it.
 - `data/fixtures.json` contains **fake values for UI development only**. Never cite it.
 
+## Evaluation
+
+`pnpm eval:rank` then `pnpm eval:score` (offline, no AI calls). Data 1.1.0, 24 questions, 18 with
+labelled investigations. Full method, history and failures: [eval/README.md](eval/README.md).
+
+| Measure | Result |
+|---|---|
+| Keyword search (BM25 + synonyms), Top-1 / Top-3 | 8/18 / 12/18 |
+| FlameAtlas before reading the role from the question | 6/18 / 10/18 |
+| FlameAtlas now | 8/18 / 16/18 (misses q14, q15) |
+| Referee: verdict / named reason on hand-built pairs | 10/10 / 5/5 |
+| Adversarial traps caught | 5/5 |
+| Runs verified against their NASA source | 3 of 13 ([eval/verification.md](eval/verification.md)) |
+
+Read with care: the ranking rule was adjusted after seeing which of these questions failed, so the
+current row is a fit to this set, not an independent test. The Referee pairs and traps were written
+by the engine's author. Grounded-answer metrics against plain RAG (citation precision, unsupported
+claims, abstention) are not recorded yet.
+
 ## Non-claims
 
 FlameAtlas never rates a material safe or unsafe, never assumes the Moon falls between Earth

@@ -58,6 +58,34 @@ else `moon-challenge`. Both systems always see the same scenario and the same re
 
 All scoring is offline: it reads the saved files and the dataset, and never calls Gemini.
 
+### One command
+
+```bash
+pnpm eval:rank    # refresh ranking.json after any ranking change
+pnpm eval:score   # offline; prints the table and writes eval/runs/<data-version>/scores.json
+```
+
+`pnpm eval:score` (`apps/worker/src/evalScore.ts`) never calls Gemini. It reports, each with its
+denominator and failures:
+
+- **Top-1 / Top-3** for keyword and FlameAtlas, and which questions were left out and why.
+- **Referee**: verdict and named reason on the hand-built pairs (`data/demo-pairs.json` plus
+  `data/eval/referee-pairs.json`). The expected answers were worked out from the documented run
+  conditions, not read from the engine; a second person should review them before they are quoted.
+- **Adversarial**: the five traps (kPa vs psi, mole fraction vs partial pressure, CFI-G burner O2 vs
+  cabin O2, liquid vs solid fuel, missing airflow). Three spring the trap on purpose with altered
+  copies of real records (CFI-G with its burner range entered as chamber air, a run marked liquid, a
+  run with airflow removed); the output marks them "synthetic". They are written by the engine's
+  author, so they show the rules behave as intended, not that they generalise.
+- **Recorded answers**, per system, once `pnpm eval:record` has saved any: unsupported sentences shown,
+  off-record citations, what FlameAtlas's validator caught, malformed answers, correct abstentions.
+
+Skeptic catches are not scored yet (the skeptic AI is not connected).
+
+Known limit of the number check: the validator reads the "-2" in a run name such as "Saffire VI-2" or
+"SAF-IV-1" as a number, so a sentence that names a run that way is counted as unsupported. This affects
+both systems' scores until the validator ignores run names.
+
 ### Unsupported numbers per answer
 
 Run the citation validator over each saved answer, against the dataset version in the file:
@@ -100,3 +128,40 @@ q21) keyword search puts PSI-102 / PSI-101 / PSI-47 in its top 3, while FlameAtl
 investigations that have run data (SAFFIRE-IVVI, PSI-98, PSI-25, PSI-100), because the scenario match
 and completeness outweigh the question match. Worth reporting as a failure, not tuning away before the
 questions are frozen. The `1.0.0-seed` ranking is kept for comparison.
+
+Update (branch `juvana`): that failure is reported, and one rule was then changed *after* seeing it.
+When no safety-role filter is set, the ranking now reads the role from the question's own words
+(`inferSafetyRole` in `packages/engine/src/ranking.ts`: smoke / detector / dust mean detection, extinguish
+means suppression, and so on; a question naming none or more than one role is left alone, and the
+flame-physics terms "smoke point" and "re-ignite" are not read as role words). Weights are unchanged.
+Against the labelled investigations' roles the rule is right on 7 of the 7 questions where it names a
+role and labels exist; it names no role on q14 and q16, which FlameAtlas still misses. On the 18 questions with labelled ids:
+
+| System | Top-1 | Top-3 | Top-3 misses |
+|---|---|---|---|
+| Keyword | 8/18 | 12/18 | q2, q8, q14, q16, q19, q24 |
+| FlameAtlas before the rule (ranking.json on `main` at 20c9886) | 6/18 | 10/18 | q7, q11, q12, q14, q15, q16, q17, q21 |
+| FlameAtlas with the rule, data before the verification fixes | 10/18 | 14/18 | q14, q15, q16, q17 |
+| FlameAtlas with the rule, after the data corrections | 7/18 | 13/18 | q13, q14, q15, q16, q17 |
+| FlameAtlas with the rule extended to flame physics and extinction (current ranking.json) | 8/18 | 16/18 | q14, q15 |
+
+The last row is the one that describes the shipped system. The row above it shows what two data changes did: SAME / SAME-R / DAFT
+lost their O2 and pressure ranges (not source-backed), and verification removed the inferred 101.3 kPa
+from the six Saffire I-III runs. Investigations whose O2 and pressure are both undocumented still show
+"Cannot assess", and are placed by their documented terms (question, role, fuel, completeness) rescaled
+without the mission-match term (`sortKey` in `ranking.ts`); without that they would all rank last.
+
+The rule was then extended, again after seeing the misses: a question in flame-physics terms (cool
+flames, diffusion flames, electric field, soot, smoke point, gas jet) and no other role's words is a
+physics question, and "extinction" counts as a suppression word. Against the labelled investigations'
+roles the rule is right on all 10 questions where it names a role and labels exist.
+
+**How to read these numbers.** The rule has now been adjusted three times against these 24 questions,
+so the current row measures how well the rule fits this set, not how it would do on new questions. The
+honest claims are: (1) before any change FlameAtlas ranked worse than keyword search (10/18 vs 12/18
+Top-3), because the mission-match term outweighed the question; (2) reading the safety role from the
+question fixes that on this set; (3) a fresh set of questions, written by someone who has not seen the
+rule, is needed before quoting 16/18 as a result.
+
+Quote the "before the rule" row and the current row, and say the rule came after the first ranking. A higher question weight
+(0.25 to 0.40, renormalised) was also tried: 9/18 and 13/18, with a new miss on q19, so it was not adopted.

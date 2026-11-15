@@ -474,10 +474,12 @@ describe("template answer on the released dataset (dataset.json)", () => {
     const ranked = search(release, releaseIndex, moon, SearchRequest.parse({ query: QUESTIONS[0], scenarioId: moon.id }));
     const saffire1 = templateAnswer(release, moon, ranked).sentences.find((x) => x.recordIds[0] === "PSI-98");
     expect(saffire1).toEqual({
-      text: "SAFFIRE-I (PSI-98) matches on O2 partial pressure and material, but was tested in orbit, not at the scenario's gravity; its runs measured oxygen 21.5 to 21.7 mol%, flow speed 20 cm/s, gravity 0 g.",
+      text: "SAFFIRE-I (PSI-98) matches on material, but was tested in orbit, not at the scenario's gravity; its runs measured oxygen 21.5 to 21.7 mol%, flow speed 20 cm/s, gravity 0 g.",
       recordIds: ["PSI-98", "SAF-I-1", "SAF-I-2"],
     });
-    expect(saffire1?.text).not.toMatch(/101\.3/); // Saffire-I pressure is INFERRED, so it is not quoted
+    // Saffire-I pressure is not documented (the 101.3 kPa inference was removed at verification), so it is
+    // neither quoted nor used to claim an O2 partial pressure match
+    expect(saffire1?.text).not.toMatch(/101\.3|partial pressure/);
   });
 
   it("never prints \"PSI-xx (PSI-xx)\": a record without a real acronym is named by its short title", () => {
