@@ -52,16 +52,13 @@ export function evidenceSegments(sc: Scenario, ranked: RankedResult[]): Segment[
   ];
 }
 
+/** The dashboard card: one tile per condition, how many curated investigations document it for this scenario. */
 export function CoveragePreview() {
   const { scenario } = useScenario();
   const segments = useMemo(() => {
     const ranked = rankInvestigations(
-      dataset.investigations.map((inv) => ({
-        investigation: inv,
-        runs: runsFor(inv.psiId),
-        questionScore: 0,
-      })),
-      scenario
+      dataset.investigations.map((inv) => ({ investigation: inv, runs: runsFor(inv.psiId), questionScore: 0 })),
+      scenario,
     );
     return evidenceSegments(scenario, ranked);
   }, [scenario]);
@@ -69,71 +66,56 @@ export function CoveragePreview() {
   const total = releaseCoverage?.investigations ?? coverage.investigations;
 
   return (
-    <section aria-labelledby="coverage-heading" className="relative z-10 border-y border-[var(--border)] bg-[var(--bg-elev)]">
-      <div className="content-container grid gap-8 py-10 sm:py-12 lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)] lg:items-center">
-        <div>
-          <h2 id="coverage-heading" className="section-title">
-            Where the evidence ends
-          </h2>
-          <p className="mt-2 text-sm text-[var(--text-muted)]">
-            How many of {total} curated investigations document each condition for{" "}
-            <span className="text-[var(--text)]">{scenario.name}</span>.
-          </p>
+    <section aria-labelledby="coverage-heading" className="dash-card">
+      <div className="dash-card-head">
+        <div className="min-w-0">
+          <h2 id="coverage-heading" className="panel-title">Where the evidence ends</h2>
+          <p className="text-xs text-[var(--text-muted)]">Curated investigations documenting each condition, out of {total}</p>
         </div>
-
-        <div>
-          <ol aria-label={`Evidence conditions for ${scenario.name}`} className="grid grid-cols-2 gap-2.5 sm:grid-cols-5">
-            {segments.map((s) => {
-              const unknown = s.count === 0;
-              const text = unknown
-                ? `${s.label}: Unknown, not in our curated dataset`
-                : `${s.label}: documented by ${s.count} of ${total} investigations`;
-              const body = (
-                <>
-                  <span className={`block truncate text-xs text-[var(--text-muted)] ${unknown ? "w-fit max-w-full rounded bg-[var(--surface)] px-1" : ""}`}>{s.label}</span>
-                  <span className="mt-1 flex items-baseline gap-1.5">
-                    {unknown ? (
-                      <span className="rounded bg-[var(--surface)] px-1 text-sm font-medium text-[var(--text)]">Unknown</span>
-                    ) : (
-                      <>
-                        <span className="font-semibold tracking-tight text-3xl leading-none text-[var(--text)]">{s.count}</span>
-                        <span className="text-xs text-[var(--text-muted)]">/ {total}</span>
-                      </>
-                    )}
-                  </span>
-                  <span aria-hidden="true" className="mt-3 block h-1 overflow-hidden rounded-full bg-[var(--surface-2)]">
-                    <span
-                      className="block h-full rounded-full bg-[var(--accent)] transition-[width] duration-700 ease-[var(--ease-out)]"
-                      style={{ width: `${(s.count / Math.max(1, total)) * 100}%` }}
-                    />
-                  </span>
-                </>
-              );
-              return (
-                <li key={s.id} title={text} className="min-w-0">
-                  {unknown ? (
-                    <Link
-                      to="/missing-experiment"
-                      aria-label={`${text}. Open the missing experiment`}
-                      className="hatch block h-full rounded-xl border border-dashed border-[var(--border-strong)] p-3.5 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-[var(--accent)]"
-                    >
-                      {body}
-                    </Link>
-                  ) : (
-                    <div role="img" aria-label={text} className="h-full rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3.5">
-                      {body}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ol>
-          <p className="mt-3 flex items-center gap-2 text-xs text-[var(--text-muted)]">
-            <span aria-hidden="true" className="hatch inline-block h-3.5 w-5 rounded border border-[var(--border-strong)]" />
-            Hatched: not in our curated dataset. Select it to see the experiment that would close the gap.
-          </p>
-        </div>
+        <span className="hidden items-center gap-2 text-xs text-[var(--text-muted)] sm:flex">
+          <span aria-hidden="true" className="hatch inline-block h-3 w-5 rounded border border-dashed border-[var(--border-strong)]" />
+          Not in our data: select to see the missing experiment
+        </span>
       </div>
+      <ol aria-label={`Evidence conditions for ${scenario.name}`} className="grid grid-cols-2 gap-3 p-5 sm:grid-cols-3 lg:grid-cols-5">
+        {segments.map((s) => {
+          const unknown = s.count === 0;
+          const text = unknown ? `${s.label}: Unknown, not in our curated dataset` : `${s.label}: documented by ${s.count} of ${total} investigations`;
+          const body = (
+            <>
+              <span className="block truncate text-xs text-[var(--text-muted)]">{s.label}</span>
+              <span className="mt-1.5 flex h-8 items-baseline gap-1.5">
+                {unknown ? (
+                  <span className="text-lg font-semibold text-[var(--text)]">Unknown</span>
+                ) : (
+                  <>
+                    <span className="text-2xl font-semibold leading-none tracking-tight text-[var(--text)]">{s.count}</span>
+                    <span className="text-xs text-[var(--text-muted)]">/ {total}</span>
+                  </>
+                )}
+              </span>
+              <span aria-hidden="true" className={`mt-2 block h-1.5 overflow-hidden rounded-full ${unknown ? "hatch" : "bg-[var(--surface-2)]"}`}>
+                {!unknown && (
+                  <span className="block h-full rounded-full bg-[var(--accent)] transition-[width] duration-700" style={{ width: `${(s.count / Math.max(1, total)) * 100}%` }} />
+                )}
+              </span>
+            </>
+          );
+          return (
+            <li key={s.id} title={text} className="min-w-0">
+              {unknown ? (
+                <Link to="/missing-experiment" aria-label={`${text}. Open the missing experiment`} className="cov-tile is-unknown">
+                  {body}
+                </Link>
+              ) : (
+                <div role="img" aria-label={text} className="cov-tile">
+                  {body}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }

@@ -5,6 +5,7 @@ import { srcSet, src, type Scene } from "../lib/scenes";
  * The active scene's photo, cross-fading when the scenario changes. The outgoing image stays underneath
  * until the new one has loaded and faded in, so a switch never flashes the background colour.
  *  - "home": the home hero; the photo fades into the page background on the left and bottom
+ *  - "frame": inside the landing page's rounded hero frame, behind centred white text
  *  - "compact": strip behind white text (scenario strip)
  *  - "page": faint, masked into the page background (every other page)
  */
@@ -14,7 +15,7 @@ export function SceneBackdrop({
   drift = false,
 }: {
   scene: Scene;
-  variant?: "home" | "compact" | "page";
+  variant?: "home" | "frame" | "compact" | "page";
   drift?: boolean;
 }) {
   const [layers, setLayers] = useState<Scene[]>([scene]);
@@ -26,9 +27,10 @@ export function SceneBackdrop({
   const drop = (id: string) => setLayers((prev) => (prev.length > 1 && prev[prev.length - 1]?.id === id ? prev.slice(-1) : prev));
 
   const wrapper = variant === "page" ? "page-backdrop" : variant === "home" ? "home-backdrop" : "absolute inset-0 overflow-hidden";
+  const solidBg = variant === "compact" || variant === "frame";
 
   return (
-    <div aria-hidden="true" className={wrapper} style={variant === "compact" ? { background: scene.fallback } : undefined}>
+    <div aria-hidden="true" className={wrapper} style={solidBg ? { background: scene.fallback } : undefined}>
       {layers.map((s) => (
         <div key={s.id} className="scene-layer" onAnimationEnd={(e) => e.target === e.currentTarget && drop(s.id)}>
           <img
@@ -44,6 +46,7 @@ export function SceneBackdrop({
       ))}
       {variant === "home" && <div className="scene-scrim-home" />}
       {variant === "compact" && <div className="scene-scrim-compact absolute inset-0" />}
+      {variant === "frame" && <div className="scene-scrim-frame absolute inset-0" />}
     </div>
   );
 }

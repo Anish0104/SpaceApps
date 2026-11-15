@@ -19,7 +19,7 @@ describe("app shell", () => {
   it("keeps Limits in the main navigation and every original route", () => {
     render(<MemoryRouter initialEntries={["/limits"]}><App /></MemoryRouter>);
     expect(screen.getAllByRole("link", { name: "Limits" }).length).toBeGreaterThan(0);
-    for (const path of ["/", "/atlas", "/ask", "/mission-lab", "/referee", "/missing-experiment", "/limits", "/investigation/PSI-98"]) {
+    for (const path of ["/", "/dashboard", "/atlas", "/ask", "/mission-lab", "/referee", "/missing-experiment", "/limits", "/investigation/PSI-98"]) {
       const { unmount } = render(<MemoryRouter initialEntries={[path]}><App /></MemoryRouter>);
       expect(document.querySelector("main")?.textContent?.length, path).toBeGreaterThan(0);
       unmount();

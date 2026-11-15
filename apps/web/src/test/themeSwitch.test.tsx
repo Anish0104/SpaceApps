@@ -85,7 +85,7 @@ describe("theme switch", () => {
 
   it("changing the theme keeps the selected scenario", () => {
     systemPrefers("dark");
-    render(<MemoryRouter initialEntries={["/"]}><App /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={["/dashboard"]}><App /></MemoryRouter>);
     const picker = screen.getByRole("combobox", { name: "Crew environment" }) as HTMLSelectElement;
     fireEvent.change(picker, { target: { value: "mars" } });
     fireEvent.click(theSwitch());
