@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
-import type { AskResponse } from "@flameatlas/engine";
+import type { AskResponse, Scenario } from "@flameatlas/engine";
 import { useStore } from "../store";
-import { dataset, invById } from "../data";
+import { dataset, invById, scenarios } from "../data";
+import { CHIPS, type Chip } from "../demoChips";
 import { useOffline } from "../useOffline";
 
 const API_BASE = String(import.meta.env.VITE_API_BASE ?? "").replace(/\/+$/, "");
-const EXAMPLES = ["Nearest tested condition for this habitat?", "Is there lunar-gravity flame-spread data?", "Compare BASS and Saffire on scale"];
 
 export type ChatMsg =
   | { id: number; role: "user"; text: string }
@@ -33,14 +33,14 @@ export function Ask({ chat, setChat, draft, setDraft }: {
   chat: ChatMsg[]; setChat: (fn: (prev: ChatMsg[]) => ChatMsg[]) => void;
   draft: string; setDraft: (v: string) => void;
 }) {
-  const { scenario: sc } = useStore();
+  const { scenario: sc, setScenarioId } = useStore();
   const offline = useOffline();
   const endRef = useRef<HTMLDivElement>(null);
   const env = sc.name.split(" (")[0];
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: chat.length ? "smooth" : "auto", block: "end" }); }, [chat]);
 
-  async function send(question: string) {
+  async function send(question: string, scenario: Scenario = sc) {
     const text = question.trim();
     if (!text || offline) return;
     setDraft("");
@@ -49,13 +49,24 @@ export function Ask({ chat, setChat, draft, setDraft }: {
     try {
       const res = await fetch(`${API_BASE}/api/ask`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: text, scenarioId: sc.id, dataVersion: dataset.version }),
+        body: JSON.stringify({ question: text, scenarioId: scenario.id, dataVersion: dataset.version }),
       });
       if (!res.ok) throw new Error(String(res.status));
       const a = (await res.json()) as AskResponse;
-      setChat((prev) => prev.map((m) => (m.id === botId ? { id: botId, role: "bot", status: "answer", env: sc.name, a } : m)));
+      setChat((prev) => prev.map((m) => (m.id === botId ? { id: botId, role: "bot", status: "answer", env: scenario.name, a } : m)));
     } catch {
       setChat((prev) => prev.map((m) => (m.id === botId ? { id: botId, role: "bot", status: "error", msg: "The answer service is unavailable right now. The archive, Lab and Atlas still work offline." } : m)));
+    }
+  }
+
+  /** A demo chip switches to its scenario and sends the exact demo question (cached answer); others send the label. */
+  function pick(chip: Chip) {
+    const target = chip.demo && scenarios.find((s) => s.id === chip.demo!.scenarioId);
+    if (chip.demo && target) {
+      setScenarioId(target.id);
+      void send(chip.demo.question, target);
+    } else {
+      void send(chip.label);
     }
   }
 
@@ -75,9 +86,9 @@ export function Ask({ chat, setChat, draft, setDraft }: {
             <>
               <div className="sec">Try asking</div>
               <div className="suggest">
-                {EXAMPLES.map((e) => (
-                  <button key={e} className="suggest-item" onClick={() => send(e)}>
-                    <span>{e}</span>
+                {CHIPS.map((c) => (
+                  <button key={c.label} className="suggest-item" onClick={() => pick(c)}>
+                    <span>{c.label}</span>
                     <span className="arrow"><SendIcon /></span>
                   </button>
                 ))}
