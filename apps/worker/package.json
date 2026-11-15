@@ -12,7 +12,8 @@
     "eval:record": "node scripts/eval-record.mjs",
     "eval:rank": "vitest run --config vitest.eval.config.ts",
     "eval:score": "vitest run --config vitest.score.config.ts",
-    "summaries": "node scripts/summaries.mjs"
+    "summaries": "node scripts/summaries.mjs",
+    "sms:demo": "node scripts/sms-demo.mjs"
   },
   "dependencies": {
     "@flameatlas/engine": "workspace:*",
