@@ -4,6 +4,7 @@
  *   GET  /api/data/:version
  *   POST /api/search   Contract 2
  *   POST /api/ask      Contract 3 (six-beat answer via Gemini, validated; demo cache; template fallback)
+ *   POST /api/sms      Twilio webhook: signed, rate-limited, deterministic engine reply (no Gemini)
  *   POST /api/dev/warm-cache   localhost only, used by `pnpm warm-cache` (spends Gemini quota)
  *   POST /api/dev/eval         localhost only, used by `pnpm eval:record` (spends Gemini quota)
  *   POST /api/dev/summaries    localhost only, used by `pnpm summaries` (spends Gemini quota)
@@ -18,6 +19,7 @@ import { parseModels } from "./gemini";
 import { WarmRequest, loadDemoAnswers, warmCache } from "./demoCache";
 import { EvalRequest, budgetedFetch, runEval } from "./evalRun";
 import { SummaryRequest, summarize } from "./summaries";
+import { SlidingWindow, handleSms } from "./sms";
 
 export { templateAnswer } from "./ask";
 
@@ -27,6 +29,8 @@ export interface Env {
   ALLOWED_ORIGIN?: string;
   GEMINI_API_KEY?: string;
   GEMINI_MODELS?: string; // comma-separated, tried in order
+  /** Twilio account auth token, used to verify the X-Twilio-Signature on /api/sms. */
+  TWILIO_AUTH_TOKEN?: string;
   AI?: unknown; // Workers AI binding (bge-small-en-v1.5), used for semantic search
   ANSWERS?: KVNamespace;
 }
@@ -55,6 +59,8 @@ export function corsHeaders(origin: string | null, env: Pick<Env, "ALLOWED_ORIGI
 
 const scenarioById = (id: string) => SCENARIOS.find((s) => s.id === id);
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
+// One limiter per isolate (see sms.ts): enough to throttle a sender, not a global guarantee.
+const SMS_LIMITER = new SlidingWindow();
 
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
@@ -96,6 +102,11 @@ export default {
 
     // Dev only: `pnpm warm-cache` posts the demo questions here and writes the returned answers to
     // data/cache/demo-answers.json. It spends Gemini quota, so it only exists on localhost.
+    if (url.pathname === "/api/sms" && req.method === "POST") {
+      // Twilio posts form-encoded; the signature covers the exact public URL Twilio called.
+      return handleSms(req, url.toString(), env, { ds: DS, index: INDEX, scenarios: SCENARIOS }, SMS_LIMITER);
+    }
+
     if (url.pathname === "/api/dev/warm-cache" && req.method === "POST") {
       const parsed = WarmRequest.safeParse(await req.json());
       if (!parsed.success) return json({ error: parsed.error.flatten() }, 400);
