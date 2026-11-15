@@ -165,6 +165,19 @@ export function completeness(inv: Investigation, runs: Run[]): number {
   return KEY_FIELDS.filter((k) => has[k]).length / KEY_FIELDS.length;
 }
 
+/**
+ * Where a result sits in the list. A scored investigation sorts by its score. A "cannot assess"
+ * investigation still shows no score (its O2 and pressure are undocumented), but it is placed by
+ * what IS documented: question relevance, safety role, fuel and completeness, with the mission-match
+ * term left out and the remaining weights rescaled to 1. This is the same rule the match term uses
+ * inside itself: an undocumented condition is left out of the mean, never counted as zero.
+ */
+export function sortKey(r: RankedResult, w: Weights = DEFAULT_WEIGHTS): number {
+  if (r.score !== null) return r.score;
+  const rest = r.contributions.F + r.contributions.Q + r.contributions.D + r.contributions.C;
+  return w.M < 1 ? rest / (1 - w.M) : rest;
+}
+
 export function rankInvestigations(
   inputs: RankInput[],
   sc: Scenario,
@@ -183,8 +196,7 @@ export function rankInvestigations(
     const score = m.cannotAssess ? null : Object.values(contributions).reduce((a, b) => a + b, 0);
     return { psiId: inv.psiId, score, contributions, reasons, notDocumented: m.notDocumented, cannotAssess: m.cannotAssess };
   });
-  // scored first (desc), then "cannot assess" at the end
-  return out.sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
+  return out.sort((a, b) => sortKey(b, w) - sortKey(a, w) || a.psiId.localeCompare(b.psiId));
 }
 
 /** Robustness: share of weight settings in which each psiId stays in the top k. */

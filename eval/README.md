@@ -141,7 +141,14 @@ role and labels exist; it names no role on q14 and q16, which FlameAtlas still m
 |---|---|---|---|
 | Keyword | 8/18 | 12/18 | q2, q8, q14, q16, q19, q24 |
 | FlameAtlas before the rule (ranking.json on `main` at 20c9886) | 6/18 | 10/18 | q7, q11, q12, q14, q15, q16, q17, q21 |
-| FlameAtlas with the rule (current ranking.json) | 10/18 | 14/18 | q14, q15, q16, q17 |
+| FlameAtlas with the rule, data before the verification fixes | 10/18 | 14/18 | q14, q15, q16, q17 |
+| FlameAtlas with the rule, current data (current ranking.json) | 7/18 | 13/18 | q13, q14, q15, q16, q17 |
 
-Quote both FlameAtlas rows, and say the rule came after the first ranking. A higher question weight
+The last row is the one that describes the shipped system. Two data changes moved it: SAME / SAME-R / DAFT
+lost their O2 and pressure ranges (not source-backed), and verification removed the inferred 101.3 kPa
+from the six Saffire I-III runs. Investigations whose O2 and pressure are both undocumented still show
+"Cannot assess", and are placed by their documented terms (question, role, fuel, completeness) rescaled
+without the mission-match term (`sortKey` in `ranking.ts`); without that they would all rank last.
+
+Quote the "before the rule" row and the current row, and say the rule came after the first ranking. A higher question weight
 (0.25 to 0.40, renormalised) was also tried: 9/18 and 13/18, with a new miss on q19, so it was not adopted.

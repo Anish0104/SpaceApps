@@ -57,17 +57,20 @@
     "flameatlas": {
       "top1": {
         "k": 1,
-        "hits": 10,
+        "hits": 7,
         "n": 18,
         "misses": [
+          "q2",
           "q4",
-          "q9",
-          "q12",
+          "q8",
           "q13",
           "q14",
           "q15",
           "q16",
-          "q17"
+          "q17",
+          "q19",
+          "q22",
+          "q24"
         ],
         "unlabelled": [
           "q1",
@@ -82,9 +85,10 @@
       },
       "top3": {
         "k": 3,
-        "hits": 14,
+        "hits": 13,
         "n": 18,
         "misses": [
+          "q13",
           "q14",
           "q15",
           "q16",
@@ -104,8 +108,8 @@
     }
   },
   "referee": {
-    "n": 9,
-    "verdictCorrect": 9,
+    "n": 10,
+    "verdictCorrect": 10,
     "reasonN": 5,
     "reasonCorrect": 5,
     "failures": [],
@@ -128,19 +132,19 @@
       "id": "burner_o2_vs_cabin_o2",
       "trap": "counting CFI-G's burner gas (up to 85% O2) as a high-oxygen cabin atmosphere",
       "caught": true,
-      "detail": "Synthetic: PSI-159 with a 21-85% O2 range entered as if it were chamber air. Reasons: O2_IS_BURNER_GAS, GRAVITY_DIFFERS, GRAVITY_ORBIT_ONLY, DIFFERENT_FUEL_PHASE."
+      "detail": "Synthetic: PSI-159 with a 21-85% O2 range entered as if it were chamber air. Reasons: O2_IS_BURNER_GAS, DIFFERENT_FUEL_PHASE."
     },
     {
       "id": "liquid_vs_solid",
       "trap": "attributing a difference to oxygen when one run burned liquid droplets and the other solid fabric",
       "caught": true,
-      "detail": "Synthetic: SAF-I-1 against a copy marked liquid with other oxygen. Referee: CANNOT_ISOLATE. Cannot attribute the difference to o2MolPct: fuel phase differs (solid vs liquid) also changed."
+      "detail": "Synthetic: SAF-I-1 against a copy marked liquid with other oxygen. Referee: CANNOT_ISOLATE. Cannot attribute the difference to o2MolPct: fuel phase differs (solid vs liquid) also changed. Not documented on both runs: pressureKPa."
     },
     {
       "id": "missing_airflow",
       "trap": "comparing on airflow when one run never documented it",
       "caught": true,
-      "detail": "Synthetic: SAF-I-1 against a copy with airflow removed. Referee: CANT_CONFIRM. Can't confirm: flowCmS not documented on both runs."
+      "detail": "Synthetic: SAF-I-1 against a copy with airflow removed. Referee: CANT_CONFIRM. Can't confirm: flowCmS, pressureKPa not documented on both runs."
     }
   ],
   "answers": [

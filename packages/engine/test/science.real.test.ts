@@ -11,7 +11,7 @@ import {
 
 const ds = Dataset.parse(real);
 const sc = (id: string) => Scenario.parse(scenarios.find((s) => s.id === id));
-const allImported = ds.runs.every((r) => r.status === "imported");
+const status = (id: string) => ds.runs.find((r) => r.id === id)!.status;
 
 describe("engineer readout on real data", () => {
   const moon = engineerReadout(sc("moon-challenge"), ds.runs);
@@ -34,7 +34,9 @@ describe("engineer readout on real data", () => {
   });
   it("30% O2 is matched by the SIBAL run, not by the PMMA runs at the same O2", () => {
     expect(row("o2MolPct").runIds).toEqual(["SAF-VI-2"]);
-    if (allImported) expect(row("o2MolPct")).toMatchObject({ label: "PARTIAL_ANALOG", analogKind: "same_material_unverified", light: "yellow" });
+    // green only once SAF-VI-2 itself is verified; until then it is a match waiting on its cross-check
+    if (status("SAF-VI-2") === "verified") expect(row("o2MolPct")).toMatchObject({ label: "DIRECT_MATCH", light: "green" });
+    else expect(row("o2MolPct")).toMatchObject({ label: "PARTIAL_ANALOG", analogKind: "same_material_unverified", light: "yellow" });
   });
   it("70.3 kPa is only covered by a different material", () => {
     expect(row("pressureKPa")).toMatchObject({ label: "PARTIAL_ANALOG", analogKind: "other_material", runIds: ["SAF-V-2"] });
@@ -55,10 +57,9 @@ describe("engineer readout on real data", () => {
     expect(iss.doesNotTransfer.join(" ")).not.toContain("Gravity");
     expect(iss.gap).toBeNull();
     expect(iss.rows.every((r) => r.light !== "red")).toBe(true);
-    if (allImported) {
-      expect(iss.toVerify.length).toBeGreaterThan(0);
-      expect(iss.limit).toContain("not yet cross-checked");
-    }
+    // every run sits at orbit gravity, and three of them are verified
+    expect(iss.rows.find((r) => r.condition === "gravityG")).toMatchObject({ label: "DIRECT_MATCH", light: "green" });
+    expect(iss.toVerify).toEqual(ds.runs.filter((r) => r.status !== "verified" && iss.toVerify.includes(r.id)).map((r) => r.id));
   });
   it("never words a light as a safety verdict", () => {
     for (const s of scenarios) {
@@ -82,14 +83,18 @@ describe("Missing Experiment planner on real data", () => {
     expect(anchor.material.value).toContain("SIBAL");
     expect(top.badges.includes("Anchor not yet cross-checked")).toBe(anchor.status !== "verified");
   });
-  it("refuses BASS-II anchors because their thickness is not documented", () => {
-    const bass2 = plan.rejected.filter((r) => r.candidate.anchorRunId.startsWith("BASS2-"));
-    expect(bass2.length).toBeGreaterThan(0);
-    for (const r of bass2) {
-      const failed = r.check.checks.filter((k) => !k.pass && k.required);
-      expect(failed.map((k) => k.id)).toEqual(["HELD_DOCUMENTED"]);
-      expect(failed[0].detail).toContain("thicknessMm");
-    }
+  it("refuses anchors whose held conditions are not documented, and says which", () => {
+    const why = (anchor: string) => plan.rejected
+      .filter((r) => r.candidate.anchorRunId === anchor)
+      .map((r) => r.check.checks.find((k) => k.id === "HELD_DOCUMENTED")!);
+    // Saffire I-III: the cabin pressure is not in the cited table
+    expect(why("SAF-I-1").length).toBeGreaterThan(0);
+    for (const k of why("SAF-I-1")) { expect(k.pass).toBe(false); expect(k.detail).toContain("pressureKPa"); }
+    // Saffire IV-1 / VI-2: the fabric thickness is not given for these runs
+    expect(why("SAF-VI-2").length).toBeGreaterThan(0);
+    for (const k of why("SAF-VI-2")) { expect(k.pass).toBe(false); expect(k.detail).toContain("thicknessMm"); }
+    // an anchor with every held condition documented is never refused for that
+    expect(plan.selected.every((p) => p.check.checks.find((k) => k.id === "HELD_DOCUMENTED")!.pass)).toBe(true);
   });
   it("uncertainty and cost stay at zero: no NASA source provides them", () => {
     for (const p of plan.selected) expect([p.score.uncertainty, p.score.cost]).toEqual([0, 0]);
@@ -118,9 +123,13 @@ describe("ranking on real data", () => {
 });
 
 describe("variable summary on real data", () => {
-  it("BASS-II cotton-fiberglass runs differ only in flow direction; thickness is undocumented", () => {
+  it("BASS-II cotton-fiberglass runs differ only in flow direction", () => {
     const rows = variableSummary(ds.runs.filter((r) => r.psiId === "PSI-25"));
     expect(rows.filter((r) => r.status === "varies").map((r) => r.field)).toEqual(["flowDirection"]);
-    expect(rows.filter((r) => r.status === "undocumented").map((r) => r.field)).toEqual(["thicknessMm"]);
+    expect(rows.filter((r) => r.status === "undocumented")).toEqual([]);
+  });
+  it("Saffire I-III runs never document pressure", () => {
+    const rows = variableSummary(ds.runs.filter((r) => ["PSI-98", "PSI-99", "PSI-100"].includes(r.psiId)));
+    expect(rows.find((r) => r.field === "pressureKPa")?.status).toBe("undocumented");
   });
 });
