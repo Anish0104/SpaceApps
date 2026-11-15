@@ -45,7 +45,7 @@ else `moon-challenge`. Both systems always see the same scenario and the same re
 ```jsonc
 {
   "qid": "q3", "system": "plain_rag", "question": "...", "scenarioId": "moon-challenge",
-  "dataVersion": "1.1.0", "recorded": true, "model": "gemini-3.8-flash", "callsUsed": 1,
+  "dataVersion": "1.2.0", "recorded": true, "model": "gemini-3.8-flash", "callsUsed": 1,
   "systemPrompt": "Answer the question using the records below.",
   "records": "[PSI-98] Saffire-I ...\n  [SAF-I-1] run of PSI-98 ...",   // exactly what Gemini saw
   "recordIds": ["PSI-98", "SAF-I-1", "..."],                              // ids in those records
@@ -121,13 +121,14 @@ its `limit`, not its status). Confirm with Navneet before scoring q5 as an abste
 `relevantPsiIds`. A question is a Top-k hit if any relevant id is in the first k. Questions with no
 labelled relevant ids are left out of the denominator; say so. `relevantNotInDataset` lists labelled ids
 that are not in the dataset: no system can rank them, so report Top-k both with and without those
-questions. In data `1.1.0` it is empty for every question (1.0.0-seed lacked PSI-69, PSI-101, PSI-47).
+questions. In data `1.1.0` and `1.2.0` it is empty for every question (1.0.0-seed lacked PSI-69, PSI-101, PSI-47).
 
 Seen in the `1.1.0` ranking (`eval/runs/1.1.0/ranking.json`): on the detection questions (q7, q11, q12,
 q21) keyword search puts PSI-102 / PSI-101 / PSI-47 in its top 3, while FlameAtlas fills its top 4 with
 investigations that have run data (SAFFIRE-IVVI, PSI-98, PSI-25, PSI-100), because the scenario match
 and completeness outweigh the question match. Worth reporting as a failure, not tuning away before the
-questions are frozen. The `1.0.0-seed` ranking is kept for comparison.
+questions are frozen. The `1.0.0-seed` ranking is kept for comparison. The `1.2.0` ranking
+(`eval/runs/1.2.0/ranking.json`) has the same top-5 lists as `1.1.0` for every question, and the same scores.
 
 Update (branch `juvana`): that failure is reported, and one rule was then changed *after* seeing it.
 When no safety-role filter is set, the ranking now reads the role from the question's own words

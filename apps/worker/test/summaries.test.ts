@@ -43,7 +43,7 @@ describe("summarize", () => {
     const user = g.calls[0].body.contents[0].parts[0].text;
     expect(user).toContain(recordsFor(ds, inv("PSI-98")).text);
     expect(user).not.toMatch(/\[PSI-25\]|ranking reasons/); // only its own records, no ranking line
-    expect(r).toMatchObject({ outcome: "saved", entry: { psiId: "PSI-98", dataVersion: "1.1.0", model: "model-a", dropped: 0, sentences: GOOD.sentences } });
+    expect(r).toMatchObject({ outcome: "saved", entry: { psiId: "PSI-98", dataVersion: "1.2.0", model: "model-a", dropped: 0, sentences: GOOD.sentences } });
   });
 
   it("drops a sentence with a number that is not on its cited records", async () => {
