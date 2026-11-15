@@ -22,7 +22,7 @@ const STOPS = [
   },
   {
     name: "Moon", g: 0.165, gLabel: "0.165 g",
-    caption: "Long-duration data: none yet. FM2 is targeting launch in late 2026.",
+    caption: "No sustained, spacecraft-based lunar-gravity flame-spread data in PSI yet. FM2 is targeting launch in late 2026.",
     shape: { cy: 168, w: 38, rb: 38, ht: 86, side: 0.46, tipX: 0.32, tipDrop: 24 },
   },
   {
@@ -98,56 +98,90 @@ export function FlameInstrument() {
   const orbit = Math.max(0, pos - 1);
 
   return (
-    <figure className="panel grid gap-x-6 gap-y-4 p-4 sm:p-6 md:grid-cols-12">
-      <div className="flex justify-center md:col-span-5">
+    <figure className="panel grid gap-x-10 gap-y-6 p-6 sm:p-10 md:grid-cols-12">
+      <div className="flex justify-center rounded-xl bg-[radial-gradient(circle_at_50%_60%,var(--surface-2),transparent_70%)] md:col-span-5">
         <svg viewBox="50 20 140 204" className="h-64 w-auto max-w-full md:h-80" role="img"
           aria-label={`Flame illustration at ${current.name} gravity, ${current.gLabel}. ${current.caption}`}>
           <defs>
+            <linearGradient id="flame-soot" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stopColor="var(--flame-blue)" />
+              <stop offset="14%" stopColor="var(--flame-soot-b)" />
+              <stop offset="55%" stopColor="var(--flame-soot-a)" />
+              <stop offset="100%" stopColor="var(--flame-soot-b)" stopOpacity="0.85" />
+            </linearGradient>
+            <radialGradient id="flame-orbit" cx="50%" cy="60%" r="55%">
+              <stop offset="0%" stopColor="var(--flame-blue)" stopOpacity="0.05" />
+              <stop offset="70%" stopColor="var(--flame-blue)" stopOpacity="0.35" />
+              <stop offset="100%" stopColor="var(--flame-blue)" stopOpacity="0.75" />
+            </radialGradient>
+            <filter id="flame-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="6" />
+            </filter>
             <pattern id="flame-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-              <line x1="0" y1="0" x2="0" y2="6" stroke="var(--regolith)" strokeWidth="1.2" />
+              <line x1="0" y1="0" x2="0" y2="6" stroke="var(--text-muted)" strokeWidth="1.2" opacity="0.4" />
             </pattern>
           </defs>
           {/* Earth: soot yellow, flickers only when settled */}
-          <path d={d} fill="var(--soot)" opacity={earth} className={pos === 0 ? "flame-flicker" : undefined} />
+          <path d={d} fill="var(--flame-soot-b)" opacity={earth * 0.45} filter="url(#flame-glow)" />
+          <path d={d} fill="url(#flame-soot)" opacity={earth} className={pos === 0 ? "flame-flicker" : undefined} />
           {/* Orbit: dim CH blue, steady */}
-          <path d={d} fill="var(--ch-blue)" fillOpacity="0.3" stroke="var(--ch-blue)" strokeWidth="1.5" opacity={orbit} />
+          <path d={d} fill="var(--flame-blue)" opacity={orbit * 0.35} filter="url(#flame-glow)" />
+          <path d={d} fill="url(#flame-orbit)" stroke="var(--flame-blue)" strokeWidth="1.5" opacity={orbit} />
           {/* Moon: no data, so hatch and a dashed outline */}
           <g opacity={moon}>
             <path d={d} fill="url(#flame-hatch)" />
-            <path d={d} fill="none" stroke="var(--ink)" strokeWidth="1.5" strokeDasharray="6 5" strokeLinecap="round" />
+            <path d={d} fill="none" stroke="var(--text)" strokeWidth="1.5" strokeDasharray="6 5" strokeLinecap="round" />
           </g>
           {/* The fuel stays put; only the flame around it changes */}
-          <circle cx={CX} cy={FUEL_Y} r="4" fill="var(--ink)" />
+          <circle cx={CX} cy={FUEL_Y} r="4" fill="var(--text)" />
         </svg>
       </div>
 
       <div className="flex flex-col justify-center gap-6 md:col-span-7">
         <div aria-live="polite" className="md:min-h-36">
-          <p className="text-lg font-semibold">{current.name}, {current.gLabel}</p>
-          <p className="measure mt-1">{current.caption}</p>
+          <p className="font-semibold tracking-tight text-2xl text-[var(--text)]">{current.name} <span className="font-mono text-base text-[var(--text-muted)]">{current.gLabel}</span></p>
+          <p className="measure mt-2 text-[var(--text)] leading-relaxed">{current.caption}</p>
           {stop === 1 && (
-            <p className="measure mt-2 text-sm text-ink/70">
+            <p className="measure mt-2 text-sm text-[var(--text-muted)]">
               The dashed outline is a placeholder, not a prediction: Earth and orbit do not bound the Moon.
             </p>
           )}
         </div>
 
-        <div>
-          <label htmlFor="gravity-stop" className="text-sm text-ink/70">Gravity</label>
-          <input id="gravity-stop" type="range" min={0} max={LAST} step={1} value={stop} className="gravity-slider mt-1"
-            aria-valuetext={`${current.name}, ${current.gLabel}`} onChange={(e) => moveTo(Number(e.target.value))} />
-          <div aria-hidden="true" className="mt-1 grid grid-cols-3 text-sm">
+        <div className="space-y-2">
+          <label htmlFor="gravity-stop" className="eyebrow">
+            Gravity stop
+          </label>
+          <input
+            id="gravity-stop"
+            type="range"
+            min={0}
+            max={LAST}
+            step={1}
+            value={stop}
+            className="gravity-slider"
+            aria-valuetext={`${current.name}, ${current.gLabel}`}
+            onChange={(e) => moveTo(Number(e.target.value))}
+          />
+          <div aria-hidden="true" className="grid grid-cols-3 text-xs text-[var(--text-muted)] pt-1">
             {STOPS.map((s, i) => (
-              <span key={s.name} className={`flex flex-col ${i === 0 ? "items-start" : i === LAST ? "items-end" : "items-center"} ${i === stop ? "font-semibold" : "text-ink/70"}`}>
+              <span
+                key={s.name}
+                className={`flex flex-col ${
+                  i === 0 ? "items-start" : i === LAST ? "items-end" : "items-center"
+                } ${i === stop ? "font-medium text-[var(--text)]" : ""}`}
+              >
                 <RegimeMark g={s.g} />
-                <span>{s.gLabel}</span>
+                <span className="mt-0.5">{s.gLabel}</span>
               </span>
             ))}
           </div>
         </div>
       </div>
 
-      <figcaption className="text-sm text-ink/70 md:col-span-12">Illustration of buoyancy, not a simulation.</figcaption>
+      <figcaption className="text-xs text-[var(--text-muted)] md:col-span-12 border-t border-[var(--border)] pt-3">
+        Illustration of buoyancy, not a simulation.
+      </figcaption>
     </figure>
   );
 }

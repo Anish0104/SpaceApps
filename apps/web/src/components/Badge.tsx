@@ -28,10 +28,10 @@ export function EvidenceBadge({ type }: { type: EvidenceType }) {
 
 /** A gravity regime always has the same colour. The square mark never appears without its name. */
 const REGIME: Record<GravityRegime, { label: string; color: string }> = {
-  earth: { label: "Earth", color: "var(--soot)" },
-  mars: { label: "Mars", color: "var(--mars)" },
-  moon: { label: "Moon", color: "var(--regolith)" },
-  orbit: { label: "Orbit", color: "var(--ch-blue)" },
+  earth: { label: "Earth", color: "var(--env-earth)" },
+  mars: { label: "Mars", color: "var(--env-mars)" },
+  moon: { label: "Moon", color: "var(--env-moon)" },
+  orbit: { label: "Orbit", color: "var(--env-orbit)" },
 };
 
 export function RegimeMark({ g }: { g: number }) {
@@ -47,7 +47,7 @@ export function RegimeMark({ g }: { g: number }) {
 export type Light = "green" | "yellow" | "red" | "hatch" | "none";
 
 /**
- * A 20px light that rates evidence coverage or strength, never safety. Always place words next to
+ * A 14px light that rates evidence coverage or strength, never safety. Always place words next to
  * it; pass `label` only when those words are not right beside it for a screen reader.
  */
 export function VerdictLight({ light, label }: { light: Light; label?: string }) {

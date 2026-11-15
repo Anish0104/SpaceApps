@@ -6,7 +6,7 @@ compatibility_date = "2024-11-06"
 port = 8787
 
 [vars]
-DATA_VERSION = "1.1.0"
+DATA_VERSION = "1.2.0"
 # The deployed web app's origin, e.g. "https://flameatlas.pages.dev" (no trailing slash; comma-separate
 # several). http://localhost:5173 is always allowed. Empty = only local dev may call the API from a browser.
 ALLOWED_ORIGIN = ""

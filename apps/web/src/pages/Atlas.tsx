@@ -1,135 +1,302 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { rankInvestigations, type RankedResult, type SafetyRole } from "@flameatlas/engine";
+import { rankInvestigations, type FuelPhase, type RankedResult, type SafetyRole } from "@flameatlas/engine";
 import { dataset, isPsiRecord, releaseCoverage, runsFor } from "../lib/data";
 import { fieldLabel, hasAcronym, investigationLabel, reasonLabel, sentenceCase } from "../lib/labels";
 import { useScenario } from "../lib/scenario";
 import { Tag } from "../components/Badge";
 
 const ROLES: (SafetyRole | null)[] = [null, "prevention", "detection", "suppression", "physics"];
+const PHASES: (FuelPhase | null)[] = [null, "solid", "liquid", "gas", "aerosol"];
 
-/**
- * Score parts, in bar order. Shades of ink, not hues: colour is reserved for gravity regime and
- * verdict lights. Position, the key under the list and the tooltip identify each part.
- */
-const PARTS = [
-  { key: "M", label: "Mission match", ink: 100 },
-  { key: "F", label: "Fuel", ink: 76 },
-  { key: "Q", label: "Question", ink: 56 },
-  { key: "D", label: "Safety domain", ink: 40 },
-  { key: "C", label: "Completeness", ink: 26 },
-] as const;
-
-const shade = (ink: number) => `color-mix(in srgb, var(--ink) ${ink}%, var(--panel))`;
-
-function ContributionBar({ r }: { r: RankedResult }) {
-  // No documented oxygen and no documented pressure (run values or ranges): there is nothing to compare
-  // with the scenario's atmosphere, so no score is computed or shown. Hatch = not documented.
-  if (r.cannotAssess || r.score === null) {
-    return (
-      <div title="No oxygen or pressure range is documented for this investigation"
-        className="hatch flex h-6 w-40 items-center justify-center border border-regolith">
-        <span className="bg-panel px-1.5 text-sm">Cannot assess</span>
-      </div>
-    );
-  }
-  const summary = PARTS.map((p) => `${p.label} ${r.contributions[p.key].toFixed(2)}`).join(", ");
-  return (
-    <div className="flex items-center gap-3">
-      <div role="img" aria-label={`Relevance ${r.score.toFixed(2)} of 1. ${summary}.`} className="flex h-3 w-40 gap-[2px] bg-module">
-        {PARTS.map((p) => r.contributions[p.key] > 0 && (
-          <span key={p.key} title={`${p.label}: ${r.contributions[p.key].toFixed(2)}`}
-            style={{ width: `${r.contributions[p.key] * 100}%`, background: shade(p.ink) }} />
-        ))}
-      </div>
-      <span aria-hidden="true" className="dense font-semibold">{r.score.toFixed(2)}</span>
-    </div>
-  );
-}
 
 export default function Atlas() {
   const { scenario } = useScenario();
   const [role, setRole] = useState<SafetyRole | null>(null);
+  const [phase, setPhase] = useState<FuelPhase | null>(null);
   const [q, setQ] = useState("");
 
-  // In-browser ranking (keyword relevance is a simple contains-check here;
-  // swap for api.search() once the worker is running).
   const ranked = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    const inputs = dataset.investigations.map((inv) => ({
-      investigation: inv,
-      runs: runsFor(inv.psiId),
-      questionScore: needle && `${inv.acronym} ${inv.name} ${inv.objectives}`.toLowerCase().includes(needle) ? 1 : 0,
-    }));
+    const inputs = dataset.investigations
+      .filter((inv) => !phase || inv.fuelPhase === phase || runsFor(inv.psiId).some((r) => r.fuelPhase === phase))
+      .map((inv) => ({
+        investigation: inv,
+        runs: runsFor(inv.psiId),
+        questionScore: needle && `${inv.acronym} ${inv.name} ${inv.objectives}`.toLowerCase().includes(needle) ? 1 : 0,
+      }));
     return rankInvestigations(inputs, scenario, role);
-  }, [scenario, role, q]);
+  }, [scenario, role, phase, q]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Title block */}
       <div>
-        <h1 className="display text-2xl sm:text-3xl">Research atlas</h1>
-        <p className="measure mt-2">
-          Ranked for <b className="font-semibold">{scenario.name}</b>. The score is relevance to your question and scenario, never a fire-risk score.
-          Investigations with no documented oxygen or pressure range show “Cannot assess” instead of a score.
+        <p className="eyebrow">Investigations</p>
+        <h1 className="page-title">
+          Research atlas
+        </h1>
+        <p className="page-lede">
+          Ranked for <span className="font-medium text-[var(--text)]">{scenario.name}</span>. The score rates relevance to this scenario, never fire safety.
         </p>
         {releaseCoverage && (
-          <p className="mt-2 text-sm text-ink/70">
+          <p className="mt-2 text-xs text-[var(--text-muted)]">
             Data {dataset.version}: {releaseCoverage.investigations} investigations indexed, {releaseCoverage.runsImported} runs imported, {releaseCoverage.runsVerified} runs verified.
           </p>
         )}
       </div>
 
-      <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
-        <label className="flex flex-col gap-1 text-sm">
-          <span className="text-ink/70">Search investigations</span>
-          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} className="field w-72 max-w-full text-base" />
-        </label>
-        <div role="group" aria-label="Safety role" className="flex flex-wrap gap-2">
-          {ROLES.map((r) => (
-            <button key={r ?? "all"} type="button" onClick={() => setRole(r)} aria-pressed={role === r} className="btn btn-secondary btn-sm">
-              {r ? sentenceCase(r) : "All roles"}
-            </button>
-          ))}
+      {/* Top Filter Row: Search, Safety role, Fuel phase */}
+      <div className="sticky top-[4.5rem] z-20 flex flex-wrap items-center gap-3 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_88%,transparent)] p-3 shadow-[var(--shadow)] backdrop-blur-xl">
+        {/* Search */}
+        <div className="flex-1 min-w-[200px]">
+          <label htmlFor="atlas-search" className="sr-only">Search investigations</label>
+          <input
+            id="atlas-search"
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search investigations, acronyms, materials…"
+            className="field w-full text-sm text-[var(--text)]"
+          />
+        </div>
+
+        {/* Safety Role Filter */}
+        <div className="flex items-center gap-2">
+          <label htmlFor="role-filter" className="text-xs text-[var(--text-muted)] whitespace-nowrap">
+            Safety role:
+          </label>
+          <select
+            id="role-filter"
+            value={role ?? ""}
+            onChange={(e) => setRole((e.target.value as SafetyRole) || null)}
+            className="field field-sm text-xs text-[var(--text)]"
+          >
+            <option value="">All roles</option>
+            {ROLES.filter(Boolean).map((r) => (
+              <option key={r} value={r!}>
+                {sentenceCase(r!)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Fuel Phase Filter */}
+        <div className="flex items-center gap-2">
+          <label htmlFor="phase-filter" className="text-xs text-[var(--text-muted)] whitespace-nowrap">
+            Fuel phase:
+          </label>
+          <select
+            id="phase-filter"
+            value={phase ?? ""}
+            onChange={(e) => setPhase((e.target.value as FuelPhase) || null)}
+            className="field field-sm text-xs text-[var(--text)]"
+          >
+            <option value="">All phases</option>
+            {PHASES.filter(Boolean).map((p) => (
+              <option key={p} value={p!}>
+                {sentenceCase(p!)}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
-      <ol className="panel divide-y divide-rule">
+      {/* Responsive Grid: 3 cols desktop, 2 cols tablet, 1 col mobile */}
+      <p className="-mt-4 text-sm text-[var(--text-muted)]" aria-live="polite">
+        {ranked.length} {ranked.length === 1 ? "investigation" : "investigations"}
+        {q.trim() || role || phase ? " match your filters" : ""}
+      </p>
+
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         {ranked.map((r, i) => {
           const inv = dataset.investigations.find((x) => x.psiId === r.psiId)!;
-          const reasons = r.reasons.filter((x) => x !== "CANNOT_ASSESS_APPLICABILITY"); // already said in the bar's place
+          const runs = runsFor(inv.psiId);
+          const reasons = r.reasons.filter((x) => x !== "CANNOT_ASSESS_APPLICABILITY").slice(0, 3);
+
+          // Summarize 2x2 data grid
+          const gravities = runs.map((run) => run.gravityG.value).filter((v): v is number => v !== null);
+          const gravText = gravities.length > 0
+            ? Math.min(...gravities) === Math.max(...gravities)
+              ? `${Math.min(...gravities)} g`
+              : `${Math.min(...gravities)}–${Math.max(...gravities)} g`
+            : inv.ranges?.gravityG
+            ? `${inv.ranges.gravityG[0]}–${inv.ranges.gravityG[1]} g`
+            : null;
+
+          const o2s = runs.map((run) => run.o2MolPct.value).filter((v): v is number => v !== null);
+          const o2Text = o2s.length > 0
+            ? Math.min(...o2s) === Math.max(...o2s)
+              ? `${Math.min(...o2s)}%`
+              : `${Math.min(...o2s)}–${Math.max(...o2s)}%`
+            : inv.ranges?.o2MolPct
+            ? `${inv.ranges.o2MolPct[0]}–${inv.ranges.o2MolPct[1]}%`
+            : null;
+
+          const pressures = runs.map((run) => run.pressureKPa.value).filter((v): v is number => v !== null);
+          const pText = pressures.length > 0
+            ? Math.min(...pressures) === Math.max(...pressures)
+              ? `${Math.min(...pressures)} kPa`
+              : `${Math.min(...pressures)}–${Math.max(...pressures)} kPa`
+            : inv.ranges?.pressureKPa
+            ? `${inv.ranges.pressureKPa[0]}–${inv.ranges.pressureKPa[1]} kPa`
+            : null;
+
+          const flows = runs.map((run) => run.flowCmS.value).filter((v): v is number => v !== null);
+          const flowText = flows.length > 0
+            ? Math.min(...flows) === Math.max(...flows)
+              ? `${Math.min(...flows)} cm/s`
+              : `${Math.min(...flows)}–${Math.max(...flows)} cm/s`
+            : inv.ranges?.flowCmS
+            ? `${inv.ranges.flowCmS[0]}–${inv.ranges.flowCmS[1]} cm/s`
+            : null;
+
+          const materials = Array.from(new Set(runs.map((run) => run.material.value).filter(Boolean)));
+          const primaryMaterial = materials.length > 0 ? materials[0] : (inv.fuelPhase ? sentenceCase(inv.fuelPhase) : "Unspecified");
+
           return (
-            <li key={r.psiId}
-              className="grid grid-cols-[1.5rem_minmax(0,1fr)] items-center gap-x-4 gap-y-2 px-4 py-3 hover:bg-module/60 lg:grid-cols-[1.5rem_minmax(0,18rem)_6rem_14rem_minmax(0,1fr)]">
-              <span className="dense text-ink/70">{i + 1}</span>
-              <div className="min-w-0">
-                <Link to={`/investigation/${inv.psiId}`} title={inv.name} className="font-semibold hover:underline">{investigationLabel(inv)}</Link>
-                <span className="dense ml-2 text-sm text-ink/70">{isPsiRecord(inv) ? inv.psiId : "From NASA report, not PSI"}</span>
-                {/* Without a real acronym the label already is the (short) title; the full name is on hover. */}
-                {hasAcronym(inv) && <p className="truncate text-sm text-ink/70">{inv.name}</p>}
-              </div>
-              <span className="col-start-2 text-sm lg:col-start-auto">{sentenceCase(inv.safetyRole)}</span>
-              <div className="col-start-2 lg:col-start-auto"><ContributionBar r={r} /></div>
-              {(reasons.length > 0 || r.notDocumented.length > 0) && (
-                <div className="col-start-2 flex flex-wrap gap-1 lg:col-start-auto">
-                  {reasons.map((x) => <Tag key={x}>{reasonLabel(x)}</Tag>)}
-                  {r.notDocumented.map((x) => <Tag key={x} variant="hatch">{fieldLabel(x)} not documented</Tag>)}
+            <article
+              key={r.psiId}
+              className="panel panel-hover group relative flex h-full flex-col justify-between p-6"
+            >
+              <div className="space-y-4">
+                {/* Title & metadata */}
+                <div>
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-mono text-xs text-[var(--text-muted)]">
+                      #{i + 1} • {isPsiRecord(inv) ? inv.psiId : "NASA report"}
+                    </span>
+                    <span className="rounded-[4px] bg-[var(--surface-2)] px-2 py-0.5 text-xs text-[var(--text-muted)]">
+                      {sentenceCase(inv.safetyRole)}
+                    </span>
+                  </div>
+
+                  <h2 className="mt-2 font-semibold tracking-tight text-xl leading-snug text-[var(--text)] transition-colors group-hover:text-[var(--accent)]">
+                    <Link
+                      to={`/investigation/${inv.psiId}`}
+                      className="after:absolute after:inset-0 after:rounded-[12px] after:content-['']"
+                    >
+                      {investigationLabel(inv)}
+                    </Link>
+                  </h2>
+
+                  {hasAcronym(inv) && (
+                    <p className="mt-1 line-clamp-2 text-xs text-[var(--text-muted)]">
+                      {inv.name}
+                    </p>
+                  )}
+
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs text-[var(--text-muted)]">
+                    <span>Phase: <b className="font-medium text-[var(--text)]">{sentenceCase(inv.fuelPhase ?? runs[0]?.fuelPhase ?? "Unknown")}</b></span>
+                    <span>•</span>
+                    <span>Fuel: <b className="font-medium text-[var(--text)]">{primaryMaterial}</b></span>
+                  </div>
                 </div>
-              )}
-            </li>
+
+                {/* Match score bar or hatched cannot assess */}
+                <div>
+                  {r.cannotAssess || r.score === null ? (
+                    <div
+                      title="No oxygen or pressure range is documented for this investigation"
+                      className="hatch flex h-7 w-full items-center justify-center rounded-[6px] border border-[var(--border)]"
+                    >
+                      <span className="rounded-[2px] bg-[var(--surface)] px-2 py-0.5 text-xs text-[var(--text-muted)]">
+                        Cannot assess
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-[var(--text-muted)]">Relevance match</span>
+                        <span className="font-mono font-medium text-[var(--text)]">
+                          {(r.score * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                      <div
+                        role="progressbar"
+                        aria-valuenow={Math.round(r.score * 100)}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-label={`Match score ${(r.score * 100).toFixed(0)}%`}
+                        className="h-2 w-full overflow-hidden rounded-full bg-[var(--surface-2)]"
+                      >
+                        <div
+                          className="h-full rounded-full transition-all duration-300"
+                          style={{
+                            width: `${Math.max(4, r.score * 100)}%`,
+                            backgroundColor: "var(--accent)",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2x2 Data Grid with tabular numbers and hatch for unknowns */}
+                <div className="grid grid-cols-2 gap-x-3 gap-y-2 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-3 text-xs">
+                  <div>
+                    <span className="text-[var(--text-muted)]">Gravity: </span>
+                    {gravText ? (
+                      <span className="font-mono font-medium text-[var(--text)]">{gravText}</span>
+                    ) : (
+                      <span className="hatch inline-block rounded px-1 text-[var(--text-muted)]">Unknown</span>
+                    )}
+                  </div>
+                  <div>
+                    <span className="text-[var(--text-muted)]">Oxygen: </span>
+                    {o2Text ? (
+                      <span className="font-mono font-medium text-[var(--text)]">{o2Text}</span>
+                    ) : (
+                      <span className="hatch inline-block rounded px-1 text-[var(--text-muted)]">Unknown</span>
+                    )}
+                  </div>
+                  <div>
+                    <span className="text-[var(--text-muted)]">Pressure: </span>
+                    {pText ? (
+                      <span className="font-mono font-medium text-[var(--text)]">{pText}</span>
+                    ) : (
+                      <span className="hatch inline-block rounded px-1 text-[var(--text-muted)]">Unknown</span>
+                    )}
+                  </div>
+                  <div>
+                    <span className="text-[var(--text-muted)]">Flow: </span>
+                    {flowText ? (
+                      <span className="font-mono font-medium text-[var(--text)]">{flowText}</span>
+                    ) : (
+                      <span className="hatch inline-block rounded px-1 text-[var(--text-muted)]">Unknown</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Up to 3 reason tags */}
+              <div className="mt-4 pt-3 border-t border-[var(--border)]">
+                {reasons.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5">
+                    {reasons.map((x) => (
+                      <Tag key={x}>{reasonLabel(x)}</Tag>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-xs text-[var(--text-muted)]">
+                    No specific condition deviations noted.
+                  </span>
+                )}
+              </div>
+            </article>
           );
         })}
-      </ol>
-
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink/70">
-        <span>Bar, left to right:</span>
-        {PARTS.map((p) => (
-          <span key={p.key} className="inline-flex items-center gap-1.5">
-            <span aria-hidden="true" className="h-2.5 w-4" style={{ background: shade(p.ink) }} />
-            {p.label}
-          </span>
-        ))}
-        <span>The number is the total, from 0 to 1.</span>
       </div>
+
+      {ranked.length === 0 && (
+        <div className="panel p-10 text-center">
+          <p className="font-semibold tracking-tight text-xl text-[var(--text)]">No investigations match</p>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">Try a different search term, or clear the role and phase filters.</p>
+          <button type="button" className="btn btn-secondary btn-sm mt-5" onClick={() => { setQ(""); setRole(null); setPhase(null); }}>
+            Clear filters
+          </button>
+        </div>
+      )}
     </div>
   );
 }
