@@ -5,7 +5,7 @@ import { dataset, invById } from "../data";
 import { useOffline } from "../useOffline";
 
 const API_BASE = String(import.meta.env.VITE_API_BASE ?? "").replace(/\/+$/, "");
-const EXAMPLES = ["Nearest tested condition for this habitat?", "Is there lunar-gravity flame-spread data?", "Compare BASS-II and Saffire on scale"];
+const EXAMPLES = ["Nearest tested condition for this habitat?", "Is there lunar-gravity flame-spread data?", "Compare BASS and Saffire on scale"];
 
 export type ChatMsg =
   | { id: number; role: "user"; text: string }

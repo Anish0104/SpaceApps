@@ -20,7 +20,7 @@ const index = buildIndex(ds);
 const scenarios = scenariosJson.map((s) => Scenario.parse(s));
 const moon = scenarios.find((s) => s.id === "moon-challenge")!;
 const MODELS = ["model-a", "model-b", "model-c"];
-const Q = "Compare BASS-II small-sample and Saffire large-scale cotton-fiberglass results";
+const Q = "Compare BASS small-sample and Saffire large-scale cotton-fiberglass results";
 
 /** A Gemini-shaped answer. The second sentence quotes a number that is on no record. */
 const ANSWER = {

@@ -1,4 +1,122 @@
 {
   "_note": "Validated LLM answers for the demo questions, written by `pnpm warm-cache` and committed so the demo works offline. Keyed by sha-256 of question + scenario id + data version. Do not edit by hand: /api/ask re-validates each entry and ignores any that fail. Entries with dataVersion fixture-* come from FAKE fixture data and must never be presented as NASA data.",
-  "answers": {}
+  "answers": {
+    "ask:e6f324f89bffe15d99766d1cbc2f4cff8bbcdbebdea2b4171ee997b8b7721bfe": {
+      "question": "For 30% O2 at 10.2 psi, what is the nearest tested condition, matched on O2 partial pressure or on mole fraction?",
+      "scenarioId": "moon-challenge",
+      "dataVersion": "1.3.0",
+      "model": "gemini-3.5-flash",
+      "answer": {
+        "status": "answered",
+        "verdict": "yellow",
+        "sentences": [
+          {
+            "text": "For the assumed scenario input of 30 mol% O2 at 70.3 kPa (10.2 psi) with an O2 partial pressure of 21.09 kPa, the closest tested run by O2 concentration on SIBAL material is SAF-VI-2 at 31 mol% O2, though it was conducted at 54.1 kPa total pressure and 16.77 kPa O2 partial pressure.",
+            "recordIds": [
+              "SCENARIO:moon-challenge",
+              "SAF-VI-2"
+            ]
+          },
+          {
+            "text": "By O2 partial pressure on SIBAL material, the closest tested run is SAF-IV-1 with an O2 partial pressure of 22 kPa, recorded at 22 mol% O2 and 100 kPa total pressure.",
+            "recordIds": [
+              "SAF-IV-1"
+            ]
+          },
+          {
+            "text": "Additionally, run SAF-V-2 tested a cotton jersey fabric at 26.2 mol% O2, 70.7 kPa total pressure, and 18.52 kPa O2 partial pressure.",
+            "recordIds": [
+              "SAF-V-2"
+            ]
+          }
+        ],
+        "differs": [
+          "gravity"
+        ],
+        "limit": "The available records only include microgravity (0 g) flight data, whereas lunar gravity (0.165 g) is requested in the scenario. Results from microgravity do not bound lunar behavior, as partial gravity environments like lunar gravity may present different flammability dynamics.",
+        "next": {
+          "kind": "missing_experiment",
+          "target": "Flame spread testing of SIBAL fabric under actual lunar gravity (0.165 g) at 30 mol% O2 and 70.3 kPa total pressure."
+        },
+        "scope": "In our curated dataset; illustrative, not an approved NASA plan.",
+        "missingFields": [],
+        "source": "llm",
+        "dataVersion": "1.3.0"
+      }
+    },
+    "ask:6714204f1efe2d01c5a5397ec1ca7fe282b923457720b6870df36c75c9629292": {
+      "question": "Compare BASS small-sample and Saffire large-scale cotton-fiberglass results: is the difference scale alone, or confounded?",
+      "scenarioId": "moon-fm2",
+      "dataVersion": "1.3.0",
+      "model": "gemini-3.5-flash",
+      "answer": {
+        "status": "answered",
+        "verdict": "yellow",
+        "sentences": [
+          {
+            "text": "Because airflow velocity and oxygen concentration varied alongside sample width across these tests, the comparison between BASS small-scale and Saffire large-scale results is confounded by differences in flow speed and oxygen content rather than scale alone.",
+            "recordIds": [
+              "GMT96-T7",
+              "SAF-I-1",
+              "SAF-III-1"
+            ]
+          }
+        ],
+        "differs": [
+          "gravity",
+          "oxygen",
+          "pressure"
+        ],
+        "limit": "The available records differ in flow speed and oxygen concentration between small and large samples, confounding a pure scale comparison. Furthermore, all cited records were conducted in microgravity (0 g), which does not bound flammability in lunar gravity.",
+        "next": {
+          "kind": "evidence_now"
+        },
+        "scope": "In our curated dataset; illustrative, not an approved NASA plan.",
+        "missingFields": [],
+        "source": "llm",
+        "dataVersion": "1.3.0"
+      }
+    },
+    "ask:6fe4d1847ad2d94272bd08f075b562c247dfb62661e3c1f13a6afa493d7b4d51": {
+      "question": "Where is the biggest evidence gap for a lunar habitat, and what one experiment would close it most efficiently?",
+      "scenarioId": "moon-fm2",
+      "dataVersion": "1.3.0",
+      "model": "gemini-3.5-flash",
+      "answer": {
+        "status": "cannot_confirm",
+        "verdict": "red",
+        "sentences": [
+          {
+            "text": "For the assumed scenario requiring 0.165 g lunar gravity, all solid material flammability tests in the dataset, such as BASS and Saffire IV-VI runs using SIBAL material, were conducted in microgravity at 0 g.",
+            "recordIds": [
+              "SCENARIO:moon-fm2",
+              "GMT96-T7",
+              "SAF-IV-1",
+              "SAF-VI-2"
+            ]
+          },
+          {
+            "text": "While BASS aims to bridge ground-based microgravity tests and actual flammability, Earth gravity and orbit results do not bound lunar behavior, as lunar gravity may be more flammable.",
+            "recordIds": [
+              "PSI-26"
+            ]
+          }
+        ],
+        "differs": [
+          "gravity"
+        ],
+        "limit": "The dataset contains solid fuel flammability tests only at 0 g microgravity and lacks tests conducted at partial lunar gravity (0.165 g). Earth gravity and orbit microgravity results do not bound lunar behavior, which may be more flammable.",
+        "next": {
+          "kind": "missing_experiment",
+          "target": "Solid fuel flammability testing of SIBAL under partial lunar gravity (0.165 g) at 34 mol% O2 and 56.5 kPa pressure."
+        },
+        "scope": "In our curated dataset; illustrative, not an approved NASA plan.",
+        "missingFields": [
+          "gravityG"
+        ],
+        "source": "llm",
+        "dataVersion": "1.3.0"
+      }
+    }
+  }
 }

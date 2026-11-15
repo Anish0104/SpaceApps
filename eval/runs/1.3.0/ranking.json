@@ -50,7 +50,7 @@
     },
     {
       "qid": "q3",
-      "question": "Compare BASS-II small-sample and Saffire large-scale cotton-fiberglass results: is the difference scale alone, or confounded?",
+      "question": "Compare BASS small-sample and Saffire large-scale cotton-fiberglass results: is the difference scale alone, or confounded?",
       "scenarioId": "moon-challenge",
       "relevantPsiIds": [
         "PSI-25",
