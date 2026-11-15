@@ -10,5 +10,4 @@ SAF-V-2,SAFFIRE-IVVI,Cotton jersey fabric,solid,26.2,70.7,18.52,20,concurrent,0.
 SAF-VI-2,SAFFIRE-IVVI,Cotton-fiberglass fabric (SIBAL),solid,31.0,54.1,16.77,20,concurrent,0.0,500,,,S-SAF-IVVI,imported
 SAF-VI-3,SAFFIRE-IVVI,"PMMA (acrylic), two-sided",solid,30.3,54.6,16.54,20,concurrent,0.0,180,10.0,,S-SAF-IVVI,verified
 SAF-VI-4,SAFFIRE-IVVI,"PMMA (acrylic), one-sided",solid,28.8,55.2,15.9,20,concurrent,0.0,180,5.0,,S-SAF-IVVI,verified
-BASS2-CF-conc,PSI-25,Cotton-fiberglass fabric (SIBAL),solid,21.0,101.3,21.27,10,concurrent,0.0,100,0.32,,S-BASS2,imported
-BASS2-CF-opp,PSI-25,Cotton-fiberglass fabric (SIBAL),solid,21.0,101.3,21.27,10,opposed,0.0,100,0.32,,S-BASS2,imported
+GMT96-T7,PSI-26,Cotton-fiberglass fabric (SIBAL),solid,21.0,101.3,21.27,10,concurrent,0.0,100,0.32,,S-BASS2,imported

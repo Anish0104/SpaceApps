@@ -21,17 +21,22 @@ OUT = Path(__file__).resolve().parent.parent / "data" / "dataset-v1.0.json"
 COLLECTOR = "Navneet"
 
 # ---------- value helpers ----------
-def num(v, unit=None, t="MEASURED", src=None, formula=None, missing="not_documented"):
+def num(v, unit=None, t="MEASURED", src=None, formula=None, missing="not_documented", page=None, note=None):
     if v is None:
-        return {"value": None, "unit": unit, "type": "UNKNOWN", "missingReason": missing,
-                "collectedBy": COLLECTOR}
-    d = {"value": v, "type": t, "collectedBy": COLLECTOR}
-    if unit:
-        d["unit"] = unit
-    if src:
-        d["sourceId"] = src
-    if formula:
-        d["formula"] = formula
+        d = {"value": None, "unit": unit, "type": "UNKNOWN", "missingReason": missing,
+             "collectedBy": COLLECTOR}
+    else:
+        d = {"value": v, "type": t, "collectedBy": COLLECTOR}
+        if unit:
+            d["unit"] = unit
+        if src:
+            d["sourceId"] = src
+        if formula:
+            d["formula"] = formula
+    if page:
+        d["page"] = page
+    if note:
+        d["note"] = note
     return d
 
 def sv(v, t="MEASURED", src=None, missing="not_documented"):
@@ -47,11 +52,11 @@ def po2(o2, p, src):
     return num(val, "kPa", "COMPUTED", src, "pO2 = (O2 mol% / 100) x total pressure (kPa)")
 
 def run(rid, psi, material, geometry, length_mm, thick_mm, o2, p, flow, direction, src,
-        *, o2_t="MEASURED", p_t="MEASURED", duct=None, apparatus=None, spread=None, spread_src=None):
+        *, o2_t="MEASURED", p_t="MEASURED", duct=None, apparatus=None, spread=None, spread_src=None, size_note=None):
     r = {
         "id": rid, "psiId": psi,
         "material": sv(material, src=src), "fuelPhase": "solid", "geometry": sv(geometry, src=src),
-        "sizeMm": num(length_mm, "mm", src=src),
+        "sizeMm": num(length_mm, "mm", src=src, note=size_note),
         "thicknessMm": num(thick_mm, "mm", src=src),
         "o2MolPct": num(o2, "mol%", o2_t, src),
         "pressureKPa": num(p, "kPa", p_t, src),
@@ -64,7 +69,7 @@ def run(rid, psi, material, geometry, length_mm, thick_mm, o2, p, flow, directio
         "apparatus": sv(apparatus, src=src),
         "method": sv("cameras / video", "MEASURED", src),
         "sensors": ["cameras", "thermocouples"],
-        "outcomes": ([{"label": "flame spread rate", "value": num(spread, "mm/s", "MEASURED", spread_src or src)}]
+        "outcomes": ([{"label": "flame spread rate", "value": num(spread, "mm/s", "MEASURED", spread_src or src, page="Table 1 (cont.), p.31")}]
                      if spread is not None else []),
         "status": "imported",
     }
@@ -141,7 +146,7 @@ runs = [
     run("SAF-I-1",  "PSI-98",  SIBAL, "sheet, 40.6 cm wide", 940, 0.37, 21.7, None, 20, "concurrent",
         "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module", spread=1.8, spread_src="S-SAF-IIII"),
     run("SAF-I-2",  "PSI-98",  SIBAL, "sheet, 40.6 cm wide", 100, 0.37, 21.5, None, 20, "opposed",
-        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module", spread=1.3, spread_src="S-SAF-IIII"),
+        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module", spread=1.3, spread_src="S-SAF-IIII", size_note="Table reports ~10 cm (approximate)"),
     run("SAF-II-1", "PSI-99",  "Silicone", "sheet, 5 cm wide", 290, 0.27, 22.1, None, 20, "concurrent",
         "S-SAF-IIII", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
     run("SAF-II-9", "PSI-99",  "PMMA (acrylic)", "flat slab, 5 cm wide", 290, 10.0, 22.0, None, 20, "concurrent",
@@ -149,7 +154,7 @@ runs = [
     run("SAF-III-1","PSI-100", SIBAL, "sheet, 40.6 cm wide", 940, 0.37, 21.2, None, 25, "concurrent",
         "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module", spread=2.3, spread_src="S-SAF-IIII"),
     run("SAF-III-2","PSI-100", SIBAL, "sheet, 40.6 cm wide", 100, 0.37, 21.2, None, 25, "opposed",
-        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module", spread=0.98, spread_src="S-SAF-IIII"),
+        "S-SAF-IIII", duct="Saffire large flow duct", apparatus="Cygnus Saffire module", spread=0.98, spread_src="S-SAF-IIII", size_note="Table reports ~10 cm (approximate)"),
 
     # Saffire IV-VI (NTRS 20240007488 matrix). Pressure + O2 MEASURED. Not a PSI investigation.
     # SAF-IV-1 thickness: 0.37 mm not run-specific in the cited 2024 paper -> not documented.
@@ -165,19 +170,13 @@ runs = [
     run("SAF-VI-4", "SAFFIRE-IVVI", "PMMA (acrylic), one-sided", "slab", 180, 5.0, 28.8, 55.2, 20, "concurrent",
         "S-SAF-IVVI", duct="Saffire flow duct", apparatus="Cygnus Saffire module"),
 
-    # BASS-II cotton-fiberglass (NTRS 20150008962). O2 = cabin air -> INFERRED.
-    # Pressure documented as 1 atm in the 2015 paper -> MEASURED. NOTE: the 21% O2 / 10 cm/s run
-    # identity is unconfirmed (the paper appendix classes this as a BASS run, not BASS-II), so these
-    # two runs stay imported and must not be cited as verified BASS-II evidence until resolved.
-    # Thickness ~0.32 mm is explicitly stated in the 2015 paper (Sec.2, p.2-3).
-    # Spread rates removed: the 2.55 / 1.21 mm/s figures are from the 2014 BASS presentation
-    # and are not tied to these BASS-II runs (per verification).
-    run("BASS2-CF-conc", "PSI-25", SIBAL, "sheet, 2.2 cm wide", 100, 0.32, 21.0, 101.3, 10, "concurrent",
-        "S-BASS2", o2_t="INFERRED", p_t="MEASURED", duct="76 x 76 mm",
-        apparatus="Microgravity Science Glovebox (BASS-II duct)"),
-    run("BASS2-CF-opp",  "PSI-25", SIBAL, "sheet, 2.2 cm wide", 100, 0.32, 21.0, 101.3, 10, "opposed",
-        "S-BASS2", o2_t="INFERRED", p_t="MEASURED", duct="76 x 76 mm",
-        apparatus="Microgravity Science Glovebox (BASS-II duct)"),
+    # BASS (NTRS 20150008962, appendix run list). The 21% O2 / 10 cm/s concurrent case is documented
+    # in the appendix as BASS run GMT96-T7 (not BASS-II) -> attributed to PSI-26 with O2, flow and
+    # pressure MEASURED (appendix; "ambient pressure was 1 atm", Sec.2); thickness ~0.32 mm (Sec.2).
+    # The former opposed "BASS2-CF-opp" run is removed: its opposed flow direction is not tied to any
+    # documented BASS/BASS-II run. (The 2.55/1.21 mm/s spread rates were already removed earlier.)
+    run("GMT96-T7", "PSI-26", SIBAL, "sheet, 2.2 cm wide", 100, 0.32, 21.0, 101.3, 10, "concurrent",
+        "S-BASS2", duct="76 x 76 mm", apparatus="Microgravity Science Glovebox (BASS)"),
 ]
 
 # ---------- INVESTIGATIONS ----------
@@ -200,11 +199,10 @@ def inv(psi, name, acr, role, phase, obj, *, ptype="Microgravity", hardware=None
 investigations = [
     inv("PSI-26", "Burning and Suppression of Solids", "BASS", "prevention", "solid",
         "Flame spread, growth and extinction of solid fuels in low-speed forced flow in microgravity; bridge to NASA-STD-6001 Test 1.",
-        hardware="Microgravity Science Glovebox", platform="ISS", related=["PSI-25"]),
+        hardware="Microgravity Science Glovebox", platform="ISS", related=["PSI-25"], run_ids=["GMT96-T7"]),
     inv("PSI-25", "Burning and Suppression of Solids - II", "BASS-II", "prevention", "solid",
         "Ignition, flame spread and extinction of thin/thick solids over varied oxygen and low-speed flow in microgravity.",
         hardware="Microgravity Science Glovebox", platform="ISS", related=["PSI-26"],
-        run_ids=["BASS2-CF-conc", "BASS2-CF-opp"],
         ranges={"o2MolPct": [16, 21], "flowCmS": [1, 55], "gravityG": [0, 0], "sourceId": "S-BASS2"}),
     inv("PSI-98", "Spacecraft Fire Safety Experiment-I", "Saffire-I", "prevention", "solid",
         "First large-scale flame spread over a 94 x 40.6 cm cotton-fiberglass sample in microgravity aboard an uncrewed Cygnus vehicle.",

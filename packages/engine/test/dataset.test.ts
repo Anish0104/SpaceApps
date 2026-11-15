@@ -18,7 +18,7 @@ describe("dataset.json", () => {
   it("is release 1.3.0, real data, not the fixture set", () => {
     expect(parsed.data?.version).toBe("1.3.0");
     expect(parsed.data?.fixture).toBe(false);
-    expect(parsed.data?.runs).toHaveLength(13);
+    expect(parsed.data?.runs).toHaveLength(12);
     expect(parsed.data?.investigations).toHaveLength(25);
   });
 

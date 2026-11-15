@@ -17,7 +17,9 @@
         "PSI-25"
       ],
       "publications": [],
-      "runIds": [],
+      "runIds": [
+        "GMT96-T7"
+      ],
       "sensors": [],
       "hardware": "Microgravity Science Glovebox",
       "platform": "ISS"
@@ -35,10 +37,7 @@
         "PSI-26"
       ],
       "publications": [],
-      "runIds": [
-        "BASS2-CF-conc",
-        "BASS2-CF-opp"
-      ],
+      "runIds": [],
       "sensors": [],
       "hardware": "Microgravity Science Glovebox",
       "platform": "ISS",
@@ -328,7 +327,8 @@
             "type": "MEASURED",
             "collectedBy": "Navneet",
             "unit": "mm/s",
-            "sourceId": "S-SAF-IIII"
+            "sourceId": "S-SAF-IIII",
+            "page": "Table 1 (cont.), p.31"
           }
         }
       ],
@@ -355,7 +355,8 @@
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "mm",
-        "sourceId": "S-SAF-IIII"
+        "sourceId": "S-SAF-IIII",
+        "note": "Table reports ~10 cm (approximate)"
       },
       "thicknessMm": {
         "value": 0.37,
@@ -441,7 +442,8 @@
             "type": "MEASURED",
             "collectedBy": "Navneet",
             "unit": "mm/s",
-            "sourceId": "S-SAF-IIII"
+            "sourceId": "S-SAF-IIII",
+            "page": "Table 1 (cont.), p.31"
           }
         }
       ],
@@ -758,7 +760,8 @@
             "type": "MEASURED",
             "collectedBy": "Navneet",
             "unit": "mm/s",
-            "sourceId": "S-SAF-IIII"
+            "sourceId": "S-SAF-IIII",
+            "page": "Table 1 (cont.), p.31"
           }
         }
       ],
@@ -785,7 +788,8 @@
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "mm",
-        "sourceId": "S-SAF-IIII"
+        "sourceId": "S-SAF-IIII",
+        "note": "Table reports ~10 cm (approximate)"
       },
       "thicknessMm": {
         "value": 0.37,
@@ -871,7 +875,8 @@
             "type": "MEASURED",
             "collectedBy": "Navneet",
             "unit": "mm/s",
-            "sourceId": "S-SAF-IIII"
+            "sourceId": "S-SAF-IIII",
+            "page": "Table 1 (cont.), p.31"
           }
         }
       ],
@@ -1432,8 +1437,8 @@
       "status": "verified"
     },
     {
-      "id": "BASS2-CF-conc",
-      "psiId": "PSI-25",
+      "id": "GMT96-T7",
+      "psiId": "PSI-26",
       "material": {
         "value": "Cotton-fiberglass fabric (SIBAL)",
         "type": "MEASURED",
@@ -1463,7 +1468,7 @@
       },
       "o2MolPct": {
         "value": 21.0,
-        "type": "INFERRED",
+        "type": "MEASURED",
         "collectedBy": "Navneet",
         "unit": "mol%",
         "sourceId": "S-BASS2"
@@ -1516,110 +1521,7 @@
         "sourceId": "S-BASS2"
       },
       "apparatus": {
-        "value": "Microgravity Science Glovebox (BASS-II duct)",
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
-        "sourceId": "S-BASS2"
-      },
-      "method": {
-        "value": "cameras / video",
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
-        "sourceId": "S-BASS2"
-      },
-      "sensors": [
-        "cameras",
-        "thermocouples"
-      ],
-      "outcomes": [],
-      "status": "imported"
-    },
-    {
-      "id": "BASS2-CF-opp",
-      "psiId": "PSI-25",
-      "material": {
-        "value": "Cotton-fiberglass fabric (SIBAL)",
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
-        "sourceId": "S-BASS2"
-      },
-      "fuelPhase": "solid",
-      "geometry": {
-        "value": "sheet, 2.2 cm wide",
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
-        "sourceId": "S-BASS2"
-      },
-      "sizeMm": {
-        "value": 100,
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
-        "unit": "mm",
-        "sourceId": "S-BASS2"
-      },
-      "thicknessMm": {
-        "value": 0.32,
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
-        "unit": "mm",
-        "sourceId": "S-BASS2"
-      },
-      "o2MolPct": {
-        "value": 21.0,
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
-        "unit": "mol%",
-        "sourceId": "S-BASS2"
-      },
-      "pressureKPa": {
-        "value": 101.3,
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
-        "unit": "kPa",
-        "sourceId": "S-BASS2"
-      },
-      "o2PartialKPa": {
-        "value": 21.27,
-        "type": "COMPUTED",
-        "collectedBy": "Navneet",
-        "unit": "kPa",
-        "sourceId": "S-BASS2",
-        "formula": "pO2 = (O2 mol% / 100) x total pressure (kPa)"
-      },
-      "flowCmS": {
-        "value": 10,
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
-        "unit": "cm/s",
-        "sourceId": "S-BASS2"
-      },
-      "flowDirection": {
-        "value": "opposed",
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
-        "sourceId": "S-BASS2"
-      },
-      "gravityG": {
-        "value": 0.0,
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
-        "unit": "g",
-        "sourceId": "S-BASS2"
-      },
-      "ductSize": {
-        "value": "76 x 76 mm",
-        "type": "MEASURED",
-        "collectedBy": "Navneet",
-        "sourceId": "S-BASS2"
-      },
-      "diluent": {
-        "value": "nitrogen",
-        "type": "INFERRED",
-        "collectedBy": "Navneet",
-        "sourceId": "S-BASS2"
-      },
-      "apparatus": {
-        "value": "Microgravity Science Glovebox (BASS-II duct)",
+        "value": "Microgravity Science Glovebox (BASS)",
         "type": "MEASURED",
         "collectedBy": "Navneet",
         "sourceId": "S-BASS2"
