@@ -153,9 +153,6 @@ function Proposal({ p, anchor, rank }: { p: PlannedExperiment; anchor: Run; rank
             <li className="text-sm text-ink/70">Uncertainty and cost are counted as zero: no NASA source provides them.</li>
           </ul>
         </Row>
-        <Row label="Skeptic's objection">
-          <Tag variant="hatch">Not run yet: the skeptic AI is not connected</Tag>
-        </Row>
         <Row label="FM2 comparison">
           {toLunar ? (
             <>

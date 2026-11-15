@@ -14,7 +14,12 @@ type Sentence = AskResponse["sentences"][number];
 
 const NUM = /-?\d+(?:\.\d+)?/g;
 // numbers that are labels, not measurements (e.g. "PSI-26", "FLEX-2", "Saffire-III", years)
-const IGNORE = /\b(?:PSI|FLEX|BASS|SAME|DAFT|ACME|CFI|Saffire|NTRS|STD|FM)[-\s]?\d+[A-Za-z-]*\b|\b(?:19|20)\d{2}\b|\b(?:CO|O|N)2\b|\bpO2\b/gi;
+// Identifiers whose digits are labels, not measurements. Dropped before numbers are checked:
+//  - acronym + number, e.g. "PSI-26", "FLEX-2", "SAFFIRE-IVVI"
+//  - NTRS-style run labels: roman numeral + "-" + number, e.g. "VI-2", "IV-1", "I-1" (optionally "SAF-")
+//  - dataset run ids, e.g. "SAF-VI-2", "BASS2-CF-conc", "BASS2-CF-opp"
+//  - years, the "2" in O2/CO2/N2, and "pO2"
+const IGNORE = /\b(?:PSI|FLEX|BASS2?|SAME|DAFT|ACME|CFI|SAFFIRE|Saffire|NTRS|STD|FM)[-\s]?[A-Za-z]*-?\d+[A-Za-z-]*\b|\b(?:SAF-)?[IVX]+-\d+\b|\b(?:19|20)\d{2}\b|\b(?:CO|O|N)2\b|\bpO2\b/gi;
 
 const SCENARIO_PREFIX = "SCENARIO:";
 /** Citation id for a scenario's ASSUMED inputs, e.g. "SCENARIO:moon-fm2". */

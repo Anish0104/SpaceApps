@@ -7,7 +7,7 @@ import { gravityRegime, o2PartialKPa, runPO2, type GravityRegime, type Run, type
 /** `tick` is the short axis label: all four must fit side by side at phone width. */
 const REGIMES: { id: GravityRegime; label: string; tick: string; color: string }[] = [
   { id: "orbit", label: "Orbit (~0 g)", tick: "Orbit", color: "var(--ch-blue)" },
-  { id: "moon", label: "Moon (0.165 g)", tick: "Moon", color: "var(--regolith)" },
+  { id: "moon", label: "Moon (0.165 g)", tick: "Moon", color: "var(--moon)" },
   { id: "mars", label: "Mars (0.38 g)", tick: "Mars", color: "var(--mars)" },
   { id: "earth", label: "Earth (1 g)", tick: "Earth", color: "var(--soot)" },
 ];

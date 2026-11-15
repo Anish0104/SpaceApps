@@ -37,15 +37,19 @@ describe("Missing experiment page", () => {
     expect(text).toContain("Proposal 1");
     expect(text).toContain("does changing only gravity change how");
     expect(text).toContain("0.165 g");
-    expect(text).toContain("Rules-verified");
+    expect(text).toContain("Control checks passed (feasibility and safety not assessed)");
+    expect(text).not.toContain("Rules-verified");
     expect(text).toContain("Illustrative research proposal, not an approved NASA protocol.");
     expect(text).toContain("Lines up with FM2's design");
     expect(text).not.toMatch(/predict/i);
   });
-  it("is honest about what is not connected or not sourced", () => {
-    expect(text).toContain("the skeptic AI is not connected");
+  it("is honest about what is not sourced", () => {
     expect(text).toContain("Uncertainty and cost are counted as zero: no NASA source provides them.");
     expect(text).toMatch(/Candidates the rules refused \(\d+\)/);
+  });
+  it("hides the skeptic row until the skeptic AI is connected", () => {
+    expect(text).not.toContain("Skeptic's objection");
+    expect(text).not.toContain("the skeptic AI is not connected");
   });
   it("never words coverage as a safety verdict", () => {
     expect(text).toContain("Lights rate evidence coverage, not safety.");

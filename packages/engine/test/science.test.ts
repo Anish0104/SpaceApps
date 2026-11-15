@@ -261,6 +261,13 @@ describe("planner", () => {
     expect(p.o2PartialKPa.value).toBeCloseTo(0.21 * 70.3, 5);
     expect(p.material.value).toBe("SIBAL");
   });
+  it("a projected run with undocumented pressure has an UNKNOWN partial pressure, never a false computation", () => {
+    const noPressure = mk("FIX-BASS-1", "T-NOP", { pressureKPa: null });
+    const c = ExperimentCandidate.parse({ id: "x", origin: "rule", anchorRunId: "T-NOP", changes: [{ field: "gravityG", to: 0.165 }] });
+    const p = projectRun(c, noPressure);
+    expect(p.o2PartialKPa).toMatchObject({ value: null, type: "UNKNOWN", missingReason: "not_documented" });
+    expect(p.o2PartialKPa.formula).toBeUndefined();
+  });
   it("control check rejects unknown anchors, no-op changes, undocumented held values and duplicates", () => {
     const c = (over: object) => ExperimentCandidate.parse({ id: "x", origin: "ai", anchorRunId: "FIX-BASS-1", changes: [{ field: "gravityG", to: 0.165 }], ...over });
     const failed = (cc: ReturnType<typeof controlCheck>) => cc.checks.filter((k) => !k.pass && k.required).map((k) => k.id);
@@ -286,7 +293,8 @@ describe("planner", () => {
     expect(top.badges).not.toContain("Anchor not yet cross-checked");
     expect(top.score.discrimination).toBe(1);
     expect(top.robust).toBe(true);
-    expect(top.badges).toEqual(expect.arrayContaining(["Rule-generated", "Rules-verified", "Robust"]));
+    expect(top.badges).toEqual(expect.arrayContaining(["Rule-generated", "Control checks passed (feasibility and safety not assessed)", "Robust"]));
+    expect(top.badges).not.toContain("Rules-verified"); // never implies a scientist approved it
     expect(top.stamp).toBe(PROPOSAL_STAMP);
   });
   it("a larger budget never repeats a pick and reports rejected candidates with reasons", () => {
