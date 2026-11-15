@@ -28,10 +28,34 @@ export function systemTheme(): Theme {
   }
 }
 
-export function applyTheme(t: Theme) {
+type ViewTransitionDoc = Document & { startViewTransition?: (update: () => void) => { finished: Promise<void> } };
+
+/**
+ * Switch the theme. With `animate`, every element changes in the same frame (CSS transitions are paused
+ * during the swap, so text and backgrounds never disagree), and where the browser supports View
+ * Transitions the whole page cross-fades once. Without it, or under reduced motion, it swaps instantly.
+ */
+export function applyTheme(t: Theme, animate = false) {
   const root = document.documentElement;
-  root.dataset.theme = t;
-  root.style.colorScheme = t;
+  if (root.dataset.theme === t && root.style.colorScheme === t) return;
+  const set = () => {
+    root.dataset.theme = t;
+    root.style.colorScheme = t;
+  };
+  if (!animate) {
+    set();
+    return;
+  }
+  root.classList.add("theme-switching");
+  const done = () => requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("theme-switching")));
+  const doc = document as ViewTransitionDoc;
+  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  if (typeof doc.startViewTransition === "function" && !reduce) {
+    doc.startViewTransition(set).finished.finally(done);
+  } else {
+    set();
+    done();
+  }
 }
 
 function initialTheme(): Theme {
@@ -54,6 +78,7 @@ export function useTheme() {
   }, []);
 
   const setTheme = useCallback((t: Theme) => {
+    applyTheme(t, true);
     try {
       window.localStorage.setItem(THEME_KEY, t);
     } catch {

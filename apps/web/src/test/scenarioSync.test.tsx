@@ -1,64 +1,72 @@
-import { describe, it, expect } from "vitest";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { afterEach, describe, it, expect, vi } from "vitest";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { Scenario, rankInvestigations } from "@flameatlas/engine";
 import App from "../App";
 import { evidenceSegments } from "../components/CoveragePreview";
 import { dataset, runsFor, scenarios } from "../lib/data";
+import { JOURNEY, JOURNEY_SECONDS } from "../lib/journey";
 
 const renderAt = (path: string) => render(<MemoryRouter initialEntries={[path]}><App /></MemoryRouter>);
 const navPicker = () => screen.getByRole("combobox", { name: "Crew environment" }) as HTMLSelectElement;
-const heroSelector = () => screen.getByRole("radiogroup", { name: "Crew environment" });
-const checked = () => within(heroSelector()).getByRole("radio", { checked: true });
-const checkedName = () => checked().getAttribute("aria-label");
+const openDashboard = () => fireEvent.click(screen.getAllByRole("link", { name: /Open the dashboard/ })[0]!);
+const backHome = () => fireEvent.click(screen.getAllByRole("link", { name: /Back to home/ })[0]!);
+const hero = () => screen.getByRole("region", { name: /how does fire behave/i });
 
-describe("one global scenario: nav picker and hero selector stay in sync", () => {
-  it("starts on the same scenario in both", () => {
+afterEach(() => vi.useRealTimers());
+
+describe("one global scenario across the landing page and the dashboard", () => {
+  it("the dashboard opens on the default scenario", () => {
     renderAt("/");
+    openDashboard();
     expect(navPicker().value).toBe("moon-challenge");
-    expect(checkedName()).toBe("Moon base");
   });
 
-  it("choosing in the hero selector updates the nav picker", () => {
-    renderAt("/");
-    fireEvent.click(within(heroSelector()).getByRole("radio", { name: "Moon habitat" }));
-    expect(navPicker().value).toBe("moon-fm2");
-    expect(checkedName()).toBe("Moon habitat");
-  });
-
-  it("choosing in the nav picker updates the hero selector", () => {
-    renderAt("/");
+  it("a scenario chosen in the dashboard shows on the landing page's live preview", () => {
+    renderAt("/dashboard");
     fireEvent.change(navPicker(), { target: { value: "mars" } });
-    expect(checkedName()).toBe("Mars");
-    expect(within(heroSelector()).getByRole("radio", { name: "Moon base" }).getAttribute("aria-checked")).toBe("false");
+    backHome();
+    expect(screen.getByRole("complementary", { name: "Evidence preview for Mars habitat" })).toBeTruthy();
   });
 
-  it("arrow keys move and select within the hero selector, and the picker follows", () => {
-    renderAt("/");
-    fireEvent.keyDown(checked(), { key: "ArrowRight" });
-    expect(navPicker().value).toBe("moon-fm2");
-    fireEvent.keyDown(checked(), { key: "Home" });
-    expect(navPicker().value).toBe(scenarios[0].id);
-  });
-
-  it("the home hero shows the selected environment's NASA scene photo and credits it", () => {
-    renderAt("/");
-    const hero = screen.getByRole("region", { name: /how does fire behave/i });
-    expect(within(hero).getByRole("radiogroup", { name: "Crew environment" })).toBeTruthy();
-    fireEvent.change(navPicker(), { target: { value: "rover" } });
-    expect(within(hero).getByRole("link", { name: /as17-147-22527/ }).getAttribute("href")).toBe("https://images.nasa.gov/details/as17-147-22527");
-    fireEvent.click(within(heroSelector()).getByRole("radio", { name: "Earth" }));
-    expect(within(hero).getByRole("link", { name: /GRC-1998-C-00486/ })).toBeTruthy();
-    expect(within(hero).queryByRole("link", { name: /as17-147-22527/ })).toBeNull();
-    expect(within(hero).getByText("Earth sea level")).toBeTruthy();
-  });
-
-  it("the selection carries into other pages", () => {
-    renderAt("/");
+  it("the selection carries across dashboard pages", () => {
+    renderAt("/dashboard");
     fireEvent.change(navPicker(), { target: { value: "iss" } });
-    fireEvent.click(screen.getAllByRole("link", { name: "Atlas" })[0]);
+    fireEvent.click(screen.getAllByRole("link", { name: "Atlas" })[0]!);
     expect(navPicker().value).toBe("iss");
     expect(screen.getByText(/Ranked for/).textContent).toContain("ISS / spacecraft cabin");
+  });
+
+  it("the landing page has no manual environment picker: the window changes on its own", () => {
+    renderAt("/");
+    expect(within(hero()).queryByRole("radiogroup")).toBeNull();
+    expect(screen.queryByRole("combobox", { name: "Crew environment" })).toBeNull();
+  });
+});
+
+describe("spacecraft window (landing hero)", () => {
+  const credit = () => within(hero()).getByRole("link", { name: /NASA [\w-]+$/ });
+
+  it("starts in low Earth orbit and credits the real NASA photo", () => {
+    renderAt("/");
+    expect(credit().getAttribute("href")).toBe(`https://images.nasa.gov/details/${JOURNEY[0]!.nasaId}`);
+    expect(within(hero()).getAllByText(/Low Earth orbit/).length).toBeGreaterThan(0);
+    expect(within(hero()).getAllByRole("listitem")).toHaveLength(JOURNEY.length);
+  });
+
+  it("moves to the next view on its own, and stops while paused", () => {
+    vi.useFakeTimers();
+    renderAt("/");
+    act(() => vi.advanceTimersByTime(JOURNEY_SECONDS * 1000 + 50));
+    expect(credit().getAttribute("href")).toContain(JOURNEY[1]!.nasaId);
+
+    fireEvent.click(within(hero()).getByRole("button", { name: "Pause the journey" }));
+    act(() => vi.advanceTimersByTime(JOURNEY_SECONDS * 3000));
+    expect(credit().getAttribute("href")).toContain(JOURNEY[1]!.nasaId);
+
+    fireEvent.click(within(hero()).getByRole("button", { name: "Resume the journey" }));
+    act(() => vi.advanceTimersByTime(JOURNEY_SECONDS * 1000 + 50));
+    expect(credit().getAttribute("href")).toContain(JOURNEY[2]!.nasaId);
   });
 });
 
@@ -74,11 +82,21 @@ describe("where the evidence ends", () => {
     expect(segs("iss").gravity).toBeGreaterThan(0);
   });
 
-  it("a hatched (Unknown) segment opens Missing experiment with the scenario kept", () => {
-    renderAt("/");
+  it("a hatched (Unknown) segment on the overview opens Missing experiment with the scenario kept", () => {
+    renderAt("/dashboard");
     fireEvent.change(navPicker(), { target: { value: "moon-fm2" } });
     fireEvent.click(screen.getByRole("link", { name: /Gravity 0\.165 g: Unknown/ }));
     expect(navPicker().value).toBe("moon-fm2");
     expect(screen.getByRole("heading", { level: 1 }).textContent).toMatch(/missing experiment/i);
+  });
+});
+
+describe("dashboard overview", () => {
+  it("a quick question hands off to the Ask page and is asked there", async () => {
+    renderAt("/dashboard");
+    const box = screen.getByLabelText("Your combustion question") as HTMLTextAreaElement;
+    fireEvent.change(box, { target: { value: "Would fabric burn differently on the Moon?" } });
+    fireEvent.submit(box.closest("form")!);
+    expect(await screen.findByRole("heading", { level: 1, name: "Ask the archive" })).toBeTruthy();
   });
 });

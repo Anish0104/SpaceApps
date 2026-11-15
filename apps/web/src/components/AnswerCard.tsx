@@ -1,12 +1,14 @@
-import type { ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { AskResponse } from "@flameatlas/engine";
 import { dataset } from "../lib/data";
 import { humanizeField } from "../lib/labels";
 import { RecordTag } from "./RecordTag";
+import { FlameMark } from "./FlameMark";
+import { IconArrowRight } from "./Icons";
 
 type VerdictDetails = {
-  lightClass: string;
+  tone: "green" | "yellow" | "red";
   label: "Strong evidence" | "Partial evidence" | "No direct evidence";
   summary: string;
   icon: ReactNode;
@@ -15,203 +17,188 @@ type VerdictDetails = {
 function getVerdict(a: AskResponse): VerdictDetails {
   if (a.verdict === "green" && a.status !== "cannot_confirm") {
     return {
-      lightClass: "text-[var(--verdict-green)]",
+      tone: "green",
       label: "Strong evidence",
       summary: "Direct combustion measurements under closely matched conditions.",
-      icon: (
-        <svg aria-hidden="true" className="h-5 w-5 fill-current" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
-        </svg>
-      ),
+      icon: <path d="m6 12.5 4 4L18 8" />,
     };
   }
-
   if (a.verdict === "yellow" || (a.status === "cannot_confirm" && a.verdict !== "red")) {
     return {
-      lightClass: "text-[var(--verdict-yellow)]",
+      tone: "yellow",
       label: "Partial evidence",
       summary: "Analog experiments or related conditions; key environment parameters differ.",
-      icon: (
-        <svg aria-hidden="true" className="h-5 w-5 fill-current" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-        </svg>
-      ),
+      icon: <path d="M12 7.5v5.5M12 16.5h.01" />,
     };
   }
-
   return {
-    lightClass: "text-[var(--verdict-red)]",
+    tone: "red",
     label: "No direct evidence",
     summary: "No curated NASA combustion tests match this combination of variables.",
-    icon: (
-      <svg aria-hidden="true" className="h-5 w-5 fill-current" viewBox="0 0 20 20">
-        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
-      </svg>
-    ),
+    icon: <path d="M8.5 8.5l7 7M15.5 8.5l-7 7" />,
   };
 }
 
 const SOURCE_LABELS: Record<AskResponse["source"], string> = {
-  llm: "Live AI synthesis, checked against NASA records",
-  cache: "Cached synthesis, checked against NASA records",
-  template: "Retrieved template answer, verified against records",
+  llm: "AI answer, numbers checked against the cited records",
+  cache: "Cached AI answer, numbers checked against the cited records",
+  template: "Template answer built directly from the records",
 };
 
-function Beat({
-  number,
-  title,
-  children,
-}: {
-  number: number;
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className="space-y-2 pt-4 first:pt-0">
-      <h3 className="flex items-center gap-2 text-sm font-medium text-[var(--text-muted)]">
-        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--surface-2)] text-xs text-[var(--text)]">
-          {number}
-        </span>
-        {title}
-      </h3>
-      <div className="pl-7">{children}</div>
-    </section>
-  );
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Reveals the answer word by word. Purely presentational: the validated text is never changed, and the
+ * full sentence is always in the DOM for screen readers (the animated copy is aria-hidden).
+ */
+function useWordReveal(sentences: string[][], animate: boolean) {
+  const total = useMemo(() => sentences.reduce((n, s) => n + s.length, 0), [sentences]);
+  const [shown, setShown] = useState(animate ? 0 : total);
+
+  useEffect(() => {
+    if (!animate || shown >= total) return;
+    const step = total > 140 ? 3 : total > 70 ? 2 : 1;
+    const t = window.setTimeout(() => setShown((n) => Math.min(total, n + step)), 34);
+    return () => window.clearTimeout(t);
+  }, [animate, shown, total]);
+
+  return { shown, total, done: shown >= total, finish: () => setShown(total) };
 }
 
 export function AnswerCard({
   a,
+  question,
+  animate = true,
   onSelectRecord,
 }: {
   a: AskResponse;
+  question?: string;
+  animate?: boolean;
   onSelectRecord?: (id: string, el: HTMLElement) => void;
 }) {
   const verdict = getVerdict(a);
-  const cannotConfirm = a.status === "cannot_confirm";
+  const words = useMemo(() => a.sentences.map((s) => s.text.split(/(?<=\s)/)), [a]);
+  const { shown, done, finish } = useWordReveal(words, animate && !prefersReducedMotion());
 
+  let before = 0;
   return (
-    <article
-      aria-label="Evidence answer card"
-      className="panel divide-y divide-[var(--border)] p-6 sm:p-8"
-    >
-      {/* Beat 1: Verdict */}
-      <section className="space-y-3 pb-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className={`flex shrink-0 ${verdict.lightClass}`}>
-              {verdict.icon}
-            </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-semibold tracking-tight text-[var(--text)]">
-                  {verdict.label}
-                </h2>
-                <span className="rounded-[4px] bg-[var(--surface-2)] px-2 py-0.5 text-xs text-[var(--text-muted)]">
-                  Evidence rating
-                </span>
-              </div>
-              <p className="mt-1 text-sm text-[var(--text-muted)]">
-                {verdict.summary}
-              </p>
-            </div>
-          </div>
-
-          <div className="text-right text-xs text-[var(--text-muted)]">
-            <span className="inline-block rounded-[4px] border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1">
-              {SOURCE_LABELS[a.source]}
-            </span>
-            {dataset.fixture && (
-              <span className="mt-1 block text-[var(--verdict-yellow)]">
-                Fixture test data
-              </span>
-            )}
-          </div>
+    <article aria-label="Evidence answer card" className="answer panel overflow-hidden">
+      {question && (
+        <div className="flex items-start gap-3 border-b border-[var(--border)] px-5 py-4 sm:px-7">
+          <span aria-hidden="true" className="answer-avatar-q">Q</span>
+          <p className="pt-0.5 font-medium text-[var(--text)]">{question}</p>
         </div>
-      </section>
-
-      {/* Beat 2: What the evidence says */}
-      <Beat number={2} title="What the evidence says">
-        {a.sentences.length > 0 ? (
-          <ul className="measure space-y-3 text-[15px] leading-relaxed text-[var(--text)]">
-            {a.sentences.map((s, i) => (
-              <li key={i} className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-2">
-                <span>{s.text}</span>
-                {s.recordIds.length > 0 && (
-                  <span className="inline-flex shrink-0 flex-wrap gap-1.5">
-                    {s.recordIds.map((id) => (
-                      <RecordTag key={id} id={id} onSelect={onSelectRecord} />
-                    ))}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-[var(--text-muted)]">
-            No record-backed statement found for this question.
-          </p>
-        )}
-      </Beat>
-
-      {/* Beat 3: What differs */}
-      {a.differs.length > 0 && (
-        <Beat number={3} title="What differs from this scenario">
-          <div className="space-y-2">
-            <p className="text-xs text-[var(--text-muted)]">
-              Conditions that diverge between the cited NASA test runs and your active scenario:
-            </p>
-            <ul className="flex flex-wrap gap-2">
-              {a.differs.map((d) => (
-                <li
-                  key={d}
-                  className="rounded-[6px] border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-xs text-[var(--text)]"
-                >
-                  {humanizeField(d)}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Beat>
       )}
 
-      {/* Beat 4: Where the evidence ends (limit) */}
-      <Beat number={4} title="Where the evidence ends">
-        <p className="measure text-[15px] leading-relaxed text-[var(--text)]">
-          {a.limit}
-        </p>
-      </Beat>
-
-      {/* Beat 5: What to test next */}
-      <Beat number={5} title="What to test next">
-        <div className="rounded-[8px] border border-[var(--border)] bg-[var(--surface-2)] p-4">
-          <p className="text-sm text-[var(--text)]">
-            {a.next.target ? a.next.target : "Conduct targeted flammability testing to bridge extrapolation gaps."}
-          </p>
-          <div className="mt-3">
-            <Link
-              to="/missing-experiment"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] hover:underline"
-            >
-              See the missing experiment
-              <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor">
-                <path d="M2.5 6H9.5M6.5 3L9.5 6L6.5 9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Verdict */}
+      <header className={`answer-verdict tone-${verdict.tone} px-5 py-5 sm:px-7`}>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <span className="answer-verdict-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                {verdict.icon}
               </svg>
-            </Link>
+            </span>
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-xl font-semibold tracking-tight text-[var(--text)]">{verdict.label}</h2>
+                <span className="chip chip-quiet">Evidence rating, not a safety rating</span>
+              </div>
+              <p className="mt-1 text-sm text-[var(--text-muted)]">{verdict.summary}</p>
+            </div>
+          </div>
+          <div className="text-right text-xs text-[var(--text-muted)]">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1">
+              <FlameMark size={10} /> {SOURCE_LABELS[a.source]}
+            </span>
+            {dataset.fixture && <span className="mt-1 block text-[var(--verdict-yellow)]">Fixture test data</span>}
           </div>
         </div>
-      </Beat>
+      </header>
 
-      {/* Beat 6: Scope note */}
-      <section className="pt-4 text-xs text-[var(--text-muted)]">
-        <div className="flex flex-col justify-between gap-2 border-t border-[var(--border)] pt-4 sm:flex-row sm:items-center">
-          <p className="measure leading-relaxed">
-            {a.scope} • Ratings describe experimental evidence volume and precision, never human life-safety clearance.
-          </p>
-          <span className="shrink-0 font-mono text-[11px]">
-            Data v{a.dataVersion}
-          </span>
-        </div>
-      </section>
+      <div className="space-y-7 px-5 py-6 sm:px-7">
+        {/* What the evidence says */}
+        <section aria-labelledby="ans-evidence">
+          <h3 id="ans-evidence" className="answer-label">What the evidence says</h3>
+          {a.sentences.length > 0 ? (
+            <ul className="mt-3 space-y-3">
+              {a.sentences.map((s, i) => {
+                const w = words[i]!;
+                const visible = Math.max(0, Math.min(w.length, shown - before));
+                const complete = visible >= w.length;
+                const active = !complete && visible > 0;
+                before += w.length;
+                // Not started yet: keep the full text for screen readers, show nothing.
+                if (visible === 0 && !complete) return <li key={i} className="sr-only">{s.text}</li>;
+                return (
+                  <li key={i} className="answer-sentence">
+                    <span className="sr-only">{s.text}</span>
+                    <span aria-hidden="true" className="leading-relaxed text-[var(--text)]">
+                      {w.slice(0, visible).join("")}
+                      {active && <span className="type-caret" />}
+                    </span>
+                    {complete && s.recordIds.length > 0 && (
+                      <span className="reveal-in mt-1.5 flex flex-wrap gap-1.5 sm:ml-2 sm:mt-0 sm:inline-flex sm:align-middle">
+                        {s.recordIds.map((id) => (
+                          <RecordTag key={id} id={id} onSelect={onSelectRecord} />
+                        ))}
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm text-[var(--text-muted)]">No record-backed statement found for this question.</p>
+          )}
+          {!done && (
+            <button type="button" onClick={finish} className="mt-3 text-xs text-[var(--text-muted)] underline-offset-2 hover:text-[var(--text)] hover:underline">
+              Show full answer
+            </button>
+          )}
+        </section>
+
+        {done && (
+          <>
+            <div className="grid gap-4 md:grid-cols-2">
+              {a.differs.length > 0 && (
+                <section aria-labelledby="ans-differs" className="answer-box reveal-in" style={{ animationDelay: "60ms" }}>
+                  <h3 id="ans-differs" className="answer-label">What differs from this scenario</h3>
+                  <ul className="mt-3 flex flex-wrap gap-2">
+                    {a.differs.map((d) => (
+                      <li key={d} className="rounded-md border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1 text-xs text-[var(--text)]">
+                        {humanizeField(d)}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+              <section aria-labelledby="ans-limit" className={`answer-box reveal-in ${a.differs.length ? "" : "md:col-span-2"}`} style={{ animationDelay: "140ms" }}>
+                <h3 id="ans-limit" className="answer-label">Where the evidence ends</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--text)]">{a.limit}</p>
+              </section>
+            </div>
+
+            <section aria-labelledby="ans-next" className="answer-next reveal-in" style={{ animationDelay: "220ms" }}>
+              <div className="min-w-0">
+                <h3 id="ans-next" className="answer-label">What to test next</h3>
+                <p className="mt-1.5 text-sm text-[var(--text)]">
+                  {a.next.target ? a.next.target : "Targeted flammability testing at the scenario's conditions."}
+                </p>
+              </div>
+              <Link to="/missing-experiment" className="btn btn-secondary btn-sm shrink-0">
+                See the missing experiment <IconArrowRight size={14} />
+              </Link>
+            </section>
+          </>
+        )}
+      </div>
+
+      <footer className="flex flex-col justify-between gap-2 border-t border-[var(--border)] px-5 py-3 text-xs text-[var(--text-muted)] sm:flex-row sm:items-center sm:px-7">
+        <p className="measure">{a.scope} Ratings describe how much matched evidence exists, never life-safety clearance.</p>
+        <span className="shrink-0 font-mono text-[11px]">Data v{a.dataVersion}</span>
+      </footer>
     </article>
   );
 }
