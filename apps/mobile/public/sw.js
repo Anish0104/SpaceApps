@@ -2,7 +2,7 @@
  * The app shell and bundled dataset are precached on install; navigations fall back to the cached
  * shell when the network is unavailable, so the whole evidence browser works on a plane. Bump
  * CACHE when assets change. Only same-origin GETs are cached; API calls are never cached here. */
-const CACHE = "flameatlas-shell-v1";
+const CACHE = "flameatlas-shell-v2";
 const SHELL = ["/", "/index.html", "/manifest.webmanifest", "/icon.svg", "/icon-maskable.svg"];
 
 self.addEventListener("install", (e) => {

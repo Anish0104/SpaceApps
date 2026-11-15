@@ -1,92 +1,122 @@
 import { useMemo, useState } from "react";
-import { engineerReadout, kPaToPsi, o2PartialKPa, gravityRegime, type Scenario } from "@flameatlas/engine";
-import { dataset, scenarios } from "../data";
+import { engineerReadout, kPaToPsi, o2PartialKPa, gravityRegime } from "@flameatlas/engine";
+import { useStore } from "../store";
+import { dataset, invById, field, sourceRef, type Field } from "../data";
 import { FlameView } from "../components/FlameView";
 
 const LIGHT: Record<string, "green" | "amber" | "red"> = { green: "green", yellow: "amber", red: "red" };
-const fmt = (n: number, d = 1) => String(Number(n.toFixed(d)));
+const fmt = (n: number, d = 1) => Number(n.toFixed(d)).toString();
+const EV_CLASS: Record<string, string> = { MEASURED: "measured", COMPUTED: "computed", ASSUMED: "assumed", INFERRED: "inferred", UNKNOWN: "unknown" };
 
-/** Build a Scenario from live slider values, starting from a named preset. */
-function customScenario(base: Scenario, o2: number, pKpa: number, g: number): Scenario {
-  return { ...base, id: "custom", name: "Custom habitat", o2MolPct: o2, pressureKPa: pKpa, gravityG: g, source: "Your inputs (assumed)" };
+function Condition({ name, f }: { name: string; f: Field }) {
+  const documented = f.value !== null;
+  return (
+    <div className="condcard">
+      <div className="top">
+        <div className="k label">{name}</div>
+        <span className={`ev ${EV_CLASS[f.type] ?? "unknown"}`}>{documented ? f.type : "Undocumented"}</span>
+      </div>
+      <div style={{ marginTop: 6 }}>
+        {documented
+          ? <span className="val mono">{f.value}{f.unit ? <span className="u"> {f.unit}</span> : null}</span>
+          : <span className="val undoc mono">not documented</span>}
+      </div>
+      {documented && f.src && (
+        <a className="src" href={f.src.url} target="_blank" rel="noreferrer" style={{ marginTop: 8, display: "inline-block" }}>
+          {sourceRef(f.src)} ↗
+        </a>
+      )}
+      {!documented && f.missing && <p className="small faint" style={{ margin: "6px 0 0" }}>{f.missing.replace(/_/g, " ")}</p>}
+    </div>
+  );
 }
 
-export function Lab() {
-  const [preset, setPreset] = useState<Scenario>(scenarios.find((s) => s.id === "moon-challenge")!);
-  const [o2, setO2] = useState(preset.o2MolPct);
-  const [p, setP] = useState(preset.pressureKPa);
-  const [g, setG] = useState(preset.gravityG);
-  const [touched, setTouched] = useState(false);
+/**
+ * Mission Lab: the real NASA experiment record is the centerpiece. Step through curated runs; every
+ * value shown is the record's own measurement (or marked undocumented), with its evidence type and a
+ * link to the NASA source. The flame is a labelled qualitative illustration, never a measurement.
+ */
+export function Lab({ onOpenAsk }: { onOpenAsk: () => void }) {
+  const { scenario: sc } = useStore();
+  const runs = dataset.runs;
+  const [i, setI] = useState(0);
+  const run = runs[i];
+  const inv = invById(run.psiId);
+  const verified = run.status === "verified";
 
-  const choose = (s: Scenario) => { setPreset(s); setO2(s.o2MolPct); setP(s.pressureKPa); setG(s.gravityG); setTouched(false); };
-  const change = (fn: () => void) => { fn(); setTouched(true); };
-
-  const sc = useMemo(() => customScenario(preset, o2, p, g), [preset, o2, p, g]);
-  const readout = useMemo(() => engineerReadout(sc, dataset.runs), [sc]);
-  const po2 = o2PartialKPa(o2, p);
+  const readout = useMemo(() => engineerReadout(sc, runs), [sc, runs]);
+  const po2 = o2PartialKPa(sc.o2MolPct, sc.pressureKPa);
 
   return (
     <>
-      <h1>Mission Lab</h1>
-      <p className="small">Pick a crew environment, then adjust its atmosphere. The evidence readout updates live.</p>
-
-      <div className="presets" role="group" aria-label="Crew environment">
-        {scenarios.map((s) => (
-          <button key={s.id} className="pill" aria-pressed={!touched && preset.id === s.id} onClick={() => choose(s)}>{s.name.split(" (")[0]}</button>
-        ))}
-      </div>
+      <div className="eyebrow">Mission Lab · {sc.name.split(" (")[0]}</div>
+      <h1 className="h-xl">Inside the test chamber</h1>
 
       <div className="card">
-        <div className="stage">
-          <FlameView gravityG={g} o2MolPct={o2} />
-          <span className="chip assumed tag-ill">Illustrative shape — not measured</span>
-          <span className="g-read">{gravityRegime(g)} · {fmt(g, 3)} g</span>
+        <div className="stepper">
+          <button className="step-btn" aria-label="Previous run" onClick={() => setI((x) => (x - 1 + runs.length) % runs.length)}>‹</button>
+          <div className="rec">
+            <div className="id mono">{run.id} · {i + 1}/{runs.length}</div>
+            <div className="mat">{run.material.value ?? "Material not documented"}</div>
+            <div className="small faint">{inv?.acronym} — {inv?.name}</div>
+          </div>
+          <button className="step-btn" aria-label="Next run" onClick={() => setI((x) => (x + 1) % runs.length)}>›</button>
         </div>
-
-        <div className="control">
-          <div className="top"><span>Gravity</span><span className="val">{fmt(g, 3)} g</span></div>
-          <input type="range" min={0} max={1} step={0.005} value={g} onChange={(e) => change(() => setG(+e.target.value))} aria-label="Gravity" />
-        </div>
-        <div className="control">
-          <div className="top"><span>Oxygen</span><span className="val">{fmt(o2)} mol%</span></div>
-          <input type="range" min={15} max={100} step={0.5} value={o2} onChange={(e) => change(() => setO2(+e.target.value))} aria-label="Oxygen" />
-        </div>
-        <div className="control">
-          <div className="top"><span>Pressure</span><span className="val">{fmt(p, 1)} kPa · {fmt(kPaToPsi(p))} psi</span></div>
-          <input type="range" min={20} max={110} step={0.5} value={p} onChange={(e) => change(() => setP(+e.target.value))} aria-label="Pressure" />
-        </div>
-
-        <div className="row between small" style={{ marginTop: 4 }}>
-          <span className="chip computed">O₂ partial pressure {fmt(po2)} kPa</span>
-          <span className="chip assumed">Inputs assumed</span>
+        <div className="row between" style={{ marginTop: 12 }}>
+          <span className={`ev ${verified ? "verified" : "imported"}`}>{verified ? "Verified" : "Imported · awaiting cross-check"}</span>
+          {inv && <a className="src" href={inv.url} target="_blank" rel="noreferrer">PSI record ↗</a>}
         </div>
       </div>
 
-      <h2>What the evidence covers</h2>
+      <h2 className="sec">Documented conditions</h2>
+      <div className="cond">
+        <Condition name="Oxygen fraction" f={field(run.o2MolPct)} />
+        <Condition name="Total pressure" f={field(run.pressureKPa)} />
+        <Condition name="Gravity" f={field(run.gravityG)} />
+        <Condition name="O₂ partial pressure" f={field(run.o2PartialKPa)} />
+      </div>
+
+      <h2 className="sec">Gravity illustration</h2>
       <div className="card">
+        <div style={{ position: "relative" }}>
+          <FlameView gravityG={sc.gravityG} o2MolPct={sc.o2MolPct} height={190} />
+          <span className="ev assumed" style={{ position: "absolute", top: 8, left: 8 }}>Illustration — not measured</span>
+          <span className="mono small faint" style={{ position: "absolute", bottom: 8, right: 10 }}>{gravityRegime(sc.gravityG)} · {fmt(sc.gravityG, 3)} g</span>
+        </div>
+        <p className="small faint" style={{ marginTop: 8 }}>
+          Qualitative buoyancy shape only. Lunar gravity has no sustained spacecraft flame-spread data in the archive — a real gap, not a safe midpoint.
+        </p>
+      </div>
+
+      <h2 className="sec">Evidence vs this scenario</h2>
+      <div className="card">
+        <div className="row between" style={{ marginBottom: 10 }}>
+          <span className="label">{sc.name.split(" (")[0]}</span>
+          <span className="mono small faint">{fmt(sc.o2MolPct)} mol% · {fmt(sc.pressureKPa)} kPa ({fmt(kPaToPsi(sc.pressureKPa))} psi) · pO₂ {fmt(po2)} kPa</span>
+        </div>
         {readout.rows.map((r) => (
           <div className="item" key={r.condition}>
             <span className={`dot ${r.light === "red" ? "hatch" : LIGHT[r.light]}`} />
             <div>
-              <h3 style={{ fontSize: 14 }}>{r.name}</h3>
+              <div style={{ fontWeight: 700, fontSize: 14 }}>{r.name}</div>
               <p className="small" style={{ margin: 0 }}>{r.note}</p>
             </div>
           </div>
         ))}
-        <p className="small faint" style={{ marginTop: 10 }}>{readout.limit}</p>
+        <p className="small faint" style={{ marginTop: 10 }}>{readout.limit} {readout.scope}</p>
       </div>
 
       {readout.nearestTested.disagree && (
-        <div className="note">
-          Nearest tested condition depends on how you match oxygen: {readout.nearestTested.byMolPct?.runId} by
-          mole fraction vs {readout.nearestTested.byPartialPressure?.runId} by partial pressure. A higher O₂
-          percentage does not mean more oxygen.
+        <div className="note" style={{ marginTop: 12 }}>
+          Nearest tested condition depends on how you match oxygen: {readout.nearestTested.byMolPct?.runId} by mole
+          fraction vs {readout.nearestTested.byPartialPressure?.runId} by partial pressure. A higher O₂ percentage does not mean more oxygen.
         </div>
       )}
 
-      <p className="small faint" style={{ marginTop: 14 }}>
-        Green = a verified run of this material within tolerance · Amber = analog or not yet cross-checked ·
-        Hatched = not in our curated data. Lights rate evidence coverage, never safety.
+      <button className="btn ghost" style={{ marginTop: 14 }} onClick={onOpenAsk}>Ask about this scenario</button>
+      <p className="small faint" style={{ marginTop: 12, textAlign: "center" }}>
+        Green = verified run within tolerance · Amber = analog or not yet cross-checked · Hatched = not in curated data.
+        Lights rate evidence coverage, never safety.
       </p>
     </>
   );

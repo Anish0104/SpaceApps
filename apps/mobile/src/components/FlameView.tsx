@@ -1,56 +1,40 @@
 import { gravityRegime } from "@flameatlas/engine";
 
 /**
- * An illustrative flame shape. In normal gravity, buoyancy lifts hot gas into a teardrop; in
- * microgravity, with no buoyancy, a flame becomes a near-sphere fed only by diffusion. This SVG
- * morphs between those two shapes with the gravity input, and changes size and colour with oxygen.
- *
- * It is a teaching illustration of flame SHAPE, not a measurement: no spread rate, no flammability
- * verdict, and never a safety claim. The label on the stage says so.
+ * A qualitative buoyancy illustration of flame SHAPE. In normal gravity, buoyant hot gas rises into a
+ * teardrop; in microgravity, with no buoyancy, a flame becomes a near-sphere fed by diffusion. The
+ * shape morphs with gravity and shifts colour with oxygen. It is NOT a measurement: no spread rate,
+ * no flammability verdict, never a safety claim. The Lab labels it as an illustration.
  */
-export function FlameView({ gravityG, o2MolPct }: { gravityG: number; o2MolPct: number }) {
-  // 0 = microgravity sphere, 1 = full teardrop. Rises with gravity (capped at Earth).
-  const t = Math.min(1, Math.max(0, gravityG / 1));
+export function FlameView({ gravityG, o2MolPct, height = 210 }: { gravityG: number; o2MolPct: number; height?: number }) {
+  const t = Math.min(1, Math.max(0, gravityG / 1));          // 0 = microgravity sphere, 1 = teardrop
   const regime = gravityRegime(gravityG);
-
-  // sphere radius grows a little with oxygen (illustrative only)
   const o2n = Math.min(1, Math.max(0, (o2MolPct - 15) / 85));
   const r = 44 + o2n * 14;
   const cx = 100, cy = 125;
-
-  // teardrop: tip pulled up by (t), body stays near the sphere. Control points interpolate.
-  const tip = cy - r - t * 62;                 // how far the point rises
+  const tip = cy - r - t * 62;
   const shoulder = cy - r * (0.2 + t * 0.1);
   const bulge = r * (1 + t * 0.12);
-  const path = [
-    `M ${cx} ${tip}`,
-    `C ${cx - bulge * 0.55} ${shoulder}, ${cx - bulge} ${cy + r * 0.2}, ${cx} ${cy + r}`,
-    `C ${cx + bulge} ${cy + r * 0.2}, ${cx + bulge * 0.55} ${shoulder}, ${cx} ${tip}`,
-    "Z",
-  ].join(" ");
+  const path = `M ${cx} ${tip} C ${cx - bulge * 0.55} ${shoulder}, ${cx - bulge} ${cy + r * 0.2}, ${cx} ${cy + r} C ${cx + bulge} ${cy + r * 0.2}, ${cx + bulge * 0.55} ${shoulder}, ${cx} ${tip} Z`;
 
-  // colour: cooler/bluer in microgravity, warmer with more oxygen
-  const outer = regime === "orbit" ? "#2b4ea8" : "#7a4bd0";
-  const mid = o2n > 0.5 ? "#8fb2ff" : "#5a8bff";
+  // microgravity reads cool/blue (diffusion), normal gravity warm (buoyant); oxygen brightens
+  const warm = t > 0.4;
+  const outer = warm ? "#8a3f1c" : "#1f3f86";
+  const mid = warm ? "#e48a54" : "#5aa0ff";
+  const core = o2n > 0.5 ? "#fff4ea" : "#eaf4ff";
 
   return (
-    <svg viewBox="0 0 200 220" width="100%" height="100%" aria-label={`Illustrative flame in ${regime} gravity`}>
+    <svg viewBox="0 0 200 220" width="100%" height={height} aria-label={`Illustrative flame in ${regime} gravity`} style={{ display: "block" }}>
       <defs>
-        <radialGradient id="fl" cx="50%" cy="62%" r="60%">
-          <stop offset="0%" stopColor="#eaf2ff" />
-          <stop offset="42%" stopColor={mid} />
-          <stop offset="100%" stopColor={outer} />
+        <radialGradient id="flg" cx="50%" cy="62%" r="60%">
+          <stop offset="0%" stopColor={core} /><stop offset="42%" stopColor={mid} /><stop offset="100%" stopColor={outer} />
         </radialGradient>
-        <filter id="glow"><feGaussianBlur stdDeviation="5" /></filter>
+        <filter id="fglow"><feGaussianBlur stdDeviation="5" /></filter>
       </defs>
-      {/* wick / sample base */}
-      <rect x="96" y={cy + r} width="8" height="26" rx="2" fill="#39445f" />
-      {/* glow */}
-      <path d={path} fill={mid} opacity="0.35" filter="url(#glow)" className="flicker" />
-      {/* flame body */}
-      <path d={path} fill="url(#fl)" className="flicker" />
-      {/* inner core */}
-      <ellipse cx={cx} cy={cy + r * 0.25} rx={r * 0.42} ry={r * (0.42 + t * 0.15)} fill="#eef4ff" opacity="0.85" />
+      <rect x="96" y={cy + r} width="8" height="26" rx="2" fill="#2a3a55" />
+      <path d={path} fill={mid} opacity="0.3" filter="url(#fglow)" className="flicker" />
+      <path d={path} fill="url(#flg)" className="flicker" />
+      <ellipse cx={cx} cy={cy + r * 0.25} rx={r * 0.42} ry={r * (0.42 + t * 0.15)} fill={core} opacity="0.85" />
     </svg>
   );
 }
