@@ -1132,6 +1132,16 @@
     overflow: hidden;
     border-radius: 19% / 28%;
   }
+  /* The photo layer clips itself to the window's curve. WebKit (iPhone Safari) ignores a parent's rounded
+     overflow clip for animated, transformed children like the drifting photo, so a mask forces the clip here. */
+  .ship-media,
+  .ship-glare {
+    border-radius: inherit;
+  }
+  .ship-media {
+    -webkit-mask-image: linear-gradient(#000, #000);
+    mask-image: linear-gradient(#000, #000);
+  }
   .ship-content {
     min-height: min(78svh, 860px);
   }

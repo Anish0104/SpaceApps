@@ -46,7 +46,7 @@ export function SpacecraftWindow({ children }: { children: (frame: JourneyFrame)
     <div className="ship-window" style={{ ["--journey-accent" as string]: frame.accent }}>
       <span aria-hidden="true" className="ship-rim" />
       <div className="landing-frame ship-glass">
-        <div aria-hidden="true" className="absolute inset-0 overflow-hidden bg-black">
+        <div aria-hidden="true" className="ship-media absolute inset-0 overflow-hidden bg-black">
           {layers.map((i) => {
             const f = JOURNEY[i]!;
             return (
