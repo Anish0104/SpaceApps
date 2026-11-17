@@ -36,7 +36,7 @@ export function RecordTag({
         }
       }}
       title={`View record details for ${id}`}
-      className="inline-flex cursor-pointer rounded-[4px] focus-visible:outline-2 focus-visible:outline-[var(--focus)]"
+      className="tap-target inline-flex cursor-pointer rounded-[4px] focus-visible:outline-2 focus-visible:outline-[var(--focus)]"
     >
       <Tag variant="link">
         {id}

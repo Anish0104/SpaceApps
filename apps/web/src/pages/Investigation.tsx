@@ -155,7 +155,7 @@ export default function Investigation() {
               Experimental runs <span className="font-mono text-lg text-[var(--text-muted)]">{runs.length}</span>
             </h2>
           </div>
-          {runs.length > 0 && <span className="text-xs text-[var(--text-muted)]">Scroll sideways for every condition. Hover a value for its source.</span>}
+          {runs.length > 0 && <span className="text-xs text-[var(--text-muted)]">Scroll sideways for every condition. Each value links to its NASA source.</span>}
         </div>
 
         {runs.length === 0 ? (

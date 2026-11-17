@@ -100,7 +100,7 @@ function Proposal({ p, anchor, rank }: { p: PlannedExperiment; anchor: Run; rank
     <section className="panel p-4 sm:p-6">
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <span className="mr-2 font-semibold">Proposal {rank}</span>
-        {p.badges.map((b) => <Tag key={b} variant={b.startsWith("Anchor") || b.startsWith("Factorial") ? "dashed" : "quiet"}>{b}</Tag>)}
+        {p.badges.map((b) => <Tag key={b} variant={b.startsWith("Anchor") || b.startsWith("Factorial") ? "dashed" : "quiet"} wrap>{b}</Tag>)}
       </div>
       <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-[14rem_minmax(0,1fr)]">
         <Row label="Research question">
@@ -194,6 +194,7 @@ export default function MissingExperiment() {
 
       <section className="panel">
         <h2 className="border-b border-rule px-4 py-3 font-semibold sm:px-5">What no run covers</h2>
+        <p className="px-4 pt-3 text-xs text-[var(--text-muted)] sm:hidden">Scroll sideways for the scenario value and the closest runs.</p>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[44rem] border-collapse text-left">
             <thead>

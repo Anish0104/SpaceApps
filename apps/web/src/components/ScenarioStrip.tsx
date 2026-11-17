@@ -9,8 +9,9 @@ function Stat({ label, value, sub, computed = false, title }: { label: string; v
   return (
     <div className="strip-stat" title={title}>
       <dt className="text-[11px] text-white/60">{label}</dt>
-      <dd className="mt-1 flex items-baseline gap-1.5">
-        <span className={`strip-value ${computed ? "is-computed" : ""}`}>{value}</span>
+      {/* The value never breaks; on a narrow tile its unit conversion moves to the next line. */}
+      <dd className="mt-1 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+        <span className={`strip-value whitespace-nowrap ${computed ? "is-computed" : ""}`}>{value}</span>
         {sub && <span className="text-[11px] text-white/50">{sub}</span>}
       </dd>
     </div>

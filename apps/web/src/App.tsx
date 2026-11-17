@@ -114,7 +114,7 @@ function Brand({ compact = false }: { compact?: boolean }) {
   return (
     <Link to="/" className="flex shrink-0 items-center gap-2.5 rounded-[4px] text-[var(--text)]">
       <FlameMark size={16} />
-      <span className={`text-[1.2rem] font-semibold tracking-tight ${compact ? "max-[359px]:sr-only" : ""}`}>Oxyflame</span>
+      <span className={`text-[1.2rem] font-semibold tracking-tight ${compact ? "max-[413px]:sr-only" : ""}`}>Oxyflame</span>
     </Link>
   );
 }

@@ -46,7 +46,8 @@ export default function Atlas() {
       </div>
 
       {/* Top Filter Row: Search, Safety role, Fuel phase */}
-      <div className="sticky top-[4.5rem] z-20 flex flex-wrap items-center gap-3 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_88%,transparent)] p-3 shadow-[var(--shadow)] backdrop-blur-xl">
+      {/* Sticky from small tablets up; on a phone it would cover a quarter of the screen while scrolling cards. */}
+      <div className="z-20 flex sm:sticky sm:top-[4.5rem] flex-wrap items-center gap-3 rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_88%,transparent)] p-3 shadow-[var(--shadow)] backdrop-blur-xl">
         {/* Search */}
         <div className="flex-1 min-w-[200px]">
           <label htmlFor="atlas-search" className="sr-only">Search investigations</label>
@@ -185,9 +186,9 @@ export default function Atlas() {
                     </p>
                   )}
 
-                  <div className="mt-2 flex flex-wrap gap-2 text-xs text-[var(--text-muted)]">
+                  {/* Spacing, not a bullet, separates the two: a bullet would be left dangling when Fuel wraps. */}
+                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--text-muted)]">
                     <span>Phase: <b className="font-medium text-[var(--text)]">{sentenceCase(inv.fuelPhase ?? runs[0]?.fuelPhase ?? "Unknown")}</b></span>
-                    <span>•</span>
                     <span>Fuel: <b className="font-medium text-[var(--text)]">{primaryMaterial}</b></span>
                   </div>
                 </div>
@@ -236,7 +237,7 @@ export default function Atlas() {
                   <div>
                     <span className="text-[var(--text-muted)]">Gravity: </span>
                     {gravText ? (
-                      <span className="font-mono font-medium text-[var(--text)]">{gravText}</span>
+                      <span className="whitespace-nowrap font-mono font-medium text-[var(--text)]">{gravText}</span>
                     ) : (
                       <span className="hatch inline-block rounded px-1 text-[var(--text-muted)]">Unknown</span>
                     )}
@@ -244,7 +245,7 @@ export default function Atlas() {
                   <div>
                     <span className="text-[var(--text-muted)]">Oxygen: </span>
                     {o2Text ? (
-                      <span className="font-mono font-medium text-[var(--text)]">{o2Text}</span>
+                      <span className="whitespace-nowrap font-mono font-medium text-[var(--text)]">{o2Text}</span>
                     ) : (
                       <span className="hatch inline-block rounded px-1 text-[var(--text-muted)]">Unknown</span>
                     )}
@@ -252,7 +253,7 @@ export default function Atlas() {
                   <div>
                     <span className="text-[var(--text-muted)]">Pressure: </span>
                     {pText ? (
-                      <span className="font-mono font-medium text-[var(--text)]">{pText}</span>
+                      <span className="whitespace-nowrap font-mono font-medium text-[var(--text)]">{pText}</span>
                     ) : (
                       <span className="hatch inline-block rounded px-1 text-[var(--text-muted)]">Unknown</span>
                     )}
@@ -260,7 +261,7 @@ export default function Atlas() {
                   <div>
                     <span className="text-[var(--text-muted)]">Flow: </span>
                     {flowText ? (
-                      <span className="font-mono font-medium text-[var(--text)]">{flowText}</span>
+                      <span className="whitespace-nowrap font-mono font-medium text-[var(--text)]">{flowText}</span>
                     ) : (
                       <span className="hatch inline-block rounded px-1 text-[var(--text-muted)]">Unknown</span>
                     )}

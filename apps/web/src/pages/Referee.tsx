@@ -234,10 +234,11 @@ export default function Referee() {
             <table className="w-full text-left text-sm">
               <thead className="border-b border-[var(--border)] bg-[var(--surface-2)] text-xs text-[var(--text-muted)]">
                 <tr>
-                  <th scope="col" className="px-4 py-2.5 font-medium sm:pl-6">Condition</th>
-                  <th scope="col" className="whitespace-nowrap px-4 py-2.5 font-mono font-medium text-[var(--text)]">{ra.id}</th>
-                  <th scope="col" className="whitespace-nowrap px-4 py-2.5 font-mono font-medium text-[var(--text)]">{rb.id}</th>
-                  <th scope="col" className="px-4 py-2.5 font-medium">Role in comparison</th>
+                  <th scope="col" className="px-3 py-2.5 font-medium sm:px-4 sm:pl-6">Condition</th>
+                  <th scope="col" className="whitespace-nowrap px-3 py-2.5 font-mono font-medium text-[var(--text)] sm:px-4">{ra.id}</th>
+                  <th scope="col" className="whitespace-nowrap px-3 py-2.5 font-mono font-medium text-[var(--text)] sm:px-4">{rb.id}</th>
+                  {/* On phones the role moves under the condition name (see below) so three columns fit. */}
+                  <th scope="col" className="hidden px-4 py-2.5 font-medium sm:table-cell">Role in comparison</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border)]">
@@ -245,6 +246,21 @@ export default function Referee() {
                   const isTarget = f === compared.target;
                   const isConfound = res.confounds.includes(f);
                   const isUndocumented = res.undocumented.includes(f);
+                  const role = isTarget ? (
+                    <span className="inline-flex items-center gap-1 rounded-[4px] border border-[var(--accent)] bg-[var(--surface)] px-2 py-0.5 font-medium text-[var(--text)]">
+                      Target variable
+                    </span>
+                  ) : isConfound ? (
+                    <span className="inline-flex items-center gap-1 rounded-[4px] border border-[var(--verdict-red)] bg-[var(--surface)] px-2 py-0.5 font-medium text-[var(--verdict-red)]">
+                      Confound
+                    </span>
+                  ) : isUndocumented ? (
+                    <span className="hatch inline-block rounded px-2 py-0.5 text-[var(--text-muted)]">
+                      Not documented
+                    </span>
+                  ) : (
+                    <span className="text-[var(--text-muted)]">Constant</span>
+                  );
 
                   return (
                     <tr
@@ -257,31 +273,18 @@ export default function Referee() {
                           : "hover:bg-[var(--surface-2)]"
                       }`}
                     >
-                      <th scope="row" className="whitespace-nowrap px-4 py-2.5 text-xs font-medium sm:pl-6 text-[var(--text)]">
+                      <th scope="row" className="px-3 py-2.5 text-xs font-medium text-[var(--text)] sm:whitespace-nowrap sm:px-4 sm:pl-6">
                         {fieldLabel(f)}
+                        <span className="mt-1.5 block text-[0.6875rem] font-normal sm:hidden">{role}</span>
                       </th>
-                      <td className="px-4 py-2.5">
+                      <td className="px-3 py-2.5 sm:px-4">
                         <ValueCell v={ra[f]} />
                       </td>
-                      <td className="px-4 py-2.5">
+                      <td className="px-3 py-2.5 sm:px-4">
                         <ValueCell v={rb[f]} />
                       </td>
-                      <td className="whitespace-nowrap px-4 py-2.5 text-xs">
-                        {isTarget ? (
-                          <span className="inline-flex items-center gap-1 rounded-[4px] border border-[var(--accent)] bg-[var(--surface)] px-2 py-0.5 font-medium text-[var(--text)]">
-                            Target variable
-                          </span>
-                        ) : isConfound ? (
-                          <span className="inline-flex items-center gap-1 rounded-[4px] border border-[var(--verdict-red)] bg-[var(--surface)] px-2 py-0.5 font-medium text-[var(--verdict-red)]">
-                            Confound
-                          </span>
-                        ) : isUndocumented ? (
-                          <span className="hatch inline-block rounded px-2 py-0.5 text-[var(--text-muted)]">
-                            Not documented
-                          </span>
-                        ) : (
-                          <span className="text-[var(--text-muted)]">Constant</span>
-                        )}
+                      <td className="hidden whitespace-nowrap px-4 py-2.5 text-xs sm:table-cell">
+                        {role}
                       </td>
                     </tr>
                   );

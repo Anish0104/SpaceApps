@@ -361,6 +361,7 @@
     }
   }
   .btn-icon {
+    flex: none; /* never squeezed by a crowded header row */
     width: 2.25rem;
     min-height: 2.25rem;
     padding: 0;
@@ -405,6 +406,10 @@
     font-size: 0.75rem;
     line-height: 1.5;
     white-space: nowrap;
+  }
+  .chip-wrap {
+    max-width: 100%;
+    white-space: normal;
   }
   .chip-quiet {
     border-color: var(--border);
@@ -1238,7 +1243,7 @@
     left: 30%;
     right: 30%;
     bottom: 7%;
-    z-index: 6;
+    z-index: 11; /* above the hero content layer (z-10), which spans the whole window: keeps pause tappable */
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -1289,7 +1294,7 @@
     left: 0;
     right: 0;
     bottom: calc(7% + 18px);
-    z-index: 6;
+    z-index: 11; /* above the hero content layer, so the photo credit link can be tapped */
     width: fit-content;
     max-width: 40%;
     margin-inline: auto;
@@ -1312,7 +1317,8 @@
       bottom: 4.5%;
     }
     .journey-credit {
-      bottom: calc(4.5% + 18px);
+      /* Clear of the pause button and its touch area: on phones the credit is wide enough to reach it. */
+      bottom: calc(4.5% + 40px);
       max-width: 68%;
     }
   }
@@ -1371,6 +1377,13 @@
     border-radius: 999px;
     font-weight: 500;
     transition: transform 150ms ease, box-shadow 250ms ease, background-color 200ms ease, border-color 200ms ease;
+  }
+  @media (max-width: 359px) {
+    /* The narrowest phones: keep "Open the dashboard ->" on one line inside the window */
+    .landing-btn {
+      padding: 0 0.875rem;
+      font-size: 0.9375rem;
+    }
   }
   .landing-btn:hover {
     transform: translateY(-1px);
@@ -1449,13 +1462,20 @@
   .theme-switch {
     position: relative;
     flex: none;
-    width: 52px;
-    height: 28px;
+    display: inline-flex;
     padding: 0;
-    border: 1px solid var(--border);
+    border: 0;
     border-radius: 9999px;
     cursor: pointer;
     background: transparent;
+  }
+  .theme-switch-pill {
+    display: block;
+    box-sizing: border-box;
+    width: 52px;
+    height: 28px;
+    border: 1px solid var(--border);
+    border-radius: 9999px;
     overflow: hidden;
   }
   .theme-switch:focus-visible {
@@ -1478,6 +1498,17 @@
   }
   .theme-switch[data-on="true"] .ts-knob {
     transform: translateX(24px);
+  }
+
+  /* Touch screens: small controls get a ~44 px tap area without moving anything on the page. */
+  @media (pointer: coarse) {
+    .theme-switch { padding: 8px; margin: -8px; }
+    .journey-pause,
+    .tap-target { position: relative; }
+    .journey-pause::after,
+    .tap-target::after { content: ""; position: absolute; }
+    .journey-pause::after { inset: -9px; }
+    .tap-target::after { inset: -10px -3px; }
   }
 }
 

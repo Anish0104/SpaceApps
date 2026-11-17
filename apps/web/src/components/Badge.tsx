@@ -16,9 +16,10 @@ const EVIDENCE: Record<EvidenceType, { label: string; variant: ChipVariant }> = 
   UNKNOWN: { label: "Unknown", variant: "hatch" },
 };
 
-export function Tag({ children, variant = "quiet", title }: { children: ReactNode; variant?: ChipVariant; title?: string }) {
+/** `wrap` lets a long label break onto more lines instead of running past a narrow (phone) screen. */
+export function Tag({ children, variant = "quiet", title, wrap = false }: { children: ReactNode; variant?: ChipVariant; title?: string; wrap?: boolean }) {
   // The hatch chip keeps its label on a clear background so the text stays readable.
-  return <span title={title} className={`chip chip-${variant}`}>{variant === "hatch" ? <span>{children}</span> : children}</span>;
+  return <span title={title} className={`chip chip-${variant}${wrap ? " chip-wrap" : ""}`}>{variant === "hatch" ? <span>{children}</span> : children}</span>;
 }
 
 export function EvidenceBadge({ type }: { type: EvidenceType }) {
